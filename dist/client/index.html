@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Users list</title>
+  </head>
+  <body>
+    <header>
+      <h1>Users list</h1>
+    </header>
+
+    <section>
+      <form action="" id="form-user">
+        <input type="text" id="name" name="name" placeholder="name" />
+        <input type="text" id="surname" name="surname" placeholder="surname" />
+        <button class="button-primary">Add user 🙍🏻‍♂️/🙎‍♀️</button>
+      </form>
+      <img src="img/loading.gif" alt="loading" class="loading" />
+      <div class="allUsers"></div>
+      <div class="logos">
+        <img src="img/node-logo.png" alt="nodejs" />
+        <img src="img/mongodb-logo.png" alt="mongodb" />
+      </div>
+    </section>
+
+    <section>
+      <form action="api/cards" id="form-card" method="post">
+        <input type="text" id="card-name" name="name" placeholder="card name" />
+        <input type="text" id="card-text" name="text" placeholder="card text" />
+        <input
+          type="text"
+          id="card-author"
+          name="author"
+          placeholder="author"
+        />
+        <input
+          type="number"
+          id="card-eventId"
+          name="eventId"
+          placeholder="eventId"
+        />
+        <button class="button-primary">Add card 💳</button>
+      </form>
+      <img src="img/loading.gif" alt="loading" class="loading" />
+      <div class="allCards"></div>
+    </section>
+
+    <script src="js/client.js"></script>
+  </body>
+</html>

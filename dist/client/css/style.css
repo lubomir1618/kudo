@@ -1,0 +1,21 @@
+header,
+section {
+  margin: 0 auto;
+  width: 70%;
+  text-align: center;
+}
+.logos {
+  text-align: right;
+}
+.logos img {
+  width: 80px;
+  height: auto;
+  margin-left: 12px;
+}
+small {
+  font-size: 10px;
+  color: #9d9d9d;
+}
+.allUsers div {
+  margin-bottom: 30px;
+}
