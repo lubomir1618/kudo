@@ -1,19 +1,23 @@
-const express = require("express");
-const monk = require("monk");
-const cors = require("cors");
-const app = express();
+var http = require("http");
 
-const port = process.env.port || 4000;
+http
+  .createServer(function(req, res) {
+    // Homepage
+    if (req.url === "/") {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("Welcome to the homepage!");
+    }
 
-app.use(cors());
-app.use(express.json());
+    // About page
+    else if (req.url === "/about") {
+      res.writeHead(200, { "Content-Type": "text/html" });
+      res.end("Welcome to the about page!");
+    }
 
-app.use(express.static("public"));
-
-app.get("/", (req, res) => {
-  res.json({ message: "ok" });
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+    // 404'd!
+    else {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end("404 error! File not found.");
+    }
+  })
+  .listen(1337, "localhost");
