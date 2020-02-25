@@ -1,4 +1,5 @@
-var http = require("http");
+const http = require("http");
+const port = process.env.PORT || 3000;
 
 http
   .createServer(function(req, res) {
@@ -20,4 +21,4 @@ http
       res.end("404 error! File not found.");
     }
   })
-  .listen(1337, "localhost");
+  .listen(port, "localhost");
