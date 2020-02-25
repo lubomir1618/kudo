@@ -1,7 +1,7 @@
 import monk from 'monk';
 import { Request, Response } from 'express';
 import * as utils from '../utils';
-import * as I from '../interfaces';
+import * as I from '../../common/interfaces';
 
 const db = monk('mongodb+srv://oeirtoeriu:ndjnmdekehfehre2019@cluster0-8sxhu.mongodb.net/test');
 

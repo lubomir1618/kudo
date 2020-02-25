@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
     "target": "es2017",
     "module": "commonjs",
-    "lib": ["es6", "es2017", "esnext"],
+    "lib": ["es6", "es2017", "esnext", "dom"],
     "declaration": false,
     "outDir": "dist",
     "rootDir": "src",

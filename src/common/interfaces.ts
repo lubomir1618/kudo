@@ -23,7 +23,7 @@ export interface Admin {
 
 export interface User {
   _id?: number;
-  created: Date;
+  created?: Date;
   name: string;
   surname: string;
 }

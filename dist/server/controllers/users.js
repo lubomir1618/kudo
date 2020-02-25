@@ -12,6 +12,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const monk_1 = __importDefault(require("monk"));
 const utils = __importStar(require("../utils"));
+const validate_1 = require("../../common/validate");
 const db = monk_1.default('mongodb+srv://oeirtoeriu:ndjnmdekehfehre2019@cluster0-8sxhu.mongodb.net/test');
 class Users {
     constructor() {
@@ -27,7 +28,7 @@ class Users {
     }
     create(req, res) {
         utils.serverLog('/users => create', req);
-        if (this.isUserValid(req.body)) {
+        if (validate_1.isUserValid(req.body)) {
             const user = {
                 created: new Date(),
                 name: req.body.name.toString(),
@@ -41,9 +42,6 @@ class Users {
             res.status(422);
             res.json({ message: 'Name and surname must be fulfilled!' });
         }
-    }
-    isUserValid(user) {
-        return user.name && user.name.toString() !== '' && user.surname && user.surname.toString() !== '';
     }
 }
 const users = new Users();

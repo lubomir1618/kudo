@@ -1,7 +1,8 @@
 import monk from 'monk';
 import { Request, Response } from 'express';
 import * as utils from '../utils';
-import * as I from '../interfaces';
+import * as I from '../../common/interfaces';
+import { isUserValid } from '../../common/validate';
 
 const db = monk('mongodb+srv://oeirtoeriu:ndjnmdekehfehre2019@cluster0-8sxhu.mongodb.net/test');
 
@@ -20,7 +21,7 @@ class Users {
 
   public create(req: Request, res: Response) {
     utils.serverLog('/users => create', req);
-    if (this.isUserValid(req.body)) {
+    if (isUserValid(req.body)) {
       const user: I.User = {
         created: new Date(),
         name: req.body.name.toString(),
@@ -33,10 +34,6 @@ class Users {
       res.status(422);
       res.json({ message: 'Name and surname must be fulfilled!' });
     }
-  }
-
-  private isUserValid(user: I.User) {
-    return user.name && user.name.toString() !== '' && user.surname && user.surname.toString() !== '';
   }
 }
 

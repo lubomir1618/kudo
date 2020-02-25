@@ -2,5 +2,5 @@
 .env
 /dist/*.test.js
 /dist/*.d.ts
-/dist/*.map
+*.js.map
 .DS_Store
