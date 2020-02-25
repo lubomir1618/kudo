@@ -1,26 +1,18 @@
 {
-  "name": "kudo-voting-system",
+  "name": "server",
   "version": "1.0.0",
-  "description": "voting system",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/lubomir1618/kudo.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/lubomir1618/kudo/issues"
-  },
-  "homepage": "https://github.com/lubomir1618/kudo#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "monk": "^7.1.2",
     "nodemon": "^2.0.2"
