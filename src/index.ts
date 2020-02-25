@@ -7,6 +7,7 @@ import { cUsers } from './server/controllers/users';
 import { cCards } from './server/controllers/cards';
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -21,6 +22,6 @@ app.use(bodyParser.json());
 restfulRouter({ app, name: 'api/users', controller: cUsers });
 restfulRouter({ app, name: 'api/cards', controller: cCards });
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log('Server is running on port 3000');
 });
