@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import serveStatic from 'serve-static';
 import bodyParser from 'body-parser';
 import restfulRouter from 'restful-router';
 
@@ -12,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 // static html
-app.use(serveStatic(`${__dirname}/client`));
+app.use(express.static('dist/client'));
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json

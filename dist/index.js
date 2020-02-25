@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const serve_static_1 = __importDefault(require("serve-static"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const restful_router_1 = __importDefault(require("restful-router"));
 const users_1 = require("./server/controllers/users");
@@ -14,7 +13,7 @@ const app = express_1.default();
 app.use(cors_1.default());
 app.use(express_1.default.json());
 // static html
-app.use(serve_static_1.default(`${__dirname}/client`));
+app.use(express_1.default.static('dist/client'));
 // parse application/x-www-form-urlencoded
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 // parse application/json
