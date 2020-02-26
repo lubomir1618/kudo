@@ -8,19 +8,15 @@ const MinifyPlugin = require('babel-minify-webpack-plugin');
  */
 module.exports = {
   entry: {
-    // 'client/js/main': './src/client/client.ts'
-    // 'client/js/main': './src/client/Index.tsx'
-    // 'client/js/vendor': ['react', 'react-dom']
     main: './src/client/Index.tsx'
   },
   output: {
     filename: '[name].js',
     jsonpFunction: 'webpackJsonpKudoz',
     path: path.join(__dirname, 'dist/client/js')
-    // chunkFilename: 'client/js/[name].js'
   },
   mode: 'none',
-  devtool: 'source-map',
+  // devtool: 'source-map',
   watch: false,
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -65,5 +61,11 @@ module.exports = {
     },
     runtimeChunk: 'single'
   },
-  plugins: [new MinifyPlugin({}, { exclude: /main\.js/ })]
+  plugins: [
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[name].js.map',
+      exclude: /vendor.*.*/
+    }),
+    new MinifyPlugin({}, { exclude: /main\.js/ })
+  ]
 };

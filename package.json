@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon dist/index.js",
-    "build": "tsc -p . && webpack",
+    "build": "tsc -p . && webpack --progress",
     "lint": "tslint -c tslint.json -p tsconfig.json 'src/**/*.ts?(x)'",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
