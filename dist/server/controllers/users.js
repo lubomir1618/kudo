@@ -13,7 +13,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const monk_1 = __importDefault(require("monk"));
 const utils = __importStar(require("../utils"));
 const validate_1 = require("../../common/validate");
-const db = monk_1.default('mongodb+srv://oeirtoeriu:ndjnmdekehfehre2019@cluster0-8sxhu.mongodb.net/test');
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const db = monk_1.default(process.env.MONGODB_URL || '');
 class Users {
     constructor() {
         this.users = db.get('userslist');
