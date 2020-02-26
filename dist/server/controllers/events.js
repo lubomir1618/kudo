@@ -16,34 +16,30 @@ const utils = __importStar(require("../utils"));
 const validate_1 = require("../../common/validate");
 dotenv_1.default.config();
 const db = monk_1.default(process.env.MONGODB_URL || '');
-class Cards {
+class Events {
     constructor() {
-        this.cards = db.get('cards');
+        this.events = db.get('events');
     }
     list(req, res) {
-        utils.serverLog('/cards => list', req);
-        this.cards.find().then((data) => res.json(data));
+        utils.serverLog('/events => list', req);
+        this.events.find().then((data) => res.json(data));
     }
     show(req, res) {
-        utils.serverLog('/cards/:id => show', req);
-        this.cards.findOne({ _id: req.params.id }).then((data) => res.json(data));
+        utils.serverLog('/events/:id => show', req);
+        this.events.findOne({ _id: req.params.id }).then((data) => res.json(data));
     }
     create(req, res) {
-        utils.serverLog('/cards => create', req);
-        const valid = validate_1.isCardValid(req.body);
+        utils.serverLog('/events => create', req);
+        const valid = validate_1.isEventValid(req.body);
         if (valid === true) {
-            const card = {
-                author: req.body.author || 'anonymous',
-                awardedTo: req.body.awardedTo,
+            const event = {
                 created: new Date().getTime(),
-                eventId: req.body.eventId,
-                likes: 0,
-                text: req.body.text,
-                title: req.body.name,
-                type: req.body.type
+                date: req.body.date,
+                name: req.body.name,
+                state: req.body.state
             };
             // save to db
-            this.cards.insert(card).then((data) => res.json(data));
+            this.events.insert(event).then((data) => res.json(data));
         }
         else {
             res.status(422);
@@ -51,10 +47,10 @@ class Cards {
         }
     }
 }
-const cards = new Cards();
-exports.cCards = {
-    create: cards.create.bind(cards),
-    list: cards.list.bind(cards),
-    show: cards.show.bind(cards)
+const events = new Events();
+exports.cEvents = {
+    create: events.create.bind(events),
+    list: events.list.bind(events),
+    show: events.show.bind(events)
 };
-//# sourceMappingURL=cards.js.map
+//# sourceMappingURL=events.js.map

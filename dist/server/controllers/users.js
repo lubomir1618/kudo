@@ -11,9 +11,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const monk_1 = __importDefault(require("monk"));
+const dotenv_1 = __importDefault(require("dotenv"));
 const utils = __importStar(require("../utils"));
 const validate_1 = require("../../common/validate");
-const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const db = monk_1.default(process.env.MONGODB_URL || '');
 class Users {
@@ -30,11 +30,12 @@ class Users {
     }
     create(req, res) {
         utils.serverLog('/users => create', req);
-        if (validate_1.isUserValid(req.body)) {
+        const valid = validate_1.isUserValid(req.body);
+        if (valid === true) {
             const user = {
-                created: new Date(),
-                name: req.body.name.toString(),
-                surname: req.body.surname.toString()
+                created: new Date().getTime(),
+                name: req.body.name,
+                surname: req.body.surname
             };
             // save to db
             this.users.insert(user).then((data) => res.json(data));
@@ -42,7 +43,7 @@ class Users {
         }
         else {
             res.status(422);
-            res.json({ message: 'Name and surname must be fulfilled!' });
+            res.json({ message: `Error in: ${valid.join(', ')}` });
         }
     }
 }

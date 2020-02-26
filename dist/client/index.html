@@ -27,14 +27,34 @@
     </section>
 
     <section>
+      <form action="api/events" id="form-event" method="post">
+        <input type="text" id="event-date" name="date" placeholder="YYYY-MM-DD HH:mm:SS.SSS" />*
+        <input type="text" id="event-name" name="name" placeholder="event name" />*
+        <select id="event-state" name="state"
+          >*
+          <option value="past">past</option>
+          <option value="active" selected="selected">active</option>
+          <option value="future">future</option>
+        </select>
+        <button class="button-primary">Add event 📅</button>
+      </form>
+      <div class="allEvents"></div>
+    </section>
+
+    <section>
       <form action="api/cards" id="form-card" method="post">
-        <input type="text" id="card-name" name="name" placeholder="card name" />
-        <input type="text" id="card-text" name="text" placeholder="card text" />
+        <input type="text" id="card-name" name="title" placeholder="card title" />*
+        <input type="text" id="card-awardedTo" name="awardedTo" placeholder="awarded to" />*
+        <input type="text" id="card-text" name="text" placeholder="card text" />*
         <input type="text" id="card-author" name="author" placeholder="author" />
-        <input type="number" id="card-eventId" name="eventId" placeholder="eventId" />
+        <input type="text" id="card-eventId" name="eventId" value="5e566e19a52998947390155d" />*
+        <select id="card-type" name="type"
+          >*
+          <option value="normal" selected="selected">normal</option>
+          <option value="awesome">awesome</option>
+        </select>
         <button class="button-primary">Add card 💳</button>
       </form>
-      <img src="img/loading.gif" alt="loading" class="loading" />
       <div class="allCards"></div>
     </section>
 
