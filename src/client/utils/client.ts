@@ -1,5 +1,6 @@
 import * as I from '../../common/interfaces';
 import { isUserValid } from '../../common/validate';
+import { insert, select } from './api';
 
 const form = document.getElementById('form-user') as HTMLFormElement;
 const loading = document.querySelector('.loading') as HTMLImageElement;
@@ -29,29 +30,24 @@ export function vodka() {
     form.style.display = 'none';
     loading.style.display = '';
 
-    fetch(API_URL, {
-      body: JSON.stringify(user),
-      headers: { 'content-type': 'application/json' },
-      method: 'POST'
-    })
-      .then((response) => response.json())
-      .then((createdUser: I.User) => {
+    insert<I.User>('/api/users', user)
+      .then((createdUser) => {
         form.style.display = '';
         loading.style.display = 'none';
         form.reset();
         listAllUsers();
         console.log(createdUser);
+      })
+      .catch((err: Error) => {
+        console.error(`💥 Error: ${err.message}`);
       });
 
     event.preventDefault();
   });
 
   function listAllUsers() {
-    fetch(API_URL, {
-      method: 'GET'
-    })
-      .then((response) => response.json())
-      .then((users: I.User[]) => {
+    select<I.User[]>('/api/users')
+      .then((users) => {
         usersElement.textContent = '';
         users.reverse();
 
@@ -71,6 +67,9 @@ export function vodka() {
 
           usersElement.appendChild(div);
         });
+      })
+      .catch((err: Error) => {
+        console.error(`💥 Error: ${err.message}`);
       });
   }
 }
