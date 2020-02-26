@@ -25,8 +25,17 @@ class Events {
         this.events.find().then((data) => res.json(data));
     }
     show(req, res) {
-        utils.serverLog('/events/:id => show', req);
-        this.events.findOne({ _id: req.params.id }).then((data) => res.json(data));
+        let where = {};
+        if (req.params.id === 'where') {
+            utils.serverLog('/events/where?:key=:val => show', req);
+            const [key, val] = Object.entries(req.query)[0];
+            where = { [key]: val };
+        }
+        else {
+            utils.serverLog('/events/:id => show', req);
+            where = { _id: req.params.id };
+        }
+        this.events.findOne(where).then((data) => res.json(data));
     }
     create(req, res) {
         utils.serverLog('/events => create', req);

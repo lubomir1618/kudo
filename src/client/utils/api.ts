@@ -1,16 +1,33 @@
+import { type } from 'os';
+
 const headers = { 'content-type': 'application/json' };
+
+interface KeyVal {
+  [key: string]: string | number | boolean;
+}
 
 /**
  * Select record(s) from table
  *
  * select<I.User>('/api/users');
  * select<I.User>('/api/users', '123');
+ * select<I.User>('/api/events', {state: 'active'});
  * is equivalent of sql
  * SELECT * FROM users;
- * SELECT * FROM users WHERE id='123';
+ * SELECT * FROM users WHERE _id='123';
+ * SELECT * FROM events WHERE state='active';
  */
-export function select<T>(api: string, id?: string): Promise<T> {
-  const url = id ? `${api}/${id}` : api;
+export function select<T>(api: string, id?: string | KeyVal): Promise<T> {
+  let url = api;
+  if (id) {
+    if (typeof id === 'string') {
+      url = `${api}/${id}`;
+    } else {
+      const [key, val] = Object.entries(id)[0];
+      url = encodeURI(`${api}/where?${key}=${val}`);
+    }
+  }
+
   return new Promise<T>((resolved, rejected) => {
     fetch(url, {
       method: 'GET'

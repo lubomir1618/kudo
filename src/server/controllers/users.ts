@@ -18,8 +18,22 @@ class Users {
   }
 
   public show(req: Request, res: Response) {
-    utils.serverLog('/users/:id => show', req);
-    this.users.findOne({ _id: req.params.id }).then((data) => res.json(data));
+    let where = {};
+    if (req.params.id === 'where') {
+      utils.serverLog('/users/where?:key=:val => show', req);
+      const [key, val] = Object.entries(req.query)[0];
+      where = { [key]: val };
+    } else {
+      utils.serverLog('/users/:id => show', req);
+      where = { _id: req.params.id };
+    }
+    this.users.findOne(where).then((data) => res.json(data));
+  }
+
+  public where(req: Request, res: Response) {
+    utils.serverLog('/users/where/:key/:val => show', req);
+    console.log(req.params);
+    // this.users.findOne({ _id: req.params.id }).then((data) => res.json(data));
   }
 
   public create(req: Request, res: Response) {

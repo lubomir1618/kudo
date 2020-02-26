@@ -25,8 +25,17 @@ class Cards {
         this.cards.find().then((data) => res.json(data));
     }
     show(req, res) {
-        utils.serverLog('/cards/:id => show', req);
-        this.cards.findOne({ _id: req.params.id }).then((data) => res.json(data));
+        let where = {};
+        if (req.params.id === 'where') {
+            utils.serverLog('/cards/where?:key=:val => show', req);
+            const [key, val] = Object.entries(req.query)[0];
+            where = { [key]: val };
+        }
+        else {
+            utils.serverLog('/cards/:id => show', req);
+            where = { _id: req.params.id };
+        }
+        this.cards.findOne(where).then((data) => res.json(data));
     }
     create(req, res) {
         utils.serverLog('/cards => create', req);

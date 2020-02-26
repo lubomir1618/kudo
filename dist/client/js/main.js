@@ -192,12 +192,23 @@ const headers = { 'content-type': 'application/json' };
  *
  * select<I.User>('/api/users');
  * select<I.User>('/api/users', '123');
+ * select<I.User>('/api/events', {state: 'active'});
  * is equivalent of sql
  * SELECT * FROM users;
- * SELECT * FROM users WHERE id='123';
+ * SELECT * FROM users WHERE _id='123';
+ * SELECT * FROM events WHERE state='active';
  */
 function select(api, id) {
-    const url = id ? `${api}/${id}` : api;
+    let url = api;
+    if (id) {
+        if (typeof id === 'string') {
+            url = `${api}/${id}`;
+        }
+        else {
+            const [key, val] = Object.entries(id)[0];
+            url = encodeURI(`${api}/where?${key}=${val}`);
+        }
+    }
     return new Promise((resolved, rejected) => {
         fetch(url, {
             method: 'GET'
