@@ -1,22 +1,22 @@
 // @ts-check
 const path = require('path');
 const webpack = require('webpack');
+const MinifyPlugin = require('babel-minify-webpack-plugin');
 
 /**
  * @type { import('webpack').Configuration }
  */
 module.exports = {
   entry: {
-    // 'client/js/main': './src/client/client.ts'
-    'client/js/main': './src/client/Index.tsx'
-    // 'client/js/vendor': ['react', 'react-dom']
+    main: './src/client/Index.tsx'
   },
   output: {
     filename: '[name].js',
-    chunkFilename: 'client/js/[name].js'
+    jsonpFunction: 'webpackJsonpKudoz',
+    path: path.join(__dirname, 'dist/client/js')
   },
   mode: 'none',
-  devtool: 'source-map',
+  // devtool: 'source-map',
   watch: false,
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],
@@ -39,9 +39,33 @@ module.exports = {
         loader: 'source-map-loader'
       }
     ]
-  } /*,
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM'
-  }*/
+  },
+  optimization: {
+    chunkIds: 'named',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /node_modules/,
+          chunks: 'initial',
+          name: 'vendor',
+          priority: 10,
+          enforce: true
+        },
+        commons: {
+          chunks: 'initial',
+          minChunks: 2,
+          maxInitialRequests: 5,
+          minSize: 0
+        }
+      }
+    },
+    runtimeChunk: 'single'
+  },
+  plugins: [
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[name].js.map',
+      exclude: /vendor.*.*/
+    }),
+    new MinifyPlugin({}, { exclude: /main\.js/ })
+  ]
 };
