@@ -14,7 +14,8 @@
     "resolveJsonModule": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
-    "sourceMap": true
+    "sourceMap": true,
+    "jsx": "react"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "src/client/*.ts", "**/*.test.ts"]
