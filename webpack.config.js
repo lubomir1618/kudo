@@ -1,6 +1,7 @@
 // @ts-check
 const path = require('path');
 const webpack = require('webpack');
+const MinifyPlugin = require('babel-minify-webpack-plugin');
 
 /**
  * @type { import('webpack').Configuration }
@@ -63,10 +64,6 @@ module.exports = {
       }
     },
     runtimeChunk: 'single'
-  }
-  /*,
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM'
-  }*/
+  },
+  plugins: [new MinifyPlugin({}, { exclude: /main\.js/ })]
 };
