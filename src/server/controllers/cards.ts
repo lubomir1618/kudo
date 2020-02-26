@@ -2,9 +2,11 @@ import monk from 'monk';
 import { Request, Response } from 'express';
 import * as utils from '../utils';
 import * as I from '../../common/interfaces';
+import dotenv from 'dotenv';
 
-const db = monk('mongodb+srv://oeirtoeriu:ndjnmdekehfehre2019@cluster0-8sxhu.mongodb.net/test');
+dotenv.config();
 
+const db = monk(process.env.MONGODB_URL || '');
 class Cards {
   public cards = db.get<I.Card>('cards');
 
