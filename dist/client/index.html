@@ -3,10 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
     <link rel="stylesheet" href="css/style.css" />
     <title>Users list</title>
   </head>
@@ -33,24 +30,14 @@
       <form action="api/cards" id="form-card" method="post">
         <input type="text" id="card-name" name="name" placeholder="card name" />
         <input type="text" id="card-text" name="text" placeholder="card text" />
-        <input
-          type="text"
-          id="card-author"
-          name="author"
-          placeholder="author"
-        />
-        <input
-          type="number"
-          id="card-eventId"
-          name="eventId"
-          placeholder="eventId"
-        />
+        <input type="text" id="card-author" name="author" placeholder="author" />
+        <input type="number" id="card-eventId" name="eventId" placeholder="eventId" />
         <button class="button-primary">Add card 💳</button>
       </form>
       <img src="img/loading.gif" alt="loading" class="loading" />
       <div class="allCards"></div>
     </section>
 
-    <script src="js/client.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>
