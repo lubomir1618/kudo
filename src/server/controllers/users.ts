@@ -3,8 +3,11 @@ import { Request, Response } from 'express';
 import * as utils from '../utils';
 import * as I from '../../common/interfaces';
 import { isUserValid } from '../../common/validate';
+import dotenv from 'dotenv';
 
-const db = monk('mongodb+srv://oeirtoeriu:ndjnmdekehfehre2019@cluster0-8sxhu.mongodb.net/test');
+dotenv.config();
+
+const db = monk(process.env.MONGODB_URL || '');
 
 class Users {
   public users = db.get<I.User>('userslist');
