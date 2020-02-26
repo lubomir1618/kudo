@@ -8,12 +8,15 @@ const webpack = require('webpack');
 module.exports = {
   entry: {
     // 'client/js/main': './src/client/client.ts'
-    'client/js/main': './src/client/Index.tsx'
+    // 'client/js/main': './src/client/Index.tsx'
     // 'client/js/vendor': ['react', 'react-dom']
+    main: './src/client/Index.tsx'
   },
   output: {
     filename: '[name].js',
-    chunkFilename: 'client/js/[name].js'
+    jsonpFunction: 'webpackJsonpKudoz',
+    path: path.join(__dirname, 'dist/client/js')
+    // chunkFilename: 'client/js/[name].js'
   },
   mode: 'none',
   devtool: 'source-map',
@@ -39,7 +42,29 @@ module.exports = {
         loader: 'source-map-loader'
       }
     ]
-  } /*,
+  },
+  optimization: {
+    chunkIds: 'named',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /node_modules/,
+          chunks: 'initial',
+          name: 'vendor',
+          priority: 10,
+          enforce: true
+        },
+        commons: {
+          chunks: 'initial',
+          minChunks: 2,
+          maxInitialRequests: 5,
+          minSize: 0
+        }
+      }
+    },
+    runtimeChunk: 'single'
+  }
+  /*,
   externals: {
     react: 'React',
     'react-dom': 'ReactDOM'
