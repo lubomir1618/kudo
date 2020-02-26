@@ -1,5 +1,3 @@
-import { type } from 'os';
-
 const headers = { 'content-type': 'application/json' };
 
 interface KeyVal {
@@ -9,7 +7,7 @@ interface KeyVal {
 /**
  * Select record(s) from table
  *
- * select<I.User>('/api/users');
+ * select<I.User[]>('/api/users');
  * select<I.User>('/api/users', '123');
  * select<I.User>('/api/events', {state: 'active'});
  * is equivalent of sql
@@ -61,7 +59,7 @@ export function insert<T>(api: string, data: T): Promise<T> {
  *
  * update<I.User>('/api/users', '123', { name: 'Jon', surname: 'Snow'});
  * is equivalent of sql
- * UPDATE users SET name='Jon', surname='Snow' WHERE id=123;
+ * UPDATE users SET name='Jon', surname='Snow' WHERE _id=123;
  */
 export function update<T>(api: string, id: string, data: T): Promise<T> {
   return new Promise<T>((resolved, rejected) => {
@@ -80,7 +78,7 @@ export function update<T>(api: string, id: string, data: T): Promise<T> {
  *
  * remove('/api/users', '123');
  * is equivalent of sql
- * DELETE FROM users WHERE id=123;
+ * DELETE FROM users WHERE _id=123;
  */
 export function remove(api: string, id: string): Promise<boolean> {
   return new Promise<boolean>((resolved, rejected) => {

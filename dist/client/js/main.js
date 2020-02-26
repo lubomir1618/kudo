@@ -190,7 +190,7 @@ const headers = { 'content-type': 'application/json' };
 /**
  * Select record(s) from table
  *
- * select<I.User>('/api/users');
+ * select<I.User[]>('/api/users');
  * select<I.User>('/api/users', '123');
  * select<I.User>('/api/events', {state: 'active'});
  * is equivalent of sql
@@ -242,7 +242,7 @@ exports.insert = insert;
  *
  * update<I.User>('/api/users', '123', { name: 'Jon', surname: 'Snow'});
  * is equivalent of sql
- * UPDATE users SET name='Jon', surname='Snow' WHERE id=123;
+ * UPDATE users SET name='Jon', surname='Snow' WHERE _id=123;
  */
 function update(api, id, data) {
     return new Promise((resolved, rejected) => {
@@ -261,7 +261,7 @@ exports.update = update;
  *
  * remove('/api/users', '123');
  * is equivalent of sql
- * DELETE FROM users WHERE id=123;
+ * DELETE FROM users WHERE _id=123;
  */
 function remove(api, id) {
     return new Promise((resolved, rejected) => {
