@@ -1,29 +1,34 @@
+import * as T from './constants';
+
 export interface Event {
-  _id: number;
-  active: boolean;
-  date: number;
+  _id: string;
+  created?: number;
+  date: Date | string;
   name: string;
+  state: T.EVENT_STATE;
 }
 
 export interface Card {
-  _id?: number;
-  author: string;
-  date: number;
-  eventId: number;
+  _id?: string;
+  author?: string;
+  awardedTo: string;
+  created?: number;
+  eventId: string;
   likes: number;
-  name: string;
   text: string;
+  title: string;
+  type: T.CARD_TYPE;
 }
 
 export interface Admin {
-  _id: number;
+  _id?: string;
   user: string;
   pass: string;
 }
 
 export interface User {
-  _id?: number;
-  created?: Date;
+  _id?: string;
+  created?: number;
   name: string;
   surname: string;
 }

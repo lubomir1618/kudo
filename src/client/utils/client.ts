@@ -63,7 +63,7 @@ export function vodka() {
 
           header.textContent = user.name;
           surname.textContent = user.surname;
-          created.textContent = new Date(user.created as Date).toString();
+          created.textContent = new Date(user.created as number).toString();
 
           div.appendChild(header);
           div.appendChild(surname);

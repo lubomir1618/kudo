@@ -9,6 +9,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const restful_router_1 = __importDefault(require("restful-router"));
 const users_1 = require("./server/controllers/users");
 const cards_1 = require("./server/controllers/cards");
+const events_1 = require("./server/controllers/events");
 const app = express_1.default();
 const port = process.env.PORT || 8080;
 app.use(cors_1.default());
@@ -22,6 +23,7 @@ app.use(body_parser_1.default.json());
 /* REST */
 restful_router_1.default({ app, name: 'api/users', controller: users_1.cUsers });
 restful_router_1.default({ app, name: 'api/cards', controller: cards_1.cCards });
+restful_router_1.default({ app, name: 'api/events', controller: events_1.cEvents });
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

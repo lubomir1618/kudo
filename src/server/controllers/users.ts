@@ -1,9 +1,9 @@
 import monk from 'monk';
+import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import * as utils from '../utils';
 import * as I from '../../common/interfaces';
 import { isUserValid } from '../../common/validate';
-import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -24,18 +24,19 @@ class Users {
 
   public create(req: Request, res: Response) {
     utils.serverLog('/users => create', req);
-    if (isUserValid(req.body)) {
+    const valid = isUserValid(req.body);
+    if (valid === true) {
       const user: I.User = {
-        created: new Date(),
-        name: req.body.name.toString(),
-        surname: req.body.surname.toString()
+        created: new Date().getTime(),
+        name: req.body.name,
+        surname: req.body.surname
       };
       // save to db
       this.users.insert(user).then((data) => res.json(data));
       console.log('user', user);
     } else {
       res.status(422);
-      res.json({ message: 'Name and surname must be fulfilled!' });
+      res.json({ message: `Error in: ${valid.join(', ')}` });
     }
   }
 }
