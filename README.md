@@ -1,2 +1,2 @@
 # kudo
-voting system
+award voting app
