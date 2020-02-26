@@ -1,6 +1,5 @@
-(window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["main"],{
-
-/***/ 0:
+(window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["main"],[
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22,8 +21,18 @@ client_1.vodka();
 
 
 /***/ }),
-
-/***/ 12:
+/* 1 */,
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */,
+/* 10 */,
+/* 11 */,
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46,14 +55,14 @@ exports.Hello = (props) => (React.createElement("h1", null,
 
 
 /***/ }),
-
-/***/ 13:
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const validate_1 = __webpack_require__(14);
+const api_1 = __webpack_require__(15);
 const form = document.getElementById('form-user');
 const loading = document.querySelector('.loading');
 const API_URL = '/api/users';
@@ -76,26 +85,21 @@ function vodka() {
         console.log('user', user);
         form.style.display = 'none';
         loading.style.display = '';
-        fetch(API_URL, {
-            body: JSON.stringify(user),
-            headers: { 'content-type': 'application/json' },
-            method: 'POST'
-        })
-            .then((response) => response.json())
+        api_1.insert('/api/users', user)
             .then((createdUser) => {
             form.style.display = '';
             loading.style.display = 'none';
             form.reset();
             listAllUsers();
             console.log(createdUser);
+        })
+            .catch((err) => {
+            console.error(`💥 Error: ${err.message}`);
         });
         event.preventDefault();
     });
     function listAllUsers() {
-        fetch(API_URL, {
-            method: 'GET'
-        })
-            .then((response) => response.json())
+        api_1.select('/api/users')
             .then((users) => {
             usersElement.textContent = '';
             users.reverse();
@@ -112,6 +116,9 @@ function vodka() {
                 div.appendChild(created);
                 usersElement.appendChild(div);
             });
+        })
+            .catch((err) => {
+            console.error(`💥 Error: ${err.message}`);
         });
     }
 }
@@ -119,8 +126,7 @@ exports.vodka = vodka;
 
 
 /***/ }),
-
-/***/ 14:
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -173,7 +179,103 @@ function isEventValid(event) {
 exports.isEventValid = isEventValid;
 
 
-/***/ })
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
 
-},[[0,"runtime","vendor"]]]);
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const headers = { 'content-type': 'application/json' };
+/**
+ * Select record(s) from table
+ *
+ * select<I.User[]>('/api/users');
+ * select<I.User>('/api/users', '123');
+ * select<I.User>('/api/events', {state: 'active'});
+ * is equivalent of sql
+ * SELECT * FROM users;
+ * SELECT * FROM users WHERE _id='123';
+ * SELECT * FROM events WHERE state='active';
+ */
+function select(api, id) {
+    let url = api;
+    if (id) {
+        if (typeof id === 'string') {
+            url = `${api}/${id}`;
+        }
+        else {
+            const [key, val] = Object.entries(id)[0];
+            url = encodeURI(`${api}/where?${key}=${val}`);
+        }
+    }
+    return new Promise((resolved, rejected) => {
+        fetch(url, {
+            method: 'GET'
+        })
+            .then((response) => resolved(response.json()))
+            .catch((err) => rejected(err));
+    });
+}
+exports.select = select;
+/**
+ * Insert record into table
+ *
+ * insert<I.User>('/api/users', { name: 'Jon', surname: 'Snow'});
+ * is equivalent of sql
+ * INSERT INTO users (name, surname) VALUES ('Jon', 'Snow');
+ */
+function insert(api, data) {
+    return new Promise((resolved, rejected) => {
+        fetch(api, {
+            body: JSON.stringify(data),
+            headers,
+            method: 'POST'
+        })
+            .then((response) => resolved(response.json()))
+            .catch((err) => rejected(err));
+    });
+}
+exports.insert = insert;
+/**
+ * Update record in table
+ *
+ * update<I.User>('/api/users', '123', { name: 'Jon', surname: 'Snow'});
+ * is equivalent of sql
+ * UPDATE users SET name='Jon', surname='Snow' WHERE _id=123;
+ */
+function update(api, id, data) {
+    return new Promise((resolved, rejected) => {
+        fetch(`${api}/${id}`, {
+            body: JSON.stringify(data),
+            headers,
+            method: 'PATCH'
+        })
+            .then((response) => resolved(response.json()))
+            .catch((err) => rejected(err));
+    });
+}
+exports.update = update;
+/**
+ * Remove record from table
+ *
+ * remove('/api/users', '123');
+ * is equivalent of sql
+ * DELETE FROM users WHERE _id=123;
+ */
+function remove(api, id) {
+    return new Promise((resolved, rejected) => {
+        fetch(`${api}/${id}`, {
+            headers,
+            method: 'DELETE'
+        })
+            .then(() => resolved(true))
+            .catch((err) => rejected(err));
+    });
+}
+exports.remove = remove;
+
+
+/***/ })
+],[[0,"runtime","vendor"]]]);
 //# sourceMappingURL=main.js.map
