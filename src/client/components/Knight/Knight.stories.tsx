@@ -2,8 +2,12 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Knight } from './Knight';
 
-const props = { mostKudos: 'Erik Schwarz' };
+const normal = { mostKudos: 'Erik Schwarz' };
+const long = { mostKudos: 'Pyotr Ilyich Tchaikovsky' };
+
 
 storiesOf('Kudo Knight', module)
   .addDecorator((story) => <div style={{ maxWidth: '280px', margin: '50px' }}>{story()}</div>)
-  .add('current knight', () => <Knight {...props} />)
+  .add('normal name', () => <Knight {...normal} />)
+  .add('long name', () => <Knight {...long} />)
+
