@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const Hello_1 = __webpack_require__(12);
-const client_1 = __webpack_require__(13);
+const client_1 = __webpack_require__(14);
 ReactDOM.render(React.createElement(Hello_1.Hello, { compiler: "TypeScript", framework: "React" }), document.getElementById('example'));
 client_1.vodka();
 
@@ -46,12 +46,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
+const Knight_1 = __webpack_require__(13);
 exports.Hello = (props) => (React.createElement("h1", null,
     "Hello from ",
     props.compiler,
     " and ",
     props.framework,
-    "!"));
+    "!",
+    React.createElement(Knight_1.Knight, { mostKudos: "Janko Haluska" })));
 
 
 /***/ }),
@@ -60,9 +62,32 @@ exports.Hello = (props) => (React.createElement("h1", null,
 
 "use strict";
 
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const validate_1 = __webpack_require__(14);
-const api_1 = __webpack_require__(15);
+const React = __importStar(__webpack_require__(1));
+exports.Knight = (props) => (React.createElement("div", { className: "kudoKnight" },
+    React.createElement("div", null,
+        React.createElement("img", { src: "img/007-crusader.png" })),
+    React.createElement("div", { className: "kudoKnight__content" },
+        React.createElement("h3", null, "Kudo Knight"),
+        React.createElement("h2", null, props.mostKudos))));
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const validate_1 = __webpack_require__(15);
+const api_1 = __webpack_require__(16);
 const form = document.getElementById('form-user');
 const loading = document.querySelector('.loading');
 const API_URL = '/api/users';
@@ -126,7 +151,7 @@ exports.vodka = vodka;
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -180,7 +205,7 @@ exports.isEventValid = isEventValid;
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
