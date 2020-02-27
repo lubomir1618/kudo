@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const Hello_1 = __webpack_require__(12);
-const client_1 = __webpack_require__(18);
+const client_1 = __webpack_require__(21);
 ReactDOM.render(React.createElement(Hello_1.Hello, { compiler: "TypeScript", framework: "React" }), document.getElementById('example'));
 client_1.vodka();
 
@@ -44,12 +44,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const Knight_1 = __webpack_require__(13);
-// import HelloSvg from '../icons/3h.svg';
-__webpack_require__(14);
+const _3h_svg_1 = __importDefault(__webpack_require__(18));
+__webpack_require__(19);
 exports.Hello = (props) => (React.createElement("h1", { className: "big" },
+    React.createElement(_3h_svg_1.default, null),
     "Hello from ",
     props.compiler,
     " and ",
@@ -73,6 +77,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
+__webpack_require__(14);
 exports.Knight = (props) => (React.createElement("div", { className: "kudoKnight" },
     React.createElement("div", null,
         React.createElement("img", { src: "img/007-crusader.png" })),
@@ -116,7 +121,7 @@ module.exports = exported;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".big {\n  font-size: 18px;\n  color: blue;\n}\n\n.big svg {\n  height: 18px;\n  fill: blue;\n}\n", ""]);
+exports.push([module.i, ".kudoKnight {\n    font-family: Arial, Helvetica, sans-serif;\n    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%), #C6D8D3;\n    display: flex;\n}\n\n.kudoKnight h3 {\n    font-size: 10px;\n    color: #6D686D;\n}\n\n.kudoKnight h2 {\n    font-size: 18px;\n    color: #331832;\n    margin-top: -5px;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -124,13 +129,103 @@ module.exports = exports;
 /***/ }),
 /* 17 */,
 /* 18 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+
+/* harmony default export */ __webpack_exports__["default"] = (({
+  styles = {},
+  ...props
+}) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("svg", _extends({
+  viewBox: "0 0 16 16",
+  xmlns: "http://www.w3.org/2000/svg",
+  stroke: "#000",
+  fillRule: "evenodd",
+  clipRule: "evenodd",
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  strokeMiterlimit: "1.5"
+}, props), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("path", {
+  d: "M8.047 1.004l-.054 7.034 7.001.007c-.334-4.33-2.67-6.655-6.947-7.041z",
+  stroke: "none"
+}), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("circle", {
+  cx: "8.987",
+  cy: "8.744",
+  r: "6.689",
+  fill: "none",
+  strokeWidth: ".96",
+  transform: "translate(-1.404 -1.15) scale(1.04645)"
+})));
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(15);
+            var content = __webpack_require__(20);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".big {\n  font-size: 18px;\n  color: blue;\n}\n\n.big svg {\n  height: 18px;\n  fill: blue;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const validate_1 = __webpack_require__(19);
-const api_1 = __webpack_require__(20);
+const validate_1 = __webpack_require__(22);
+const api_1 = __webpack_require__(23);
 const form = document.getElementById('form-user');
 const loading = document.querySelector('.loading');
 const API_URL = '/api/users';
@@ -194,7 +289,7 @@ exports.vodka = vodka;
 
 
 /***/ }),
-/* 19 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -248,7 +343,7 @@ exports.isEventValid = isEventValid;
 
 
 /***/ }),
-/* 20 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
