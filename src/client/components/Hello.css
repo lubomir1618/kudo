@@ -1,0 +1,9 @@
+.big {
+  font-size: 18px;
+  color: blue;
+}
+
+.big svg {
+  height: 18px;
+  fill: blue;
+}
