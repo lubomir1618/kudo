@@ -28,7 +28,8 @@
 
     <section>
       <form action="api/events" id="form-event" method="post">
-        <input type="text" id="event-date" name="date" placeholder="YYYY-MM-DD HH:mm:SS.SSS" />*
+        <input type="text" id="event-dateFrom" name="dateFrom" value="1581724800000" />*
+        <input type="text" id="event-dateTo" name="dateTo" value="1584230400000" />*
         <input type="text" id="event-name" name="name" placeholder="event name" />*
         <select id="event-state" name="state"
           >*
@@ -43,11 +44,11 @@
 
     <section>
       <form action="api/cards" id="form-card" method="post">
-        <input type="text" id="card-name" name="title" placeholder="card title" />*
+        <input type="text" id="card-title" name="title" placeholder="card title" />*
         <input type="text" id="card-awardedTo" name="awardedTo" placeholder="awarded to" />*
         <input type="text" id="card-text" name="text" placeholder="card text" />*
         <input type="text" id="card-author" name="author" placeholder="author" />
-        <input type="text" id="card-eventId" name="eventId" value="5e566e19a52998947390155d" />*
+        <input type="text" id="card-eventId" name="eventId" value="5e57b8f4be5c046b04ee8501" />*
         <select id="card-type" name="type"
           >*
           <option value="normal" selected="selected">normal</option>
@@ -56,6 +57,13 @@
         <button class="button-primary">Add card 💳</button>
       </form>
       <div class="allCards"></div>
+    </section>
+
+    <section>
+      <form action="api/like" id="form-like" method="post">
+        <input type="text" id="like-_id" name="_id" value="5e57b931be5c046b04ee8502" />*
+        <button class="button-primary">Like card 👍</button>
+      </form>
     </section>
 
     <div id="example"></div>

@@ -1,9 +1,10 @@
 import * as T from './constants';
 
 export interface Event {
-  _id: string;
+  _id?: string;
   created?: number;
-  date: Date | string;
+  dateFrom: number;
+  dateTo: number;
   name: string;
   state: T.EVENT_STATE;
 }

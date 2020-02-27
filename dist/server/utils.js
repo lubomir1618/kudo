@@ -7,4 +7,10 @@ function serverLog(text, req) {
         `body: ${JSON.stringify(req.body)}`);
 }
 exports.serverLog = serverLog;
+function errorHandler(res, message) {
+    console.log(`💥 Error: ${message}`);
+    res.status(422);
+    res.json({ message });
+}
+exports.errorHandler = errorHandler;
 //# sourceMappingURL=utils.js.map

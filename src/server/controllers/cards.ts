@@ -40,7 +40,7 @@ class Cards {
         eventId: req.body.eventId,
         likes: 0,
         text: req.body.text,
-        title: req.body.name,
+        title: req.body.title,
         type: req.body.type
       };
       // save to db
@@ -60,7 +60,7 @@ class Cards {
         awardedTo: req.body.awardedTo,
         likes: req.body.likes,
         text: req.body.text,
-        title: req.body.name,
+        title: req.body.title,
         type: req.body.type
       };
       // save to db

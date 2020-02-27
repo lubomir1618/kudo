@@ -36,7 +36,8 @@ class Events {
     if (valid === true) {
       const event = {
         created: new Date().getTime(),
-        date: req.body.date,
+        dateFrom: Number(req.body.dateFrom),
+        dateTo: Number(req.body.dateTo),
         name: req.body.name,
         state: req.body.state
       };

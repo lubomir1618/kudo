@@ -132,6 +132,31 @@ exports.vodka = vodka;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+function hasData(data, type = 'string') {
+    if (data === undefined || data === null) {
+        return false;
+    }
+    switch (type) {
+        case 'number':
+            return typeof data === 'number' || !isNaN(data);
+        case 'boolean':
+            return typeof data === 'boolean';
+        default:
+            return data !== '';
+    }
+}
+exports.hasData = hasData;
+function hasOneOf(data, check) {
+    if (hasData(data)) {
+        return check.includes(data);
+    }
+    return false;
+}
+exports.hasOneOf = hasOneOf;
+function isLikeValid(_id) {
+    return hasData(_id) ? true : ['_id'];
+}
+exports.isLikeValid = isLikeValid;
 function isUserValid(user) {
     const bugs = [];
     if (!(user.name && user.name !== '')) {
@@ -165,13 +190,16 @@ function isCardValid(card) {
 exports.isCardValid = isCardValid;
 function isEventValid(event) {
     const bugs = [];
-    if (!(event.date && event.date !== '')) {
-        bugs.push('date');
+    if (!hasData(event.dateFrom, 'number')) {
+        bugs.push('dateFrom');
     }
-    if (!(event.name && event.name !== '')) {
+    if (!hasData(event.dateTo, 'number')) {
+        bugs.push('dateTo');
+    }
+    if (!hasData(event.name)) {
         bugs.push('name');
     }
-    if (!(event.state && ['past', 'active', 'future'].includes(event.state))) {
+    if (!hasOneOf(event.state, ['past', 'active', 'future'])) {
         bugs.push('state');
     }
     return bugs.length ? bugs : true;
