@@ -1,10 +1,6 @@
 import * as React from 'react';
-<<<<<<< HEAD
 import './knight.css';
 
-=======
-import './knight.css'
->>>>>>> kudo knight add some normal styling
 export interface Props {
   mostKudos: string;
 }
