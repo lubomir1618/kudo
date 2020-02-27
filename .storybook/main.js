@@ -13,6 +13,26 @@ module.exports = {
         }
       ]
     });
+
+    config.module.rules.push({
+      test: /\.(scss|sass|css)$/,
+      use: [
+        {
+          loader: 'string-replace-loader',
+          options: {
+            search: '%PUBLIC_URL%',
+            replace: '',
+            flags: 'g'
+          }
+        }
+      ]
+    });
+
+    config.module.rules.push({
+      test: /\.(svg)$/,
+      use: [{ loader: 'babel-loader' }, { loader: 'react-svg-loader' }]
+    });
+
     config.resolve.extensions.push('.ts', '.tsx');
     return config;
   }

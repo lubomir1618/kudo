@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const Hello_1 = __webpack_require__(12);
-const client_1 = __webpack_require__(14);
+const client_1 = __webpack_require__(18);
 ReactDOM.render(React.createElement(Hello_1.Hello, { compiler: "TypeScript", framework: "React" }), document.getElementById('example'));
 client_1.vodka();
 
@@ -47,7 +47,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const Knight_1 = __webpack_require__(13);
-exports.Hello = (props) => (React.createElement("h1", null,
+// import HelloSvg from '../icons/3h.svg';
+__webpack_require__(14);
+exports.Hello = (props) => (React.createElement("h1", { className: "big" },
     "Hello from ",
     props.compiler,
     " and ",
@@ -83,11 +85,52 @@ exports.Knight = (props) => (React.createElement("div", { className: "kudoKnight
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var api = __webpack_require__(15);
+            var content = __webpack_require__(16);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 15 */,
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".big {\n  font-size: 18px;\n  color: blue;\n}\n\n.big svg {\n  height: 18px;\n  fill: blue;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 17 */,
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const validate_1 = __webpack_require__(15);
-const api_1 = __webpack_require__(16);
+const validate_1 = __webpack_require__(19);
+const api_1 = __webpack_require__(20);
 const form = document.getElementById('form-user');
 const loading = document.querySelector('.loading');
 const API_URL = '/api/users';
@@ -151,7 +194,7 @@ exports.vodka = vodka;
 
 
 /***/ }),
-/* 15 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -205,7 +248,7 @@ exports.isEventValid = isEventValid;
 
 
 /***/ }),
-/* 16 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
