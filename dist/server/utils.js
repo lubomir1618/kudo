@@ -11,6 +11,7 @@ function errorHandler(res, message) {
     console.log(`💥 Error: ${message}`);
     res.status(422);
     res.json({ message });
+    res.end();
 }
 exports.errorHandler = errorHandler;
 //# sourceMappingURL=utils.js.map

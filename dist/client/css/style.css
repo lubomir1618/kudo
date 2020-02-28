@@ -1,11 +1,4 @@
-@font-face {
-  font-family: 'Roboto_Bold';
-  src: url(../font/Roboto-Bold.woff) format('woff'); /* Pretty Modern Browsers */
-}
-@font-face {
-  font-family: 'Roboto_Regular';
-  src: url(../font/Roboto-Regular.woff) format('woff'); /* Pretty Modern Browsers */
-}
+@import './font_family.css';
 
 header,
 section {
