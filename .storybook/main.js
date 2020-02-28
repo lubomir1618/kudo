@@ -1,3 +1,5 @@
+// import '../dist/client/css/style.css';
+
 const Path = require('path');
 const AppSourceDir = Path.join(__dirname, '..', 'src');
 
