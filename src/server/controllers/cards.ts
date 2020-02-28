@@ -13,7 +13,10 @@ class Cards {
 
   public list(req: Request, res: Response) {
     utils.serverLog('/cards => list', req);
-    this.cards.find().then((data) => res.json(data));
+    this.cards
+      .find()
+      .then((data) => res.json(data))
+      .catch((err) => utils.errorHandler(res, err.message));
   }
 
   public show(req: Request, res: Response) {
@@ -26,7 +29,10 @@ class Cards {
       utils.serverLog('/cards/:id => show', req);
       where = { _id: req.params.id };
     }
-    this.cards.findOne(where).then((data) => res.json(data));
+    this.cards
+      .findOne(where)
+      .then((data) => res.json(data))
+      .catch((err) => utils.errorHandler(res, err.message));
   }
 
   public create(req: Request, res: Response) {
@@ -44,30 +50,12 @@ class Cards {
         type: req.body.type
       };
       // save to db
-      this.cards.insert(card).then((data) => res.json(data));
+      this.cards
+        .insert(card)
+        .then((data) => res.json(data))
+        .catch((err) => utils.errorHandler(res, err.message));
     } else {
-      res.status(422);
-      res.json({ message: `Error in: ${valid.join(', ')}` });
-    }
-  }
-
-  public update(req: Request, res: Response) {
-    utils.serverLog('/cards/:id => update', req);
-    const valid = isCardValid(req.body);
-    if (valid === true) {
-      const card = {
-        author: req.body.author,
-        awardedTo: req.body.awardedTo,
-        likes: req.body.likes,
-        text: req.body.text,
-        title: req.body.title,
-        type: req.body.type
-      };
-      // save to db
-      this.cards.update({ _id: req.params.id }, card).then((data) => res.json(data));
-    } else {
-      res.status(422);
-      res.json({ message: `Error in: ${valid.join(', ')}` });
+      utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
     }
   }
 }

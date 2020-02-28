@@ -8,7 +8,8 @@ const MinifyPlugin = require('babel-minify-webpack-plugin');
  */
 module.exports = {
   entry: {
-    main: './src/client/Index.tsx'
+    main: './src/client/Index.tsx',
+    admin: './src/client/admin.tsx'
   },
   output: {
     filename: '[name].js',
@@ -61,6 +62,7 @@ module.exports = {
         },
         commons: {
           chunks: 'initial',
+          name: 'common',
           minChunks: 2,
           maxInitialRequests: 5,
           minSize: 0
@@ -74,6 +76,6 @@ module.exports = {
       filename: '[name].js.map',
       exclude: /vendor.*.*/
     }),
-    new MinifyPlugin({}, { exclude: /main\.js/ })
+    new MinifyPlugin({}, { exclude: /(admin|common|main)\.js/ })
   ]
 };
