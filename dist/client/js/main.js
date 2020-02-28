@@ -16,6 +16,7 @@ const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const Hello_1 = __webpack_require__(12);
 const client_1 = __webpack_require__(21);
+__webpack_require__(24);
 ReactDOM.render(React.createElement(Hello_1.Hello, { compiler: "TypeScript", framework: "React" }), document.getElementById('example'));
 client_1.vodka();
 
@@ -465,6 +466,76 @@ function remove(api, id) {
     });
 }
 exports.remove = remove;
+/**
+ * Incerease likes of card
+ */
+function like(_id) {
+    return new Promise((resolved, rejected) => {
+        fetch('/api/like', {
+            body: JSON.stringify({ _id }),
+            headers,
+            method: 'POST'
+        })
+            .then((response) => response.json())
+            .then((data) => resolved(data.likes))
+            .catch((err) => rejected(err));
+    });
+}
+exports.like = like;
+
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(15);
+            var content = __webpack_require__(25);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 25 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(26);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
+// Module
+exports.push([module.i, "\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, "body {\n  background: red;\n}\n\n/* Box sizing rules */\n*,\n*::before,\n*::after {\n  box-sizing: border-box;\n}\n\n/* Remove default padding */\nul[class],\nol[class] {\n  padding: 0;\n}\n\n/* Remove default margin */\nbody,\nh1,\nh2,\nh3,\nh4,\np,\nul[class],\nol[class],\nli,\nfigure,\nfigcaption,\nblockquote,\ndl,\ndd {\n  margin: 0;\n}\n\n/* Set core body defaults */\nbody {\n  min-height: 100vh;\n  scroll-behavior: smooth;\n  text-rendering: optimizeSpeed;\n  line-height: 1.5;\n}\n\n/* Remove list styles on ul, ol elements with a class attribute */\nul[class],\nol[class] {\n  list-style: none;\n}\n\n/* A elements that don't have a class get default styles */\na:not([class]) {\n  text-decoration-skip-ink: auto;\n}\n\n/* Make images easier to work with */\nimg {\n  max-width: 100%;\n  display: block;\n}\n\n/* Inherit fonts for inputs and buttons */\ninput,\nbutton,\ntextarea,\nselect {\n  font: inherit;\n}\n", ""]);
+// Exports
+module.exports = exports;
 
 
 /***/ })
