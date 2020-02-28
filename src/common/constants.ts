@@ -1,6 +1,12 @@
 export enum CARD_TYPE {
-  awesome = 'awesome',
-  normal = 'normal'
+  great_job = 'great_job',
+  totally_awesome = 'totally_awesome',
+  well_done = 'well_done',
+  many_thanks = 'many_thanks',
+  very_happy = 'very_happy',
+  congrats = 'congrats',
+  proud = 'proud',
+  thank_you = 'thank_you'
 }
 
 export enum EVENT_STATE {
