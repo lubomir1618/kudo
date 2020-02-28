@@ -15,7 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const Hello_1 = __webpack_require__(12);
-const client_1 = __webpack_require__(21);
+const client_1 = __webpack_require__(25);
+__webpack_require__(28);
 ReactDOM.render(React.createElement(Hello_1.Hello, { compiler: "TypeScript", framework: "React" }), document.getElementById('example'));
 client_1.vodka();
 
@@ -50,8 +51,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const Knight_1 = __webpack_require__(13);
-const _3h_svg_1 = __importDefault(__webpack_require__(18));
-__webpack_require__(19);
+const CardIcon_1 = __webpack_require__(18);
+const _3h_svg_1 = __importDefault(__webpack_require__(22));
+__webpack_require__(23);
 exports.Hello = (props) => (React.createElement("h1", { className: "big" },
     React.createElement(_3h_svg_1.default, null),
     "Hello from ",
@@ -59,7 +61,9 @@ exports.Hello = (props) => (React.createElement("h1", { className: "big" },
     " and ",
     props.framework,
     "!",
-    React.createElement(Knight_1.Knight, { mostKudos: "Janko Haluska" })));
+    React.createElement(Knight_1.Knight, { mostKudos: "Janko Haluska" }),
+    ' ',
+    React.createElement(CardIcon_1.CardIcon, { cardType: "totally_awesome" })));
 
 
 /***/ }),
@@ -129,6 +133,87 @@ module.exports = exports;
 /***/ }),
 /* 17 */,
 /* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(1));
+const constants_1 = __webpack_require__(19);
+__webpack_require__(20);
+function getIcon(cardType) {
+    switch (cardType) {
+        case constants_1.CARD_TYPE.great_job:
+            return '009-positive-vote.svg';
+        case constants_1.CARD_TYPE.totally_awesome:
+            return '005-star.svg';
+        case constants_1.CARD_TYPE.well_done:
+            return '006-smiling-face.svg';
+        case constants_1.CARD_TYPE.many_thanks:
+            return '003-flower.svg';
+        case constants_1.CARD_TYPE.very_happy:
+            return '002-heart.svg';
+        case constants_1.CARD_TYPE.congrats:
+            return '004-balloons.svg';
+        case constants_1.CARD_TYPE.proud:
+            return '001-crowns.svg';
+        case constants_1.CARD_TYPE.thank_you:
+            return '010-birthday-cupcake.svg';
+        default:
+            return '005-star.svg';
+    }
+}
+exports.CardIcon = (props) => {
+    return (react_1.default.createElement("div", { className: "cardIcon" },
+        react_1.default.createElement("img", { src: `img/${getIcon(props.cardType)}`, title: props.cardType.replace('_', ' ').toUpperCase() })));
+};
+
+
+/***/ }),
+/* 19 */,
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(15);
+            var content = __webpack_require__(21);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".cardIcon {\n  width: 100%;\n  height: 100%;\n}\n\n.cardIcon img {\n  min-width: 20px;\n  min-height: 20px;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -179,11 +264,11 @@ function _extends() {
 })));
 
 /***/ }),
-/* 19 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(15);
-            var content = __webpack_require__(20);
+            var content = __webpack_require__(24);
 
             content = content.__esModule ? content.default : content;
 
@@ -205,7 +290,7 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 20 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -218,14 +303,14 @@ module.exports = exports;
 
 
 /***/ }),
-/* 21 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const validate_1 = __webpack_require__(22);
-const api_1 = __webpack_require__(23);
+const validate_1 = __webpack_require__(26);
+const api_1 = __webpack_require__(27);
 const form = document.getElementById('form-user');
 const loading = document.querySelector('.loading');
 const API_URL = '/api/users';
@@ -289,7 +374,7 @@ exports.vodka = vodka;
 
 
 /***/ }),
-/* 22 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -368,6 +453,61 @@ function isEventValid(event) {
     return bugs.length ? bugs : true;
 }
 exports.isEventValid = isEventValid;
+
+
+/***/ }),
+/* 27 */,
+/* 28 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(15);
+            var content = __webpack_require__(29);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 29 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(30);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
+// Module
+exports.push([module.i, "\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, "/* Box sizing rules */\n*,\n*::before,\n*::after {\n  box-sizing: border-box;\n}\n\n/* Remove default padding */\nul[class],\nol[class] {\n  padding: 0;\n}\n\n/* Remove default margin */\nbody,\nh1,\nh2,\nh3,\nh4,\np,\nul[class],\nol[class],\nli,\nfigure,\nfigcaption,\nblockquote,\ndl,\ndd {\n  margin: 0;\n}\n\n/* Set core body defaults */\nbody {\n  min-height: 100vh;\n  scroll-behavior: smooth;\n  text-rendering: optimizeSpeed;\n  line-height: 1.5;\n}\n\n/* Remove list styles on ul, ol elements with a class attribute */\nul[class],\nol[class] {\n  list-style: none;\n}\n\n/* A elements that don't have a class get default styles */\na:not([class]) {\n  text-decoration-skip-ink: auto;\n}\n\n/* Make images easier to work with */\nimg {\n  max-width: 100%;\n  display: block;\n}\n\n/* Inherit fonts for inputs and buttons */\ninput,\nbutton,\ntextarea,\nselect {\n  font: inherit;\n}\n", ""]);
+// Exports
+module.exports = exports;
 
 
 /***/ })
