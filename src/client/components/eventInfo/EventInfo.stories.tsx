@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { EventInfo } from './EventInfo';
 
-const props = { eventName: 'Kudos 42', eventDate: '12 - 28.3.2020' };
+const props = { eventName: 'Kudos 42', dateFrom: 1580307649752, dateTo: 1582899649752 };
 
 storiesOf('Event Info', module)
   .addDecorator((story) => (
