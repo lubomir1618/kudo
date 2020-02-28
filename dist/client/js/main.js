@@ -221,6 +221,45 @@ module.exports = exports;
 /* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var api = __webpack_require__(15);
+            var content = __webpack_require__(19);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".big {\n  font-size: 18px;\n  color: blue;\n}\n\n.big svg {\n  height: 18px;\n  fill: blue;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
