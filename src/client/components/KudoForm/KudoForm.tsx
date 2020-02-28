@@ -20,7 +20,7 @@ const CARD_TYPES = Object.values(CARD_TYPE);
 
 const PEOPLE = [...data];
 PEOPLE.map((folk: any) => {
-  folk.value = folk.name.replace(' ', '_').toLowerCase();
+  folk.value = folk.name
 });
 
 interface IState {
@@ -40,6 +40,15 @@ export default class KudoForm extends React.Component<{}, IState> {
     this.state = {
       name: undefined,
       type: CARD_TYPE.totally_awesome
+    }
+  }
+
+  public componentDidMount() {
+    if (this.formRef.current && this.messageRef.current) {
+      const name_options = this.formRef.current.querySelector('.name .select-search-box__options');
+      const message_height = this.messageRef.current.parentElement!.offsetHeight;
+
+      (name_options as HTMLDivElement).style.maxHeight = `${message_height}px`;
     }
   }
 
@@ -132,7 +141,7 @@ export default class KudoForm extends React.Component<{}, IState> {
     if (this.state.name === undefined) {
       this.drawRed(FORM_ERROR.name)
     } else if (!this.messageRef.current
-      || (this.messageRef.current && this.messageRef.current.value.length === 0)
+      || (this.messageRef.current && this.messageRef.current.value.trim().length === 0)
       || (this.messageRef.current && this.messageRef.current.value === 'Sprava')
     ) {
       this.drawRed(FORM_ERROR.message);

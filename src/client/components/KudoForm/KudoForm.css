@@ -1,6 +1,4 @@
 .kudoForm {
-  height: 342px;
-  width: 278px;
   background-color: #ffffff;
   border-radius: 10px;
   font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
@@ -35,10 +33,6 @@
   align-items: center;
 }
 
-.kudoForm .typePicker .select-search-box__select {
-  max-height: 236px !important;
-}
-
 .kudoForm .typePicker .select-search-box__options {
   display: flex;
   flex-wrap: wrap;
@@ -55,6 +49,7 @@
   width: 30px;
   max-width: 30px;
   max-height: 30px;
+  min-width: 30px;
 }
 
 .kudoForm .typePicker .select-search-box__options li {
@@ -83,7 +78,7 @@
 
 .kudoForm .name .select-search-box__search {
   background-color: transparent;
-  width: 180px;
+  width: 100%;
   height: 53px;
   margin-left: 20px;
   border-radius: initial;
@@ -94,11 +89,8 @@
 
 
 .kudoForm .name .select-search-box .select-search-box__select {
-  top: 56px;
-  max-height: 181px !important;
-  width: 278px;
-  left: unset;
-  right: -23px;
+  top: 55px;
+  width: calc(100% - 23px);
 }
 
 .kudoForm .message {
@@ -276,4 +268,22 @@
 .select-search-box__option.is-selected:hover {
   background: #2eb378;
   color: #fff;
+}
+
+@media only screen and (min-width: 800px) {
+  .kudoForm .typePicker .select-search-box__options li {
+    width: 25%;
+    height: 85px;
+  }
+
+  .kudoForm .typePicker .select-search-box__option {
+    justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .kudoForm .name .select-search-box__option {
+    justify-content: center;
+    padding-left: 0px;
+  }
 }
