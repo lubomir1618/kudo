@@ -50,26 +50,6 @@ class Cards {
       res.json({ message: `Error in: ${valid.join(', ')}` });
     }
   }
-
-  public update(req: Request, res: Response) {
-    utils.serverLog('/cards/:id => update', req);
-    const valid = isCardValid(req.body);
-    if (valid === true) {
-      const card = {
-        author: req.body.author,
-        awardedTo: req.body.awardedTo,
-        likes: req.body.likes,
-        text: req.body.text,
-        title: req.body.title,
-        type: req.body.type
-      };
-      // save to db
-      this.cards.update({ _id: req.params.id }, card).then((data) => res.json(data));
-    } else {
-      res.status(422);
-      res.json({ message: `Error in: ${valid.join(', ')}` });
-    }
-  }
 }
 
 const cards = new Cards();

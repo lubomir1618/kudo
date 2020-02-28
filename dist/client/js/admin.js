@@ -48,15 +48,14 @@ const E = __importStar(__webpack_require__(26));
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
+        const now = new Date().getTime();
+        this.newEvent = { dateFrom: now, dateTo: now + 1209600000, name: '', state: E.EVENT_STATE.future };
         this.state = {
+            event: this.newEvent,
             mode: props.event ? 'update' : 'insert'
         };
-        if (props.event) {
-            this.event = props.event;
-        }
     }
     onClickHandler() {
-        var _a;
         const data = {};
         const info = document.getElementById('form-event-info');
         const form = document.getElementById('form-event');
@@ -73,7 +72,7 @@ class EventForm extends react_1.Component {
             });
         }
         else {
-            api_1.update('/api/events', (_a = this.event) === null || _a === void 0 ? void 0 : _a._id, data)
+            api_1.update('/api/events', this.state.event._id, data)
                 .then(() => {
                 info.innerText = 'Success: Event updated.';
                 document.dispatchEvent(new CustomEvent('kudoz::eventListRefresh'));
@@ -85,19 +84,20 @@ class EventForm extends react_1.Component {
     }
     componentDidMount() {
         document.addEventListener('kudoz::eventFormRefresh', ((e) => {
-            console.log(e.detail._id);
-            // this.getData(e.detail._id);
+            this.getData(e.detail._id);
         }));
     }
     getData(_id) {
-        api_1.select('/api/events', _id).then((data) => this.setState({ mode: 'update' }));
+        if (_id) {
+            api_1.select('/api/events', _id).then((event) => this.setState({ event, mode: 'update' }));
+        }
+        else {
+            this.setState({ event: this.newEvent, mode: 'insert' });
+        }
     }
     render() {
-        const now = new Date().getTime();
-        const { dateFrom, dateTo, name, state } = this.event
-            ? this.event
-            : { dateFrom: now, dateTo: now + 1209600000, name: '', state: E.EVENT_STATE.future };
-        const button = `${this.state.mode === 'insert' ? 'Add' : 'Edit'} event 📅`;
+        const { dateFrom, dateTo, name, state } = this.state.event;
+        const button = `${this.state.mode === 'insert' ? 'Create' : 'Update'} event 📅`;
         return (react_1.default.createElement("form", { id: "form-event", key: "eventForm" },
             react_1.default.createElement("label", { htmlFor: "dateFrom" }, "Date from: "),
             react_1.default.createElement("input", { type: "text", id: "event-dateFrom", name: "dateFrom", defaultValue: dateFrom }),
@@ -182,35 +182,38 @@ class EventList extends react_1.Component {
         api_1.select('/api/events').then((data) => this.setState({ data, loading: false }));
     }
     onClickHandler(e) {
-        const _id = e.currentTarget.dataset.id;
+        var _a;
+        const _id = (_a = e.currentTarget.dataset.id) !== null && _a !== void 0 ? _a : undefined;
         document.dispatchEvent(new CustomEvent('kudoz::eventFormRefresh', { detail: { _id } }));
     }
     render() {
         const { data, loading } = this.state;
-        return (react_1.default.createElement("table", null,
-            react_1.default.createElement("thead", null,
-                react_1.default.createElement("tr", null,
-                    react_1.default.createElement("th", null, "name"),
-                    react_1.default.createElement("th", null, "dateFrom"),
-                    react_1.default.createElement("th", null, "dateTo"),
-                    react_1.default.createElement("th", null, "state"),
-                    react_1.default.createElement("th", null, "action"))),
-            react_1.default.createElement("tbody", null, loading ? this.loading() : this.eventRows(data))));
+        return (react_1.default.createElement("div", { key: "eventList" },
+            react_1.default.createElement("input", { type: "button", "data-id": "", value: "new", onClick: this.onClickHandler.bind(this) }),
+            react_1.default.createElement("table", null,
+                react_1.default.createElement("thead", null,
+                    react_1.default.createElement("tr", null,
+                        react_1.default.createElement("th", null, "name"),
+                        react_1.default.createElement("th", null, "dateFrom"),
+                        react_1.default.createElement("th", null, "dateTo"),
+                        react_1.default.createElement("th", null, "state"),
+                        react_1.default.createElement("th", null, "action"))),
+                react_1.default.createElement("tbody", null, loading ? this.loading() : this.eventRows(data)))));
     }
     eventCols(event) {
         const jsx = [];
-        jsx.push(react_1.default.createElement("td", null, event.name));
-        jsx.push(react_1.default.createElement("td", null, new Date(event.dateFrom).toLocaleString()));
-        jsx.push(react_1.default.createElement("td", null, new Date(event.dateTo).toLocaleString()));
-        jsx.push(react_1.default.createElement("td", null, event.state));
-        jsx.push(react_1.default.createElement("td", null,
+        jsx.push(react_1.default.createElement("td", { key: "name" }, event.name));
+        jsx.push(react_1.default.createElement("td", { key: "dateFrom" }, new Date(event.dateFrom).toLocaleString()));
+        jsx.push(react_1.default.createElement("td", { key: "dateTo" }, new Date(event.dateTo).toLocaleString()));
+        jsx.push(react_1.default.createElement("td", { key: "state" }, event.state));
+        jsx.push(react_1.default.createElement("td", { key: "edit" },
             react_1.default.createElement("input", { type: "button", "data-id": event._id, value: "edit", onClick: this.onClickHandler.bind(this) })));
         return jsx;
     }
     eventRows(events) {
         const jsx = [];
         events.forEach((event) => {
-            jsx.push(react_1.default.createElement("tr", null, this.eventCols(event)));
+            jsx.push(react_1.default.createElement("tr", { key: event._id }, this.eventCols(event)));
         });
         return jsx;
     }

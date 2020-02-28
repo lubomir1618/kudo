@@ -3,25 +3,23 @@ import { insert, select, update } from '../../utils/api';
 import * as I from '../../../common/interfaces';
 import * as E from '../../../common/constants';
 
-interface IEventForm {
-  event?: I.Event;
-}
-
 interface IEventFormState {
+  event: I.Event;
   mode: 'insert' | 'update';
 }
 
-export default class EventForm extends Component<IEventForm, IEventFormState> {
-  public event?: I.Event;
+export default class EventForm extends Component<any, IEventFormState> {
+  private newEvent: I.Event;
 
-  constructor(props: IEventForm) {
+  constructor(props: any) {
     super(props);
+
+    const now = new Date().getTime();
+    this.newEvent = { dateFrom: now, dateTo: now + 1209600000, name: '', state: E.EVENT_STATE.future };
     this.state = {
+      event: this.newEvent,
       mode: props.event ? 'update' : 'insert'
     };
-    if (props.event) {
-      this.event = props.event;
-    }
   }
 
   public onClickHandler() {
@@ -41,7 +39,7 @@ export default class EventForm extends Component<IEventForm, IEventFormState> {
           info.innerText = `Error: ${err.message}`;
         });
     } else {
-      update<I.Event>('/api/events', this.event?._id as string, data as I.Event)
+      update<I.Event>('/api/events', this.state.event._id as string, data as I.Event)
         .then(() => {
           info.innerText = 'Success: Event updated.';
           document.dispatchEvent(new CustomEvent('kudoz::eventListRefresh'));
@@ -54,21 +52,21 @@ export default class EventForm extends Component<IEventForm, IEventFormState> {
 
   public componentDidMount() {
     document.addEventListener('kudoz::eventFormRefresh', ((e: CustomEvent) => {
-      console.log(e.detail._id);
-      // this.getData(e.detail._id);
+      this.getData(e.detail._id);
     }) as EventListener);
   }
 
   public getData(_id?: string) {
-    select<I.Event[]>('/api/events', _id).then((data) => this.setState({ mode: 'update' }));
+    if (_id) {
+      select<I.Event>('/api/events', _id).then((event) => this.setState({ event, mode: 'update' }));
+    } else {
+      this.setState({ event: this.newEvent, mode: 'insert' });
+    }
   }
 
   public render() {
-    const now = new Date().getTime();
-    const { dateFrom, dateTo, name, state } = this.event
-      ? this.event
-      : { dateFrom: now, dateTo: now + 1209600000, name: '', state: E.EVENT_STATE.future };
-    const button = `${this.state.mode === 'insert' ? 'Add' : 'Edit'} event 📅`;
+    const { dateFrom, dateTo, name, state } = this.state.event;
+    const button = `${this.state.mode === 'insert' ? 'Create' : 'Update'} event 📅`;
 
     return (
       <form id="form-event" key="eventForm">
