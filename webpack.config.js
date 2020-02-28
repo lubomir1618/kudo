@@ -8,7 +8,8 @@ const MinifyPlugin = require('babel-minify-webpack-plugin');
  */
 module.exports = {
   entry: {
-    main: './src/client/Index.tsx'
+    main: './src/client/Index.tsx',
+    admin: './src/client/admin.tsx'
   },
   output: {
     filename: '[name].js',
