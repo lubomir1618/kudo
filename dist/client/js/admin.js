@@ -19,7 +19,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const EventForm_1 = __importDefault(__webpack_require__(25));
-const EventList_1 = __importDefault(__webpack_require__(27));
+const EventList_1 = __importDefault(__webpack_require__(29));
 ReactDOM.render(React.createElement("div", { className: "eventAdmin" },
     React.createElement("header", null,
         React.createElement("h1", null, "Event admin")),
@@ -45,6 +45,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const api_1 = __webpack_require__(23);
 const E = __importStar(__webpack_require__(26));
+__webpack_require__(27);
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -52,13 +53,13 @@ class EventForm extends react_1.Component {
         this.newEvent = { dateFrom: now, dateTo: now + 1209600000, name: '', state: E.EVENT_STATE.future };
         this.state = {
             event: this.newEvent,
-            mode: props.event ? 'update' : 'insert'
+            mode: 'hidden'
         };
     }
     onClickHandler() {
         const data = {};
         const info = document.getElementById('form-event-info');
-        const form = document.getElementById('form-event');
+        const form = document.getElementById('form-event-form');
         const formData = new FormData(form);
         formData.forEach((item, key) => (data[key] = item));
         if (this.state.mode === 'insert') {
@@ -84,6 +85,8 @@ class EventForm extends react_1.Component {
     }
     componentDidMount() {
         document.addEventListener('kudoz::eventFormRefresh', ((e) => {
+            const info = document.getElementById('form-event-info');
+            info.innerText = '';
             this.getData(e.detail._id);
         }));
     }
@@ -95,31 +98,39 @@ class EventForm extends react_1.Component {
             this.setState({ event: this.newEvent, mode: 'insert' });
         }
     }
+    close() {
+        this.setState({ mode: 'hidden' });
+    }
     render() {
         const { dateFrom, dateTo, name, state } = this.state.event;
         const button = `${this.state.mode === 'insert' ? 'Create' : 'Update'} event 📅`;
-        return (react_1.default.createElement("form", { id: "form-event", key: "eventForm" },
-            react_1.default.createElement("label", { htmlFor: "dateFrom" }, "Date from: "),
-            react_1.default.createElement("input", { type: "text", id: "event-dateFrom", name: "dateFrom", defaultValue: dateFrom }),
-            "*",
-            react_1.default.createElement("br", null),
-            react_1.default.createElement("label", { htmlFor: "dateTo" }, "Date to: "),
-            react_1.default.createElement("input", { type: "text", id: "event-dateTo", name: "dateTo", defaultValue: dateTo }),
-            "*",
-            react_1.default.createElement("br", null),
-            react_1.default.createElement("label", { htmlFor: "name" }, "Event name: "),
-            react_1.default.createElement("input", { type: "text", id: "event-name", name: "name", placeholder: "event name", defaultValue: name }),
-            "*",
-            react_1.default.createElement("br", null),
-            react_1.default.createElement("label", { htmlFor: "state" }, "State: "),
-            react_1.default.createElement("select", { id: "event-state", name: "state", defaultValue: state },
+        const classHidden = this.state.mode === 'hidden' ? 'hidden' : '';
+        return (react_1.default.createElement("div", { id: "form-event", key: "eventForm", className: classHidden },
+            react_1.default.createElement("div", { className: "formEvent_header" },
+                react_1.default.createElement("span", { className: "formEvent_header-text" }, "Event"),
+                react_1.default.createElement("span", { className: "formEvent_header-close", onClick: this.close.bind(this) }, "x")),
+            react_1.default.createElement("form", { id: "form-event-form" },
+                react_1.default.createElement("label", { htmlFor: "dateFrom" }, "Date from: "),
+                react_1.default.createElement("input", { type: "text", id: "event-dateFrom", name: "dateFrom", defaultValue: dateFrom }),
+                " *",
+                react_1.default.createElement("br", null),
+                react_1.default.createElement("label", { htmlFor: "dateTo" }, "Date to: "),
+                react_1.default.createElement("input", { type: "text", id: "event-dateTo", name: "dateTo", defaultValue: dateTo }),
+                " *",
+                react_1.default.createElement("br", null),
+                react_1.default.createElement("label", { htmlFor: "name" }, "Event name: "),
+                react_1.default.createElement("input", { type: "text", id: "event-name", name: "name", placeholder: "event name", defaultValue: name }),
+                " *",
+                react_1.default.createElement("br", null),
+                react_1.default.createElement("label", { htmlFor: "state" }, "State: "),
+                react_1.default.createElement("select", { id: "event-state", name: "state", defaultValue: state },
+                    react_1.default.createElement("option", { value: "past" }, "past"),
+                    react_1.default.createElement("option", { value: "active" }, "active"),
+                    react_1.default.createElement("option", { value: "future" }, "future")),
                 "*",
-                react_1.default.createElement("option", { value: "past" }, "past"),
-                react_1.default.createElement("option", { value: "active" }, "active"),
-                react_1.default.createElement("option", { value: "future" }, "future")),
-            react_1.default.createElement("br", null),
-            react_1.default.createElement("input", { type: "button", onClick: this.onClickHandler.bind(this), value: button }),
-            react_1.default.createElement("div", { id: "form-event-info" })));
+                react_1.default.createElement("br", null),
+                react_1.default.createElement("input", { type: "button", className: "button-primary", onClick: this.onClickHandler.bind(this), value: button }),
+                react_1.default.createElement("div", { id: "form-event-info" }))));
     }
 }
 exports.default = EventForm;
@@ -149,6 +160,47 @@ var EVENT_STATE;
 /***/ }),
 
 /***/ 27:
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(15);
+            var content = __webpack_require__(28);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ 28:
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, "html {\n  --c-one: #4d677f;\n  --c-two: white;\n  --c-three: rgba(3, 2, 2, 0.25);\n  --c-border: #dbe1e4;\n}\n\n#form-event {\n  border: 1px solid var(--c-border);\n  background-color: var(--c-two);\n  width: 500px;\n  height: 325px;\n  box-shadow: 0px 4px 10px var(--c-three);\n  font-family: 'Roboto_bold';\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 10;\n}\n\n#form-event.hidden {\n  display: none;\n}\n\n#form-event .formEvent_header {\n  background-color: var(--c-one);\n  height: 26px;\n  line-height: 26px;\n}\n\n#form-event .formEvent_header .formEvent_header-text {\n  font-size: 16px;\n  margin-left: 10px;\n  color: var(--c-two);\n}\n\n#form-event .formEvent_header .formEvent_header-close {\n  display: block;\n  font-size: 16px;\n  margin-right: 4px;\n  background-color: var(--c-two);\n  color: var(--c-one);\n  border-radius: 50%;\n  width: 20px;\n  height: 20px;\n  float: right;\n  text-align: center;\n  line-height: 18px;\n  margin-top: 2px;\n  cursor: pointer;\n}\n\n#form-event form {\n  margin: 10px 20px;\n}\n\n#form-event label {\n  display: inline-block;\n  display: inline-block;\n  min-width: 120px;\n  text-align: right;\n  margin-right: 10px;\n  color: var(--c-one);\n}\n\n#form-event input,\n#form-event select {\n  min-width: 200px;\n}\n\n#form-event input[type='button'] {\n  position: relative;\n  margin: 0 58%;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ 29:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -227,5 +279,5 @@ exports.default = EventList;
 
 /***/ })
 
-},[[24,"runtime","vendor","commons~admin~main"]]]);
+},[[24,"runtime","vendor","common"]]]);
 //# sourceMappingURL=admin.js.map

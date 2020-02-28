@@ -1,4 +1,4 @@
-(window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["commons~admin~main"],{
+(window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["common"],{
 
 /***/ 23:
 /***/ (function(module, exports, __webpack_require__) {
@@ -115,4 +115,4 @@ exports.like = like;
 /***/ })
 
 }]);
-//# sourceMappingURL=commons~admin~main.js.map
+//# sourceMappingURL=common.js.map

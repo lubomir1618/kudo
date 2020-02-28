@@ -14,7 +14,10 @@ class Events {
 
   public list(req: Request, res: Response) {
     utils.serverLog('/events => list', req);
-    this.events.find().then((data) => res.json(data));
+    this.events
+      .find()
+      .then((data) => res.json(data))
+      .catch((err) => utils.errorHandler(res, err.message));
   }
 
   public show(req: Request, res: Response) {

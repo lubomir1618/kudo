@@ -1,0 +1,75 @@
+html {
+  --c-one: #4d677f;
+  --c-two: white;
+  --c-three: rgba(3, 2, 2, 0.25);
+  --c-border: #dbe1e4;
+}
+
+#form-event {
+  border: 1px solid var(--c-border);
+  background-color: var(--c-two);
+  width: 500px;
+  height: 325px;
+  box-shadow: 0px 4px 10px var(--c-three);
+  font-family: 'Roboto_bold';
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+#form-event.hidden {
+  display: none;
+}
+
+#form-event .formEvent_header {
+  background-color: var(--c-one);
+  height: 26px;
+  line-height: 26px;
+}
+
+#form-event .formEvent_header .formEvent_header-text {
+  font-size: 16px;
+  margin-left: 10px;
+  color: var(--c-two);
+}
+
+#form-event .formEvent_header .formEvent_header-close {
+  display: block;
+  font-size: 16px;
+  margin-right: 4px;
+  background-color: var(--c-two);
+  color: var(--c-one);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  float: right;
+  text-align: center;
+  line-height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+#form-event form {
+  margin: 10px 20px;
+}
+
+#form-event label {
+  display: inline-block;
+  display: inline-block;
+  min-width: 120px;
+  text-align: right;
+  margin-right: 10px;
+  color: var(--c-one);
+}
+
+#form-event input,
+#form-event select {
+  min-width: 200px;
+}
+
+#form-event input[type='button'] {
+  position: relative;
+  margin: 0 58%;
+}

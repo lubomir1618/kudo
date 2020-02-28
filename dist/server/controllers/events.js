@@ -22,7 +22,10 @@ class Events {
     }
     list(req, res) {
         utils.serverLog('/events => list', req);
-        this.events.find().then((data) => res.json(data));
+        this.events
+            .find()
+            .then((data) => res.json(data))
+            .catch((err) => utils.errorHandler(res, err.message));
     }
     show(req, res) {
         let where = {};

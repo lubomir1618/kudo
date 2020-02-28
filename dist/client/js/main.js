@@ -371,5 +371,5 @@ exports.isEventValid = isEventValid;
 
 
 /***/ })
-],[[0,"runtime","vendor","commons~admin~main"]]]);
+],[[0,"runtime","vendor","common"]]]);
 //# sourceMappingURL=main.js.map

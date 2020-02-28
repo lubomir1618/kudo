@@ -14,7 +14,10 @@ class Users {
 
   public list(req: Request, res: Response) {
     utils.serverLog('/users => list', req);
-    this.users.find().then((data) => res.json(data));
+    this.users
+      .find()
+      .then((data) => res.json(data))
+      .catch((err) => utils.errorHandler(res, err.message));
   }
 
   public show(req: Request, res: Response) {
@@ -27,13 +30,10 @@ class Users {
       utils.serverLog('/users/:id => show', req);
       where = { _id: req.params.id };
     }
-    this.users.findOne(where).then((data) => res.json(data));
-  }
-
-  public where(req: Request, res: Response) {
-    utils.serverLog('/users/where/:key/:val => show', req);
-    console.log(req.params);
-    // this.users.findOne({ _id: req.params.id }).then((data) => res.json(data));
+    this.users
+      .findOne(where)
+      .then((data) => res.json(data))
+      .catch((err) => utils.errorHandler(res, err.message));
   }
 
   public create(req: Request, res: Response) {
@@ -46,11 +46,13 @@ class Users {
         surname: req.body.surname
       };
       // save to db
-      this.users.insert(user).then((data) => res.json(data));
+      this.users
+        .insert(user)
+        .then((data) => res.json(data))
+        .catch((err) => utils.errorHandler(res, err.message));
       console.log('user', user);
     } else {
-      res.status(422);
-      res.json({ message: `Error in: ${valid.join(', ')}` });
+      utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
     }
   }
 }

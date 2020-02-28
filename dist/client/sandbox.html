@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Event admin</title>
+    <style>
+      html {
+        --c-one: #4d677f;
+        --c-two: white;
+        --c-three: rgba(3, 2, 2, 0.25);
+        --c-border: #dbe1e4;
+      }
+      #form-event {
+        border: 1px solid var(--c-border);
+        width: 500px;
+        height: 325px;
+        box-shadow: 0px 4px 10px var(--c-three);
+        font-family: 'Roboto_bold';
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1px;
+      }
+      .formEvent_header {
+        background-color: var(--c-one);
+        height: 26px;
+        line-height: 26px;
+      }
+      .formEvent_header .formEvent_header-text {
+        font-size: 16px;
+        margin-left: 10px;
+        color: var(--c-two);
+      }
+      .formEvent_header .formEvent_header-close {
+        display: block;
+        font-size: 16px;
+        margin-right: 4px;
+        background-color: var(--c-two);
+        color: var(--c-one);
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        float: right;
+        text-align: center;
+        line-height: 18px;
+        margin-top: 2px;
+        cursor: pointer;
+      }
+      #form-event form {
+        margin: 10px 20px;
+      }
+
+      #form-event label {
+        display: inline-block;
+        display: inline-block;
+        min-width: 120px;
+        text-align: right;
+        margin-right: 10px;
+        color: var(--c-one);
+      }
+
+      #form-event input,
+      #form-event select {
+        min-width: 200px;
+      }
+      #form-event input[type='button'] {
+        position: relative;
+        margin: 0 58%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="form-event">
+      <div class="formEvent_header">
+        <span class="formEvent_header-text">Event</span>
+        <span class="formEvent_header-close">x</span>
+      </div>
+      <form>
+        <label for="dateFrom">Date from: </label>
+        <input type="text" id="event-dateFrom" name="dateFrom" value="1582909366023" /> *<br />
+        <label for="dateTo">Date to: </label>
+        <input type="text" id="event-dateTo" name="dateTo" value="1584118966023" /> *<br />
+        <label for="name">Event name: </label>
+        <input type="text" id="event-name" name="name" placeholder="event name" value="" /> *<br />
+        <label for="state">State: </label>
+        <select id="event-state" name="state">
+          *
+          <option value="past">past</option>
+          <option value="active">active</option>
+          <option value="future" selected="">future</option> </select
+        ><br />
+        <input type="button" class="button-primary" value="Create event 📅" />
+        <div id="form-event-info">Moo</div>
+      </form>
+    </div>
+  </body>
+</html>

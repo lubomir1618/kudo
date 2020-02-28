@@ -62,6 +62,7 @@ module.exports = {
         },
         commons: {
           chunks: 'initial',
+          name: 'common',
           minChunks: 2,
           maxInitialRequests: 5,
           minSize: 0
@@ -74,7 +75,7 @@ module.exports = {
     new webpack.SourceMapDevToolPlugin({
       filename: '[name].js.map',
       exclude: /vendor.*.*/
-    })
-    //, new MinifyPlugin({}, { exclude: /main\.js/ })
+    }),
+    new MinifyPlugin({}, { exclude: /(admin|common|main)\.js/ })
   ]
 };
