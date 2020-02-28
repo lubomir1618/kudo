@@ -1,8 +1,5 @@
 @import './font_family.css';
 
-* {
-  font-family: 'Ubuntu_Medium' !important;
-}
 header,
 section {
   margin: 0 auto;
