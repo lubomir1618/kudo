@@ -1,5 +1,30 @@
 import * as I from './interfaces';
 
+export function hasData(data: any, type = 'string'): boolean {
+  if (data === undefined || data === null) {
+    return false;
+  }
+  switch (type) {
+    case 'number':
+      return typeof data === 'number' || !isNaN(data);
+    case 'boolean':
+      return typeof data === 'boolean';
+    default:
+      return data !== '';
+  }
+}
+
+export function hasOneOf(data: string, check: string[]): boolean {
+  if (hasData(data)) {
+    return check.includes(data);
+  }
+  return false;
+}
+
+export function isLikeValid(_id: string) {
+  return hasData(_id) ? true : ['_id'];
+}
+
 export function isUserValid(user: I.User) {
   const bugs: string[] = [];
 
@@ -38,13 +63,16 @@ export function isCardValid(card: I.Card) {
 export function isEventValid(event: I.Event) {
   const bugs: string[] = [];
 
-  if (!(event.date && event.date !== '')) {
-    bugs.push('date');
+  if (!hasData(event.dateFrom, 'number')) {
+    bugs.push('dateFrom');
   }
-  if (!(event.name && event.name !== '')) {
+  if (!hasData(event.dateTo, 'number')) {
+    bugs.push('dateTo');
+  }
+  if (!hasData(event.name)) {
     bugs.push('name');
   }
-  if (!(event.state && ['past', 'active', 'future'].includes(event.state))) {
+  if (!hasOneOf(event.state, ['past', 'active', 'future'])) {
     bugs.push('state');
   }
 

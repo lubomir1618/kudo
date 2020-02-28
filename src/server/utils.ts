@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 
 export function serverLog(text: string, req: Request) {
   console.log(
@@ -7,4 +7,11 @@ export function serverLog(text: string, req: Request) {
       `params: ${JSON.stringify(req.params)}, ` +
       `body: ${JSON.stringify(req.body)}`
   );
+}
+
+export function errorHandler(res: Response, message: string) {
+  console.log(`💥 Error: ${message}`);
+  res.status(422);
+  res.json({ message });
+  res.end();
 }

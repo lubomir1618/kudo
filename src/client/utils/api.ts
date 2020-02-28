@@ -90,3 +90,19 @@ export function remove(api: string, id: string): Promise<boolean> {
       .catch((err: Error) => rejected(err));
   });
 }
+
+/**
+ * Incerease likes of card
+ */
+export function like(_id: string): Promise<number> {
+  return new Promise<number>((resolved, rejected) => {
+    fetch('/api/like', {
+      body: JSON.stringify({ _id }),
+      headers,
+      method: 'POST'
+    })
+      .then((response) => response.json())
+      .then((data: { likes: number }) => resolved(data.likes))
+      .catch((err: Error) => rejected(err));
+  });
+}

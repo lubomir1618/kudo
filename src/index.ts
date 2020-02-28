@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import restfulRouter from 'restful-router';
@@ -6,6 +6,7 @@ import restfulRouter from 'restful-router';
 import { cUsers } from './server/controllers/users';
 import { cCards } from './server/controllers/cards';
 import { cEvents } from './server/controllers/events';
+import { cLike } from './server/controllers/like';
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -20,6 +21,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 /* REST */
+/*
+app.post('/api/like', (req: Request, res: Response) => {
+  console.log('moo');
+  res.end('yes');
+});*/
+app.post('/api/like', cLike);
 restfulRouter({ app, name: 'api/users', controller: cUsers });
 restfulRouter({ app, name: 'api/cards', controller: cCards });
 restfulRouter({ app, name: 'api/events', controller: cEvents });
