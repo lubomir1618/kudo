@@ -121,7 +121,7 @@ module.exports = exported;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".kudoKnight {\n    font-family: Arial, Helvetica, sans-serif;\n    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%), #C6D8D3;\n    display: flex;\n}\n\n.kudoKnight h3 {\n    font-size: 10px;\n    color: #6D686D;\n}\n\n.kudoKnight h2 {\n    font-size: 18px;\n    color: #331832;\n    margin-top: -5px;\n}", ""]);
+exports.push([module.i, ".kudoKnight {\n    font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%), #C6D8D3;\n    display: flex;\n    position: relative;\n    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);\n    border-radius: 10px;\n}\n.kudoKnight__content {\n    margin-left: 110px;\n}\n.kudoKnight h3 {\n    margin-top: 20px;\n    font-size: 9px;\n    color: #6D686D;\n}\n\n.kudoKnight h2 {\n    font-size: 18px;\n    color: #331832;\n    margin-top: -5px;\n}\n.kudoKnight img {\n    position: absolute;\n    height: 120%;\n    bottom: 0;\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -212,52 +212,13 @@ module.exports = exported;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".big {\n  font-size: 18px;\n  color: blue;\n}\n\n.big svg {\n  height: 18px;\n  fill: blue;\n}\n", ""]);
+exports.push([module.i, ".big {\n  font-size: 26px;\n  font-family: 'Roboto_Bold';\n  color: blue;\n}\n\n.big svg {\n  height: 26px;\n  fill: blue;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
 /* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(15);
-            var content = __webpack_require__(19);
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".big {\n  font-size: 18px;\n  color: blue;\n}\n\n.big svg {\n  height: 18px;\n  fill: blue;\n}\n", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

@@ -1,9 +1,10 @@
 .big {
-  font-size: 18px;
+  font-size: 26px;
+  font-family: 'Roboto_Bold';
   color: blue;
 }
 
 .big svg {
-  height: 18px;
+  height: 26px;
   fill: blue;
 }
