@@ -1,0 +1,26 @@
+:root {
+  --text-color: #ffffff;
+}
+
+.eventInfo {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.eventInfo h1,
+h2 {
+  font-family: 'Ubuntu_Normal';
+  font-style: normal;
+  color: var(--text-color);
+  margin: 2px;
+}
+
+.eventInfo h1 {
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.eventInfo h2 {
+  font-size: 14px;
+  line-height: 17px;
+}
