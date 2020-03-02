@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 
+export interface Props {
+  playMusic?: boolean;
+}
+
 export interface State {
   play: boolean;
 }
 
-class CardNotification extends Component<any, State> {
+class CardNotification extends Component<Props, State> {
   audio = new Audio('audio/notification.wav');
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
 
     this.state = {
-      play: true
+      play: this.props.playMusic ? this.props.playMusic : false
     };
   }
 
