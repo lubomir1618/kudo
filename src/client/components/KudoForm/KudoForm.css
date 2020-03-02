@@ -1,0 +1,289 @@
+.kudoForm {
+  background-color: #ffffff;
+  border-radius: 10px;
+  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+}
+
+.kudoForm input, .kudoForm textarea {
+  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+}
+
+.kudoForm .typePicker {
+  display: flex;
+  align-items: center;
+  height: 67px;
+  border-radius: 10px 10px 0 0;
+  background-color: #FDF0D5;
+  font-size: 20px;
+  color: #331832;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.kudoForm .typePicker .cardIcon {
+  max-width: 40px;
+  max-height: 40px;
+  margin-right: 16px;
+}
+
+.kudoForm .typeTitle {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.kudoForm .typePicker .select-search-box__options {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.kudoForm .typePicker .select-search-box__option > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kudoForm .typePicker .select-search-box__options .cardIcon {
+  margin-right: 10px;
+  width: 30px;
+  max-width: 30px;
+  max-height: 30px;
+  min-width: 30px;
+}
+
+.kudoForm .typePicker .select-search-box__options li {
+  width: 50%;
+  padding: 14px;
+  height: 59px;
+  text-transform: capitalize;
+}
+
+.kudoForm .main {
+  height: 237px;
+  display: flex;
+  flex-direction: column;
+}
+
+.kudoForm .name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 23px;
+  height: 55px;
+  font-size: 12px;
+  color: #6D686D;
+  border-bottom: 1px solid rgba(198, 216, 211, 0.3);
+}
+
+.kudoForm .name .select-search-box__search {
+  background-color: transparent;
+  width: 100%;
+  height: 53px;
+  margin-left: 20px;
+  border-radius: initial;
+  border: none;
+  font-size: 16px;
+  color: #6D686D;
+}
+
+
+.kudoForm .name .select-search-box .select-search-box__select {
+  top: 55px;
+  width: calc(100% - 23px);
+}
+
+.kudoForm .message {
+  display: flex;
+  align-items: center;
+  padding: 21px 23px;
+  flex-grow: 1;
+}
+
+.kudoForm .message textarea {
+  flex-grow: 1;
+  height: 100%;
+  width: 100%;
+  font-size: 12px;
+  color: #6D686D;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.kudoForm .name.red,
+.kudoForm .message.red {
+  animation: blink 0.7s ease;
+}
+
+.kudoForm .submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 49px;
+  border-radius: 0 0 10px 10px;
+  font-size: 18px;
+  color: #ffffff;
+  background: linear-gradient(180deg, #F0544F 0%, #D74945 100%), #F0544F;
+  cursor: pointer;
+}
+
+@keyframes blink {
+  0% {
+    background: transparent;
+  }
+  50% {
+    background: #f0544fc7;
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+/* react-select-search */
+.select-search-box {
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+}
+
+.select-search-box *,
+.select-search-box *::after,
+.select-search-box *::before {
+  box-sizing: inherit;
+}
+
+.select-search-box__select {
+  display: none;
+}
+
+.select-search-box__select.select-search-box__select--display {
+  display: block;
+  border-radius: 0;
+}
+
+.select-search-box__search {
+  outline: none;
+}
+
+.select-search-box__value {
+  position: relative;
+}
+
+.select-search-box__value::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: calc(50% - 9px);
+  right: 19px;
+  width: 11px;
+  height: 11px;
+  transform: rotate(45deg);
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+  pointer-events: none;
+}
+
+.select-search-box__input {
+  display: block;
+  height: 36px;
+  width: 100%;
+  padding: 0 16px;
+  background: #fff;
+  border: none;
+  box-shadow: 0 .0625rem .125rem rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+  outline: none;
+  font-size: 14px;
+  text-align: left;
+  line-height: 36px;
+  -webkit-appearance: none;
+}
+
+.select-search-box__input::-webkit-search-decoration,
+.select-search-box__input::-webkit-search-cancel-button,
+.select-search-box__input::-webkit-search-results-button,
+.select-search-box__input::-webkit-search-results-decoration {
+  -webkit-appearance:none;
+}
+
+.select-search-box__input:hover {
+  border-color: #2FCC8B;
+}
+
+.select-search-box__input:not([readonly]):focus {
+  cursor: initial;
+}
+
+.select-search-box__select {
+  background: #fff;
+  box-shadow: 0 .0625rem .125rem rgba(0, 0, 0, 0.15);
+}
+
+.select-search-box:not(.select-search-box--multiple) .select-search-box__select {
+  position: absolute;
+  z-index: 2;
+  top: 53px;
+  right: 0;
+  left: 0;
+  overflow: auto;
+  max-height: 360px;
+}
+
+.select-search-box__options {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.select-search-box__option {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  height: 47px;
+  width: 100%;
+  padding: 0 16px;
+  padding-left: 74px;
+  background: #fff;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.select-search-box__option.is-selected {
+  background: #2FCC8B;
+  color: #fff;
+}
+
+.select-search-box__option.is-highlighted,
+.select-search-box__option:not(.is-selected):hover {
+  background: rgba(47, 204, 139, 0.1);
+}
+
+.select-search-box__option.is-highlighted.is-selected,
+.select-search-box__option.is-selected:hover {
+  background: #2eb378;
+  color: #fff;
+}
+
+@media only screen and (min-width: 800px) {
+  .kudoForm .typePicker .select-search-box__options li {
+    width: 25%;
+    height: 85px;
+  }
+
+  .kudoForm .typePicker .select-search-box__option {
+    justify-content: center;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .kudoForm .name .select-search-box__option {
+    justify-content: center;
+    padding-left: 0px;
+  }
+}
