@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="/css/style.css" />
     <title>Users list</title>
   </head>
   <body>
@@ -18,16 +18,16 @@
         <input type="text" id="surname" name="surname" placeholder="surname" />
         <button class="button-primary">Add user 🙍🏻‍♂️/🙎‍♀️</button>
       </form>
-      <img src="img/loading.gif" alt="loading" class="loading" />
+      <img src="/img/loading.gif" alt="loading" class="loading" />
       <div class="allUsers"></div>
       <div class="logos">
-        <img src="img/node-logo.png" alt="nodejs" />
-        <img src="img/mongodb-logo.png" alt="mongodb" />
+        <img src="/img/node-logo.png" alt="nodejs" />
+        <img src="/img/mongodb-logo.png" alt="mongodb" />
       </div>
     </section>
 
     <section>
-      <form action="api/events" id="form-event" method="post">
+      <form action="/api/events" id="form-event" method="post">
         <input type="text" id="event-dateFrom" name="dateFrom" value="1581724800000" />*
         <input type="text" id="event-dateTo" name="dateTo" value="1584230400000" />*
         <input type="text" id="event-name" name="name" placeholder="event name" />*
@@ -43,7 +43,7 @@
     </section>
 
     <section>
-      <form action="api/cards" id="form-card" method="post">
+      <form action="/api/cards" id="form-card" method="post">
         <input type="text" id="card-title" name="title" placeholder="card title" />*
         <input type="text" id="card-awardedTo" name="awardedTo" placeholder="awarded to" />*
         <input type="text" id="card-text" name="text" placeholder="card text" />*
@@ -60,7 +60,7 @@
     </section>
 
     <section>
-      <form action="api/like" id="form-like" method="post">
+      <form action="/api/like" id="form-like" method="post">
         <input type="text" id="like-_id" name="_id" value="5e57b931be5c046b04ee8502" />*
         <button class="button-primary">Like card 👍</button>
       </form>
@@ -68,9 +68,9 @@
 
     <div id="example"></div>
 
-    <script src="js/runtime.js"></script>
-    <script src="js/vendor.js"></script>
-    <script src="js/common.js"></script>
-    <script src="js/main.js"></script>
+    <script src="/js/runtime.js"></script>
+    <script src="/js/vendor.js"></script>
+    <script src="/js/common.js"></script>
+    <script src="/js/main.js"></script>
   </body>
 </html>

@@ -1,6 +1,6 @@
 (window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["admin"],{
 
-/***/ 31:
+/***/ 38:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18,8 +18,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
-const EventForm_1 = __importDefault(__webpack_require__(32));
-const EventList_1 = __importDefault(__webpack_require__(35));
+const EventForm_1 = __importDefault(__webpack_require__(39));
+const EventList_1 = __importDefault(__webpack_require__(44));
 ReactDOM.render(React.createElement("div", { className: "eventAdmin" },
     React.createElement("header", null,
         React.createElement("h1", null, "Event admin")),
@@ -29,7 +29,7 @@ ReactDOM.render(React.createElement("div", { className: "eventAdmin" },
 
 /***/ }),
 
-/***/ 32:
+/***/ 39:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43,9 +43,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const api_1 = __webpack_require__(27);
-const E = __importStar(__webpack_require__(19));
-__webpack_require__(33);
+const api_1 = __webpack_require__(40);
+const E = __importStar(__webpack_require__(41));
+__webpack_require__(42);
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -138,11 +138,152 @@ exports.default = EventForm;
 
 /***/ }),
 
-/***/ 33:
+/***/ 40:
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(15);
-            var content = __webpack_require__(34);
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const headers = { 'content-type': 'application/json' };
+/**
+ * Select record(s) from table
+ *
+ * select<I.User[]>('/api/users');
+ * select<I.User>('/api/users', '123');
+ * select<I.User>('/api/events', {state: 'active'});
+ * is equivalent of sql
+ * SELECT * FROM users;
+ * SELECT * FROM users WHERE _id='123';
+ * SELECT * FROM events WHERE state='active';
+ */
+function select(api, id) {
+    let url = api;
+    if (id) {
+        if (typeof id === 'string') {
+            url = `${api}/${id}`;
+        }
+        else {
+            const [key, val] = Object.entries(id)[0];
+            url = encodeURI(`${api}/where?${key}=${val}`);
+        }
+    }
+    return new Promise((resolved, rejected) => {
+        fetch(url, {
+            method: 'GET'
+        })
+            .then((response) => resolved(response.json()))
+            .catch((err) => rejected(err));
+    });
+}
+exports.select = select;
+/**
+ * Insert record into table
+ *
+ * insert<I.User>('/api/users', { name: 'Jon', surname: 'Snow'});
+ * is equivalent of sql
+ * INSERT INTO users (name, surname) VALUES ('Jon', 'Snow');
+ */
+function insert(api, data) {
+    return new Promise((resolved, rejected) => {
+        fetch(api, {
+            body: JSON.stringify(data),
+            headers,
+            method: 'POST'
+        })
+            .then((response) => resolved(response.json()))
+            .catch((err) => rejected(err));
+    });
+}
+exports.insert = insert;
+/**
+ * Update record in table
+ *
+ * update<I.User>('/api/users', '123', { name: 'Jon', surname: 'Snow'});
+ * is equivalent of sql
+ * UPDATE users SET name='Jon', surname='Snow' WHERE _id=123;
+ */
+function update(api, id, data) {
+    return new Promise((resolved, rejected) => {
+        fetch(`${api}/${id}`, {
+            body: JSON.stringify(data),
+            headers,
+            method: 'PATCH'
+        })
+            .then((response) => resolved(response.json()))
+            .catch((err) => rejected(err));
+    });
+}
+exports.update = update;
+/**
+ * Remove record from table
+ *
+ * remove('/api/users', '123');
+ * is equivalent of sql
+ * DELETE FROM users WHERE _id=123;
+ */
+function remove(api, id) {
+    return new Promise((resolved, rejected) => {
+        fetch(`${api}/${id}`, {
+            headers,
+            method: 'DELETE'
+        })
+            .then(() => resolved(true))
+            .catch((err) => rejected(err));
+    });
+}
+exports.remove = remove;
+/**
+ * Incerease likes of card
+ */
+function like(_id) {
+    return new Promise((resolved, rejected) => {
+        fetch('/api/like', {
+            body: JSON.stringify({ _id }),
+            headers,
+            method: 'POST'
+        })
+            .then((response) => response.json())
+            .then((data) => resolved(data.likes))
+            .catch((err) => rejected(err));
+    });
+}
+exports.like = like;
+
+
+/***/ }),
+
+/***/ 41:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var CARD_TYPE;
+(function (CARD_TYPE) {
+    CARD_TYPE["great_job"] = "great_job";
+    CARD_TYPE["totally_awesome"] = "totally_awesome";
+    CARD_TYPE["well_done"] = "well_done";
+    CARD_TYPE["many_thanks"] = "many_thanks";
+    CARD_TYPE["very_happy"] = "very_happy";
+    CARD_TYPE["congrats"] = "congrats";
+    CARD_TYPE["proud"] = "proud";
+    CARD_TYPE["thank_you"] = "thank_you";
+})(CARD_TYPE = exports.CARD_TYPE || (exports.CARD_TYPE = {}));
+var EVENT_STATE;
+(function (EVENT_STATE) {
+    EVENT_STATE["past"] = "past";
+    EVENT_STATE["active"] = "active";
+    EVENT_STATE["future"] = "future";
+})(EVENT_STATE = exports.EVENT_STATE || (exports.EVENT_STATE = {}));
+
+
+/***/ }),
+
+/***/ 42:
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(34);
+            var content = __webpack_require__(43);
 
             content = content.__esModule ? content.default : content;
 
@@ -165,11 +306,11 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 34:
+/***/ 43:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(36);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, "html {\n  --c-one: #4d677f;\n  --c-two: white;\n  --c-three: rgba(3, 2, 2, 0.25);\n  --c-border: #dbe1e4;\n}\n\n#form-event {\n  border: 1px solid var(--c-border);\n  background-color: var(--c-two);\n  width: 500px;\n  height: 325px;\n  box-shadow: 0px 4px 10px var(--c-three);\n  font-family: 'Ubuntu_bold';\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 10;\n}\n\n#form-event.hidden {\n  display: none;\n}\n\n#form-event .formEvent_header {\n  background-color: var(--c-one);\n  height: 26px;\n  line-height: 26px;\n}\n\n#form-event .formEvent_header .formEvent_header-text {\n  font-size: 16px;\n  margin-left: 10px;\n  color: var(--c-two);\n}\n\n#form-event .formEvent_header .formEvent_header-close {\n  display: block;\n  font-size: 16px;\n  margin-right: 4px;\n  background-color: var(--c-two);\n  color: var(--c-one);\n  border-radius: 50%;\n  width: 20px;\n  height: 20px;\n  float: right;\n  text-align: center;\n  line-height: 18px;\n  margin-top: 2px;\n  cursor: pointer;\n}\n\n#form-event form {\n  margin: 10px 20px;\n}\n\n#form-event label {\n  display: inline-block;\n  display: inline-block;\n  min-width: 120px;\n  text-align: right;\n  margin-right: 10px;\n  color: var(--c-one);\n}\n\n#form-event input,\n#form-event select {\n  min-width: 200px;\n}\n\n#form-event input[type='button'] {\n  position: relative;\n  margin: 0 58%;\n}\n", ""]);
@@ -179,7 +320,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 35:
+/***/ 44:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -193,7 +334,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const api_1 = __webpack_require__(27);
+const api_1 = __webpack_require__(40);
 class EventList extends react_1.Component {
     constructor(props) {
         super(props);
@@ -258,5 +399,5 @@ exports.default = EventList;
 
 /***/ })
 
-},[[31,"runtime","vendor","common"]]]);
+},[[38,"runtime","vendor"]]]);
 //# sourceMappingURL=admin.js.map
