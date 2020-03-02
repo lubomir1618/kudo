@@ -1,17 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { CARD_TYPE } from '../../../common/constants';
 import Card from './Card';
 
-const cardTypes = [
-  'great_job',
-  'totally_awesome',
-  'well_done',
-  'many_thanks',
-  'very_happy',
-  'congrats',
-  'proud',
-  'thank_you'
-];
+const cardTypes = Object.values(CARD_TYPE);
 
 export const props_1 = {
   awarded: 'Janka Kudlikova',

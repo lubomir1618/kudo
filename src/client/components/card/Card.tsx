@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { CARD_TYPE } from '../../../common/constants';
 import { CardIcon } from '../cardIcon/CardIcon';
 import './Card.css';
 
@@ -9,7 +10,7 @@ export interface Props {
   highlighted: boolean;
   likes: number;
   text: string;
-  cardType: string;
+  cardType: CARD_TYPE;
 }
 
 export interface State {
