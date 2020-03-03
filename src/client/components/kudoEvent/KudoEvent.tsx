@@ -1,6 +1,7 @@
 import React from 'react';
 import * as I from '../../../common/interfaces';
 import { select } from '../../utils/api';
+import { getKudoNumberList, getKudoKnight } from '../../utils/client';
 import { Knight } from '../Knight/Knight';
 import { EventInfo } from '../eventInfo/EventInfo';
 import KudoForm from '../KudoForm/KudoForm';
@@ -111,6 +112,8 @@ export default class KudoEvent extends React.Component<{}, IState> {
 
   private getKnight(): JSX.Element {
     // TODO get most frequent name from array
-    return <Knight {...{ mostKudos: 'Pyotr Ilyich Tchaikovsky' }} />;
+    const list = getKudoNumberList(this.state.cards);
+
+    return <div title={JSON.stringify(list)}><Knight {...{ mostKudos: getKudoKnight(list) }} /></div>;
   }
 }
