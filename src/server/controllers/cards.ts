@@ -37,26 +37,33 @@ class Cards {
 
   public create(req: Request, res: Response) {
     utils.serverLog('/cards => create', req);
-    const valid = isCardValid(req.body);
-    if (valid === true) {
-      const card = {
-        author: req.body.author || 'anonymous',
-        awardedTo: req.body.awardedTo,
-        created: new Date().getTime(),
-        eventId: req.body.eventId,
-        likes: 0,
-        text: req.body.text,
-        title: req.body.title,
-        type: req.body.type
-      };
-      // save to db
-      this.cards
-        .insert(card)
-        .then((data) => res.json(data))
-        .catch((err) => utils.errorHandler(res, err.message));
-    } else {
-      utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
-    }
+
+    db.get<I.Event>('events')
+    .findOne({ _id: req.body.eventId })
+    .then((event) => {
+      const valid = isCardValid(req.body, event)
+
+      if (valid === true) {
+        const card = {
+          author: req.body.author || 'anonymous',
+          awardedTo: req.body.awardedTo,
+          created: new Date().getTime(),
+          eventId: req.body.eventId,
+          likes: 0,
+          text: req.body.text,
+          title: req.body.title,
+          type: req.body.type
+        };
+        // save to db
+        this.cards
+          .insert(card)
+          .then((data) => res.json(data))
+          .catch((err) => utils.errorHandler(res, err.message));
+      } else {
+        utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
+      }
+    })
+    .catch((err) => utils.errorHandler(res, `Error: Kudo Event doesn't exist.`));
   }
 }
 

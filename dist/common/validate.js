@@ -37,19 +37,17 @@ function isUserValid(user) {
     return bugs.length ? bugs : true;
 }
 exports.isUserValid = isUserValid;
-function isCardValid(card) {
+function isCardValid(card, event) {
     const bugs = [];
+    if (!(event && event._id === card.eventId && event.dateFrom < card.created && event.dateTo < card.created)) {
+        bugs.push('created');
+    }
     if (!(card.awardedTo && card.awardedTo !== '')) {
         bugs.push('awardedTo');
     }
-    /*
     if (!(card.eventId && card.eventId !== '')) {
-      bugs.push('eventId');
+        bugs.push('eventId');
     }
-    if (!(card.title && card.title !== '')) {
-      bugs.push('title');
-    }
-    */
     if (!(card.text && card.text !== '')) {
         bugs.push('text');
     }

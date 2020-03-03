@@ -10,6 +10,7 @@ import './KudoEvent.css';
 interface IState {
   cards: I.Card[];
   event: I.Event | undefined;
+  is_active: boolean;
 }
 
 export default class KudoEvent extends React.Component<{}, IState> {
@@ -21,7 +22,8 @@ export default class KudoEvent extends React.Component<{}, IState> {
 
     this.state = {
       cards: [],
-      event: undefined
+      event: undefined,
+      is_active: false
     };
   }
 
@@ -38,7 +40,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
           <div className="event_info">
             {this.getEvent()}
             {this.getKnight()}
-            <KudoForm eventId={this.eventId} />
+            <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
           </div>
           <div className="event_cards">
             {this.processCards()}
@@ -49,6 +51,8 @@ export default class KudoEvent extends React.Component<{}, IState> {
   }
 
   private getData() {
+    const now = new Date().getTime();
+
     select<I.Card[]>('/api/cards', {eventId: this.eventId}).then((data) => {
       if (Array.isArray(data)) {
         data.sort((a, b) => (a.likes > b.likes) ? -1 : 1);
@@ -59,7 +63,12 @@ export default class KudoEvent extends React.Component<{}, IState> {
     });
 
     select<I.Event>('/api/events', {_id: this.eventId})
-    .then((data) => this.setState({ event: data }));
+    .then((data) => {
+      this.setState({
+        event: data,
+        is_active: data.dateFrom < now && now < data.dateTo
+      })
+    });
   }
 
   private getEvent(): JSX.Element {
