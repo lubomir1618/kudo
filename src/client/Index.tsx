@@ -15,9 +15,7 @@ export default function App() {
                 <Route path="/priklad">
                     <div>Priklad na inu route </div>
                 </Route>
-                <Route path="/event/:id">
-                    <div> <KudoEvent/></div>
-                </Route>
+                <Route path="/event/:id" component={KudoEvent} />
             </Switch>
         </Router>
     );

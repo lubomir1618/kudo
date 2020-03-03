@@ -13,8 +13,11 @@ interface IState {
 }
 
 export default class KudoEvent extends React.Component<{}, IState> {
+  private eventId: string;
+
   constructor(props: any) {
     super(props);
+    this.eventId = (this.props as any).match.params.id;
 
     this.state = {
       cards: [],
@@ -30,14 +33,12 @@ export default class KudoEvent extends React.Component<{}, IState> {
   }
   
   public render() {
-    const eventId = this.state.event && this.state.event._id ? this.state.event._id : '';
-
     return (
       <div className='kudoEvent'>
         <div className="event_info">
           {this.getEvent()}
           {this.getKnight()}
-          <KudoForm eventId={eventId} />
+          <KudoForm eventId={this.eventId} />
         </div>
         <div className="event_cards">
           {this.processCards()}
@@ -47,11 +48,17 @@ export default class KudoEvent extends React.Component<{}, IState> {
   }
 
   private getData() {
-    select<I.Card[]>('/api/cards').then((data) => {
-      data.sort((a, b) => (a.likes > b.likes) ? -1 : 1);
-      this.setState({ cards: data });
+    select<I.Card[]>('/api/cards', {eventId: this.eventId}).then((data) => {
+      if (Array.isArray(data)) {
+        data.sort((a, b) => (a.likes > b.likes) ? -1 : 1);
+        this.setState({ cards: data });
+      } else {
+        this.setState({ cards: [data] });
+      }
     });
-    select<I.Event>('/api/events', {state: 'active'}).then((data) => this.setState({ event: data }));
+
+    select<I.Event>('/api/events', {_id: this.eventId})
+    .then((data) => this.setState({ event: data }));
   }
 
   private getEvent(): JSX.Element {
