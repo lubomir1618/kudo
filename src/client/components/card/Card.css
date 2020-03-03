@@ -6,7 +6,7 @@
   --card-text-color-h3: #331832;
   --card-text-color: #6d686d;
   --card-bg-color-likes: #f0544f;
-  --card-bg-color-likes-noVote: #bcbdc4;
+  --card-bg-color-likes-noVote: #2eb378;
   --card-text-color-likes: #ffffff;
 }
 
@@ -63,7 +63,7 @@
 .card .card__text p,
 .card .card__text-highlighted p {
   font-family: 'Ubuntu_Normal';
-  font-size: 11px;
+  font-size: 12px;
   line-height: 14px;
   color: var(--card-text-color);
   margin: 0px;

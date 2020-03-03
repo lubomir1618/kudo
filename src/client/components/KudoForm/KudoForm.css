@@ -22,7 +22,7 @@
 }
 
 .kudoForm .typePicker:hover {
-  background-color: #fae8c1;
+  background-color: #e4ab32;
 }
 
 .kudoForm .typePicker .cardIcon {
@@ -42,7 +42,9 @@
   display: flex;
   flex-wrap: wrap;
 }
-
+.kudoForm .typePicker .select-search-box__option:hover {
+  background: #f7e8d4;
+}
 .kudoForm .typePicker .select-search-box__option > div {
   display: flex;
   align-items: center;
@@ -137,6 +139,9 @@
   font-weight: bold;
   background: linear-gradient(180deg, #F0544F 0%, #D74945 100%), #F0544F;
   cursor: pointer;
+}
+.kudoForm .submit:hover {
+  background: #F0544F;
 }
 
 .kudoForm .submit.disabled {
