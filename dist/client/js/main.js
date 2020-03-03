@@ -31,7 +31,7 @@ function App() {
             React.createElement(react_router_dom_1.Route, { path: "/event/:id", component: KudoEvent_1.default }))));
 }
 exports.default = App;
-ReactDOM.render(React.createElement(App, null), document.getElementById('example'));
+ReactDOM.render(React.createElement(App, null), document.getElementById('app'));
 // vodka();
 
 
