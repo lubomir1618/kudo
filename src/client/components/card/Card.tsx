@@ -5,8 +5,8 @@ import './Card.css';
 
 export interface Props {
   awarded: string;
-  cardID: number;
-  eventID: number;
+  cardID?: string;
+  eventID: string;
   highlighted: boolean;
   likes: number;
   text: string;
@@ -18,24 +18,8 @@ export interface State {
 }
 
 export default class Card extends Component<Props, State> {
-  private readonly awarded: string;
-  private readonly cardID: number;
-  private readonly eventID: number;
-  private readonly highlighted: boolean;
-  private readonly likes: number;
-  private readonly text: string;
-  private readonly cardType: string;
-
   constructor(props: Props) {
     super(props);
-
-    this.awarded = props.awarded;
-    this.cardID = props.cardID;
-    this.eventID = props.eventID;
-    this.highlighted = props.highlighted;
-    this.likes = props.likes;
-    this.text = props.text;
-    this.cardType = props.cardType;
     this.state = {
       voted: false
     };
@@ -51,7 +35,7 @@ export default class Card extends Component<Props, State> {
           <h3>{this.props.awarded}</h3>
           <p>{this.props.text}</p>
         </div>
-        {this.yourChoice(this.props.eventID, this.props.cardID) ? (
+        {this.yourChoice(this.props.eventID, this.props.cardID!) ? (
           <div className="card__likes-yourChoice" title="your choice">
             {this.props.likes}
           </div>
@@ -59,7 +43,7 @@ export default class Card extends Component<Props, State> {
           <div
             onClick={this.vote}
             data-eventid={this.props.eventID}
-            data-cardid={this.props.cardID}
+            data-cardid={this.props.cardID!}
             className="card__likes"
             title="vote">
             {this.props.likes}
@@ -70,8 +54,8 @@ export default class Card extends Component<Props, State> {
   }
 
   private vote = (event: any) => {
-    const eventID = Number(event.currentTarget.dataset.eventid);
-    const cardID = Number(event.currentTarget.dataset.cardid);
+    const eventID = event.currentTarget.dataset.eventid;
+    const cardID = event.currentTarget.dataset.cardid;
     const voteData = {
       cardID,
       eventID
@@ -88,7 +72,7 @@ export default class Card extends Component<Props, State> {
     return;
   };
 
-  private alreadyVoted(eventID: number): boolean {
+  private alreadyVoted(eventID: string): boolean {
     const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
 
     if (savedVote) {
@@ -98,12 +82,12 @@ export default class Card extends Component<Props, State> {
     return false;
   }
 
-  private yourChoice(eventID: number, cardID: number): boolean {
+  private yourChoice(eventID: string, cardID: string): boolean {
     const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
 
     if (savedVote) {
       const data = JSON.parse(savedVote);
-      if (Number(data.cardID) === cardID) {
+      if (data.cardID === cardID) {
         return true;
       }
     }

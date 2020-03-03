@@ -18,12 +18,12 @@
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
   background: transparent;
   border-radius: 10px;
-  margin-bottom: 20px;
+  margin: 11px;
 }
 
 .card .card__icon {
-  min-width: 80px;
-  width: 80px;
+  min-width: 70px;
+  width: 70px;
   background: var(--card-bg-color-icon);
   border-radius: 10px 0px 0px 10px;
   text-align: center;
@@ -31,6 +31,12 @@
 
 .card .card__icon img {
   width: 33px;
+  margin: 0 auto;
+}
+
+.card .card__text {
+  min-width: 226px;
+  width: 100%;
 }
 
 .card .card__text,

@@ -1,0 +1,89 @@
+.kudoEvent {
+  background-color: #cecece;
+  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: row;
+  padding: 120px 0 60px 140px;
+  padding-right: 0px;
+  height: 100vh;
+  width: 100%;
+}
+
+.kudoEvent .event_info {
+  width: 22%;
+  min-width: 270px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+}
+
+.kudoEvent .event_info > div {
+  width: 100%;
+  margin-bottom: 50px;
+}
+
+.kudoEvent .event_info .eventInfo {
+  margin-bottom: 28px;
+}
+
+.kudoEvent .event_info .kudoForm {
+  margin-bottom: 0px;
+}
+
+.kudoEvent .event_cards {
+  margin-left: 100px;
+  margin-right: 20px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  overflow-x: scroll;
+  padding: 10px 0;
+}
+
+.kudoEvent .event_cards .card {
+  width: 296px;
+}
+
+@media only screen and (max-width: 800px) {
+  .kudoEvent {
+    padding: 60px 0 40px 60px;
+  }
+
+  .kudoEvent .event_cards {
+    margin-left: 50px;
+  }
+}
+
+@media only screen and (max-width: 580px) {
+  .kudoEvent {
+    flex-direction: column;
+    padding: 0px;
+    height: auto;
+  }
+
+  .kudoEvent .event_info {
+    width: 80%;
+    margin: 6rem auto;
+  }
+
+  .kudoEvent .event_cards {
+    width: 88%;
+    margin: 3rem auto;
+    max-width: unset;
+    padding: 20px;
+  }
+
+  .kudoEvent .event_cards .card {
+    margin: 10px 0;
+    min-width: unset;
+    width: auto;
+  }
+
+  .kudoEvent .event_cards .card .card__text {
+    min-width: unset;
+  }
+}

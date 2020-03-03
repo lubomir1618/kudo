@@ -57,6 +57,7 @@
   padding: 14px;
   height: 59px;
   text-transform: capitalize;
+  background-color: #fbf8f4;
 }
 
 .kudoForm .main {
@@ -85,6 +86,7 @@
   border: none;
   font-size: 16px;
   color: #6D686D;
+  margin-bottom: 0px;
 }
 
 
@@ -110,6 +112,8 @@
   border: none;
   outline: none;
   background: transparent;
+  padding: 0;
+  margin: 0;
 }
 
 .kudoForm .name.red,
@@ -125,6 +129,7 @@
   border-radius: 0 0 10px 10px;
   font-size: 18px;
   color: #ffffff;
+  font-weight: bold;
   background: linear-gradient(180deg, #F0544F 0%, #D74945 100%), #F0544F;
   cursor: pointer;
 }
@@ -245,7 +250,6 @@
   height: 47px;
   width: 100%;
   padding: 0 16px;
-  padding-left: 74px;
   background: #fff;
   border: none;
   outline: none;
@@ -268,22 +272,4 @@
 .select-search-box__option.is-selected:hover {
   background: #2eb378;
   color: #fff;
-}
-
-@media only screen and (min-width: 800px) {
-  .kudoForm .typePicker .select-search-box__options li {
-    width: 25%;
-    height: 85px;
-  }
-
-  .kudoForm .typePicker .select-search-box__option {
-    justify-content: center;
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .kudoForm .name .select-search-box__option {
-    justify-content: center;
-    padding-left: 0px;
-  }
 }
