@@ -30,7 +30,7 @@ class Cards {
       where = { _id: req.params.id };
     }
     this.cards
-      .findOne(where)
+      .find(where)
       .then((data) => res.json(data))
       .catch((err) => utils.errorHandler(res, err.message));
   }

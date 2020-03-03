@@ -99,12 +99,14 @@ class KudoEvent extends react_1.default.Component {
         });
     }
     render() {
-        return (react_1.default.createElement("div", { className: 'kudoEvent' },
-            react_1.default.createElement("div", { className: "event_info" },
-                this.getEvent(),
-                this.getKnight(),
-                react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId })),
-            react_1.default.createElement("div", { className: "event_cards" }, this.processCards())));
+        return (this.state.event
+            ? react_1.default.createElement("div", { className: 'kudoEvent' },
+                react_1.default.createElement("div", { className: "event_info" },
+                    this.getEvent(),
+                    this.getKnight(),
+                    react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId })),
+                react_1.default.createElement("div", { className: "event_cards" }, this.processCards()))
+            : react_1.default.createElement("div", null));
     }
     getData() {
         api_1.select('/api/cards', { eventId: this.eventId }).then((data) => {
