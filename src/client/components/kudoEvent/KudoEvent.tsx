@@ -33,17 +33,18 @@ export default class KudoEvent extends React.Component<{}, IState> {
   }
   
   public render() {
-    return (
-      <div className='kudoEvent'>
-        <div className="event_info">
-          {this.getEvent()}
-          {this.getKnight()}
-          <KudoForm eventId={this.eventId} />
+    return (this.state.event
+      ? <div className='kudoEvent'>
+          <div className="event_info">
+            {this.getEvent()}
+            {this.getKnight()}
+            <KudoForm eventId={this.eventId} />
+          </div>
+          <div className="event_cards">
+            {this.processCards()}
+          </div>
         </div>
-        <div className="event_cards">
-          {this.processCards()}
-        </div>
-      </div>
+      : <div />
     );
   }
 
