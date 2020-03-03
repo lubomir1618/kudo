@@ -866,10 +866,11 @@ class Card extends react_1.Component {
             const eventID = event.currentTarget.dataset.eventid;
             const cardID = event.currentTarget.dataset.cardid;
             const voteData = {
-                cardID,
+                cardID: [],
                 eventID
             };
-            if (!this.alreadyVoted(eventID)) {
+            voteData.cardID.push(cardID);
+            if (!this.alreadyVoted(eventID, cardID)) {
                 // API call to increment likes
                 api_1.like(cardID)
                     .then(() => {
@@ -896,9 +897,13 @@ class Card extends react_1.Component {
                 react_1.default.createElement("p", null, this.props.text)),
             this.yourChoice(this.props.eventID, this.props.cardID) ? (react_1.default.createElement("div", { className: "card__likes-yourChoice", title: "your choice" }, this.props.likes)) : (react_1.default.createElement("div", { onClick: this.vote, "data-eventid": this.props.eventID, "data-cardid": this.props.cardID, className: "card__likes", title: "vote" }, this.props.likes))));
     }
-    alreadyVoted(eventID) {
+    alreadyVoted(eventID, cardID) {
         const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
         if (savedVote) {
+            const data = JSON.parse(savedVote);
+            if (data.cardID.includes(cardID)) {
+                return true;
+            }
             return true;
         }
         return false;
@@ -907,7 +912,7 @@ class Card extends react_1.Component {
         const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
         if (savedVote) {
             const data = JSON.parse(savedVote);
-            if (data.cardID === cardID) {
+            if (data.cardID.includes(cardID)) {
                 return true;
             }
         }

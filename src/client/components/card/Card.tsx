@@ -12,6 +12,7 @@ export interface Props {
   likes: number;
   text: string;
   cardType: CARD_TYPE;
+  // isKudoEventActive: boolean;
 }
 
 export interface State {
@@ -58,11 +59,13 @@ export default class Card extends Component<Props, State> {
     const eventID = event.currentTarget.dataset.eventid;
     const cardID = event.currentTarget.dataset.cardid;
     const voteData = {
-      cardID,
+      cardID: [],
       eventID
     };
 
-    if (!this.alreadyVoted(eventID)) {
+    voteData.cardID.push(cardID as never);
+
+    if (!this.alreadyVoted(eventID, cardID)) {
       // API call to increment likes
       like(cardID)
         .then(() => {
@@ -79,10 +82,15 @@ export default class Card extends Component<Props, State> {
     return;
   };
 
-  private alreadyVoted(eventID: string): boolean {
+  private alreadyVoted(eventID: string, cardID: string): boolean {
     const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
 
     if (savedVote) {
+      const data = JSON.parse(savedVote);
+
+      if (data.cardID.includes(cardID)) {
+        return true;
+      }
       return true;
     }
 
@@ -94,7 +102,7 @@ export default class Card extends Component<Props, State> {
 
     if (savedVote) {
       const data = JSON.parse(savedVote);
-      if (data.cardID === cardID) {
+      if (data.cardID.includes(cardID)) {
         return true;
       }
     }
