@@ -12,7 +12,6 @@ export interface Props {
   likes: number;
   text: string;
   cardType: CARD_TYPE;
-  // isKudoEventActive: boolean;
 }
 
 export interface State {
@@ -58,10 +57,15 @@ export default class Card extends Component<Props, State> {
   private vote = (event: any) => {
     const eventID = event.currentTarget.dataset.eventid;
     const cardID = event.currentTarget.dataset.cardid;
-    const voteData = {
+    const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
+    let voteData = {
       cardID: [],
       eventID
     };
+
+    if (savedVote) {
+      voteData = JSON.parse(savedVote);
+    }
 
     voteData.cardID.push(cardID as never);
 
@@ -91,7 +95,6 @@ export default class Card extends Component<Props, State> {
       if (data.cardID.includes(cardID)) {
         return true;
       }
-      return true;
     }
 
     return false;

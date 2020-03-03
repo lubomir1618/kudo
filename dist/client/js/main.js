@@ -867,10 +867,14 @@ class Card extends react_1.Component {
         this.vote = (event) => {
             const eventID = event.currentTarget.dataset.eventid;
             const cardID = event.currentTarget.dataset.cardid;
-            const voteData = {
+            const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
+            let voteData = {
                 cardID: [],
                 eventID
             };
+            if (savedVote) {
+                voteData = JSON.parse(savedVote);
+            }
             voteData.cardID.push(cardID);
             if (!this.alreadyVoted(eventID, cardID)) {
                 // API call to increment likes
@@ -906,7 +910,6 @@ class Card extends react_1.Component {
             if (data.cardID.includes(cardID)) {
                 return true;
             }
-            return true;
         }
         return false;
     }
