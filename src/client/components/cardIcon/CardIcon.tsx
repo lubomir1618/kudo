@@ -32,7 +32,7 @@ function getIcon(cardType: string): string {
 export const CardIcon = (props: Props) => {
   return (
     <div className="cardIcon">
-      <img src={`img/${getIcon(props.cardType)}`} title={props.cardType.replace('_', ' ').toUpperCase()} />
+      <img src={`/img/${getIcon(props.cardType)}`} title={props.cardType.replace('_', ' ').toUpperCase()} />
     </div>
   );
 };
