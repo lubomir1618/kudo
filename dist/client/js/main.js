@@ -1,5 +1,6 @@
-(window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["main"],[
-/* 0 */
+(window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["main"],{
+
+/***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14,60 +15,30 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
-const Hello_1 = __webpack_require__(12);
-const client_1 = __webpack_require__(25);
-__webpack_require__(28);
-ReactDOM.render(React.createElement(Hello_1.Hello, { compiler: "TypeScript", framework: "React" }), document.getElementById('example'));
-client_1.vodka();
+const react_router_dom_1 = __webpack_require__(12);
+const KudoTest_1 = __webpack_require__(32);
+__webpack_require__(33);
+function App() {
+    // let id = useParams().id;
+    return (React.createElement(react_router_dom_1.BrowserRouter, null,
+        React.createElement(react_router_dom_1.Switch, null,
+            React.createElement(react_router_dom_1.Route, { exact: true, path: "/" },
+                React.createElement("div", null, "Ahoj, toto je main routa, tu mozno raz daco bude, mozno nie :P")),
+            React.createElement(react_router_dom_1.Route, { path: "/priklad" },
+                React.createElement("div", null, "Priklad na inu route ")),
+            React.createElement(react_router_dom_1.Route, { path: "/event/:id" },
+                React.createElement("div", null,
+                    " ",
+                    React.createElement(KudoTest_1.KudoTest, null))))));
+}
+exports.default = App;
+ReactDOM.render(React.createElement(App, null), document.getElementById('example'));
+// vodka();
 
 
 /***/ }),
-/* 1 */,
-/* 2 */,
-/* 3 */,
-/* 4 */,
-/* 5 */,
-/* 6 */,
-/* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(1));
-const Knight_1 = __webpack_require__(13);
-const CardIcon_1 = __webpack_require__(18);
-const _3h_svg_1 = __importDefault(__webpack_require__(22));
-__webpack_require__(23);
-exports.Hello = (props) => (React.createElement("h1", { className: "big" },
-    React.createElement(_3h_svg_1.default, null),
-    "Hello from ",
-    props.compiler,
-    " and ",
-    props.framework,
-    "!",
-    React.createElement(Knight_1.Knight, { mostKudos: "Janko Haluska" }),
-    ' ',
-    React.createElement(CardIcon_1.CardIcon, { cardType: "totally_awesome" })));
-
-
-/***/ }),
-/* 13 */
+/***/ 32:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -81,104 +52,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
-__webpack_require__(14);
-exports.Knight = (props) => (React.createElement("div", { className: "kudoKnight" },
-    React.createElement("div", null,
-        React.createElement("img", { src: "img/007-crusader.png" })),
-    React.createElement("div", { className: "kudoKnight__content" },
-        React.createElement("h3", null, "Kudo Knight"),
-        React.createElement("h2", null, props.mostKudos))));
-
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(15);
-            var content = __webpack_require__(16);
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-/* 15 */,
-/* 16 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".kudoKnight {\n    font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%), #C6D8D3;\n    display: flex;\n    position: relative;\n    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);\n    border-radius: 10px;\n}\n.kudoKnight__content {\n    margin-left: 110px;\n}\n.kudoKnight h3 {\n    margin-top: 20px;\n    font-size: 9px;\n    color: #6D686D;\n}\n\n.kudoKnight h2 {\n    font-size: 18px;\n    color: #331832;\n    margin-top: -5px;\n}\n.kudoKnight img {\n    position: absolute;\n    height: 120%;\n    bottom: 0;\n}", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-/* 17 */,
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importDefault(__webpack_require__(1));
-const constants_1 = __webpack_require__(19);
-__webpack_require__(20);
-function getIcon(cardType) {
-    switch (cardType) {
-        case constants_1.CARD_TYPE.great_job:
-            return '009-positive-vote.svg';
-        case constants_1.CARD_TYPE.totally_awesome:
-            return '005-star.svg';
-        case constants_1.CARD_TYPE.well_done:
-            return '006-smiling-face.svg';
-        case constants_1.CARD_TYPE.many_thanks:
-            return '003-flower.svg';
-        case constants_1.CARD_TYPE.very_happy:
-            return '002-heart.svg';
-        case constants_1.CARD_TYPE.congrats:
-            return '004-balloons.svg';
-        case constants_1.CARD_TYPE.proud:
-            return '001-crowns.svg';
-        case constants_1.CARD_TYPE.thank_you:
-            return '010-birthday-cupcake.svg';
-        default:
-            return '005-star.svg';
-    }
-}
-exports.CardIcon = (props) => {
-    return (react_1.default.createElement("div", { className: "cardIcon" },
-        react_1.default.createElement("img", { src: `img/${getIcon(props.cardType)}`, title: props.cardType.replace('_', ' ').toUpperCase() })));
+const react_router_dom_1 = __webpack_require__(12);
+exports.KudoTest = () => {
+    const { id } = react_router_dom_1.useParams(); // toto berie z react routera, nasledne sa na toto id da zavolat nejaky api call napr. ;0 
+    console.log('params: ', id);
+    return (React.createElement("h1", { className: "big" },
+        "soske mange more URL PARAMETER PRE KUDO HASH JE: ",
+        id));
 };
 
 
 /***/ }),
-/* 19 */,
-/* 20 */
+
+/***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(15);
-            var content = __webpack_require__(21);
+var api = __webpack_require__(34);
+            var content = __webpack_require__(35);
 
             content = content.__esModule ? content.default : content;
 
@@ -200,295 +90,13 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 21 */
+
+/***/ 35:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".cardIcon {\n  width: 100%;\n  height: 100%;\n}\n\n.cardIcon img {\n  min-width: 20px;\n  min-height: 20px;\n}\n", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-/* 22 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-function _extends() {
-  _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return _extends.apply(this, arguments);
-}
-
-
-/* harmony default export */ __webpack_exports__["default"] = (({
-  styles = {},
-  ...props
-}) => react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("svg", _extends({
-  viewBox: "0 0 16 16",
-  xmlns: "http://www.w3.org/2000/svg",
-  stroke: "#000",
-  fillRule: "evenodd",
-  clipRule: "evenodd",
-  strokeLinecap: "round",
-  strokeLinejoin: "round",
-  strokeMiterlimit: "1.5"
-}, props), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("path", {
-  d: "M8.047 1.004l-.054 7.034 7.001.007c-.334-4.33-2.67-6.655-6.947-7.041z",
-  stroke: "none"
-}), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("circle", {
-  cx: "8.987",
-  cy: "8.744",
-  r: "6.689",
-  fill: "none",
-  strokeWidth: ".96",
-  transform: "translate(-1.404 -1.15) scale(1.04645)"
-})));
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(15);
-            var content = __webpack_require__(24);
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-/* 24 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".big {\n  font-size: 26px;\n  font-family: 'Roboto_Bold';\n  color: blue;\n}\n\n.big svg {\n  height: 26px;\n  fill: blue;\n}\n", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-/* 25 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const validate_1 = __webpack_require__(26);
-const api_1 = __webpack_require__(27);
-const form = document.getElementById('form-user');
-const loading = document.querySelector('.loading');
-const API_URL = '/api/users';
-const usersElement = document.querySelector('.allUsers');
-function vodka() {
-    loading.style.display = 'none';
-    listAllUsers();
-    form.addEventListener('submit', (event) => {
-        var _a, _b;
-        const formData = new FormData(form);
-        const name = ((_a = formData.get('name')) === null || _a === void 0 ? void 0 : _a.toString()) || '';
-        const surname = ((_b = formData.get('surname')) === null || _b === void 0 ? void 0 : _b.toString()) || '';
-        const user = {
-            name,
-            surname
-        };
-        if (!validate_1.isUserValid(user)) {
-            return false;
-        }
-        console.log('user', user);
-        form.style.display = 'none';
-        loading.style.display = '';
-        api_1.insert('/api/users', user)
-            .then((createdUser) => {
-            form.style.display = '';
-            loading.style.display = 'none';
-            form.reset();
-            listAllUsers();
-            console.log(createdUser);
-        })
-            .catch((err) => {
-            console.error(`💥 Error: ${err.message}`);
-        });
-        event.preventDefault();
-    });
-    function listAllUsers() {
-        api_1.select('/api/users')
-            .then((users) => {
-            usersElement.textContent = '';
-            users.reverse();
-            users.forEach((user) => {
-                const div = document.createElement('div');
-                const header = document.createElement('h4');
-                const surname = document.createElement('p');
-                const created = document.createElement('small');
-                header.textContent = user.name;
-                surname.textContent = user.surname;
-                created.textContent = new Date(user.created).toString();
-                div.appendChild(header);
-                div.appendChild(surname);
-                div.appendChild(created);
-                usersElement.appendChild(div);
-            });
-        })
-            .catch((err) => {
-            console.error(`💥 Error: ${err.message}`);
-        });
-    }
-}
-exports.vodka = vodka;
-
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function hasData(data, type = 'string') {
-    if (data === undefined || data === null) {
-        return false;
-    }
-    switch (type) {
-        case 'number':
-            return typeof data === 'number' || !isNaN(data);
-        case 'boolean':
-            return typeof data === 'boolean';
-        default:
-            return data !== '';
-    }
-}
-exports.hasData = hasData;
-function hasOneOf(data, check) {
-    if (hasData(data)) {
-        return check.includes(data);
-    }
-    return false;
-}
-exports.hasOneOf = hasOneOf;
-function isLikeValid(_id) {
-    return hasData(_id) ? true : ['_id'];
-}
-exports.isLikeValid = isLikeValid;
-function isUserValid(user) {
-    const bugs = [];
-    if (!(user.name && user.name !== '')) {
-        bugs.push('name');
-    }
-    if (!(user.surname && user.surname !== '')) {
-        bugs.push('surname');
-    }
-    return bugs.length ? bugs : true;
-}
-exports.isUserValid = isUserValid;
-function isCardValid(card) {
-    const bugs = [];
-    if (!(card.awardedTo && card.awardedTo !== '')) {
-        bugs.push('awardedTo');
-    }
-    if (!(card.eventId && card.eventId !== '')) {
-        bugs.push('eventId');
-    }
-    if (!(card.title && card.title !== '')) {
-        bugs.push('title');
-    }
-    if (!(card.text && card.text !== '')) {
-        bugs.push('text');
-    }
-    if (!(card.type && ['awesome', 'normal'].includes(card.type))) {
-        bugs.push('type');
-    }
-    return bugs.length ? bugs : true;
-}
-exports.isCardValid = isCardValid;
-function isEventValid(event) {
-    const bugs = [];
-    if (!hasData(event.dateFrom, 'number')) {
-        bugs.push('dateFrom');
-    }
-    if (!hasData(event.dateTo, 'number')) {
-        bugs.push('dateTo');
-    }
-    if (!hasData(event.name)) {
-        bugs.push('name');
-    }
-    if (!hasOneOf(event.state, ['past', 'active', 'future'])) {
-        bugs.push('state');
-    }
-    return bugs.length ? bugs : true;
-}
-exports.isEventValid = isEventValid;
-
-
-/***/ }),
-/* 27 */,
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(15);
-            var content = __webpack_require__(29);
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
-var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(30);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(36);
+var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(37);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
 // Module
@@ -498,11 +106,12 @@ module.exports = exports;
 
 
 /***/ }),
-/* 30 */
+
+/***/ 37:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(17);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(36);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, "/* Box sizing rules */\n*,\n*::before,\n*::after {\n  box-sizing: border-box;\n}\n\n/* Remove default padding */\nul[class],\nol[class] {\n  padding: 0;\n}\n\n/* Remove default margin */\nbody,\nh1,\nh2,\nh3,\nh4,\np,\nul[class],\nol[class],\nli,\nfigure,\nfigcaption,\nblockquote,\ndl,\ndd {\n  margin: 0;\n}\n\n/* Set core body defaults */\nbody {\n  min-height: 100vh;\n  scroll-behavior: smooth;\n  text-rendering: optimizeSpeed;\n  line-height: 1.5;\n}\n\n/* Remove list styles on ul, ol elements with a class attribute */\nul[class],\nol[class] {\n  list-style: none;\n}\n\n/* A elements that don't have a class get default styles */\na:not([class]) {\n  text-decoration-skip-ink: auto;\n}\n\n/* Make images easier to work with */\nimg {\n  max-width: 100%;\n  display: block;\n}\n\n/* Inherit fonts for inputs and buttons */\ninput,\nbutton,\ntextarea,\nselect {\n  font: inherit;\n}\n", ""]);
@@ -511,5 +120,6 @@ module.exports = exports;
 
 
 /***/ })
-],[[0,"runtime","vendor","common"]]]);
+
+},[[0,"runtime","vendor"]]]);
 //# sourceMappingURL=main.js.map

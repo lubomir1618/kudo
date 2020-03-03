@@ -22,6 +22,7 @@
     "nodemon": "^2.0.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-router-dom": "^5.1.2",
     "react-select-search": "^0.10.2",
     "restful-router": "^0.1.1"
   },
