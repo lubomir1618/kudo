@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const constants_1 = require("./constants");
 function hasData(data, type = 'string') {
     if (data === undefined || data === null) {
         return false;
@@ -41,16 +42,18 @@ function isCardValid(card) {
     if (!(card.awardedTo && card.awardedTo !== '')) {
         bugs.push('awardedTo');
     }
+    /*
     if (!(card.eventId && card.eventId !== '')) {
-        bugs.push('eventId');
+      bugs.push('eventId');
     }
     if (!(card.title && card.title !== '')) {
-        bugs.push('title');
+      bugs.push('title');
     }
+    */
     if (!(card.text && card.text !== '')) {
         bugs.push('text');
     }
-    if (!(card.type && ['awesome', 'normal'].includes(card.type))) {
+    if (!(card.type && constants_1.CARD_TYPE[card.type])) {
         bugs.push('type');
     }
     return bugs.length ? bugs : true;
