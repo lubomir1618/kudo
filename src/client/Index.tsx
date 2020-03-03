@@ -1,9 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Switch, Route, useParams } from 'react-router-dom';
-import { KudoTest } from './components/KudoTest';
-
-import { vodka } from './utils/client';
+import KudoEvent from './components/kudoEvent/KudoEvent';
 
 import './style.css';
 
@@ -18,7 +16,7 @@ export default function App() {
                     <div>Priklad na inu route </div>
                 </Route>
                 <Route path="/event/:id">
-                    <div> <KudoTest/></div>
+                    <div> <KudoEvent/></div>
                 </Route>
             </Switch>
         </Router>
