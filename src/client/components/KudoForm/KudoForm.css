@@ -67,6 +67,10 @@
   background-color: #fbf8f4;
 }
 
+.kudoForm .typePicker .select-search-box__options li:hover {
+  background: rgba(47, 204, 139, 0.1);
+}
+
 .kudoForm .main {
   height: 237px;
   display: flex;
@@ -279,12 +283,13 @@
 }
 
 .select-search-box__option.is-highlighted,
-.select-search-box__option:not(.is-selected):hover {
+.select-search-box__option:not(.is-selected):hover,
+.select-search-box__option:not(.select-search-box__option--hover):hover,
+.select-search-box__option--hover {
   background: rgba(47, 204, 139, 0.1);
 }
 
-.select-search-box__option.is-highlighted.is-selected,
-.select-search-box__option.is-selected:hover {
-  background: #2eb378;
-  color: #fff;
+.select-search-box__option--hover:hover,
+.select-search-box__option--hover:not(.is-selected):hover {
+  background: rgba(47, 204, 139, 0.2);
 }
