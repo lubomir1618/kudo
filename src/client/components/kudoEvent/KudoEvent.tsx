@@ -85,7 +85,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
         cardID: card_data._id,
         cardType: card_data.type,
         eventID: card_data.eventId,
-        highlighted: false,
+        highlighted: this.isHighligted(card_data._id),
         likes: card_data.likes,
         text: card_data.text
       }
@@ -94,6 +94,10 @@ export default class KudoEvent extends React.Component<{}, IState> {
     });
     
     return cards;
+  }
+
+  private isHighligted(cardId: string): boolean {
+    return this.state.cards.map(card => card._id).indexOf(cardId) < 7;
   }
 
   private getKnight(): JSX.Element {
