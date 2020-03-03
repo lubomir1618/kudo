@@ -862,6 +862,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const CardIcon_1 = __webpack_require__(50);
+const api_1 = __webpack_require__(33);
 __webpack_require__(57);
 class Card extends react_1.Component {
     constructor(props) {
@@ -869,13 +870,24 @@ class Card extends react_1.Component {
         this.vote = (event) => {
             const eventID = event.currentTarget.dataset.eventid;
             const cardID = event.currentTarget.dataset.cardid;
-            const voteData = {
-                cardID,
+            const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
+            let voteData = {
+                cardID: [],
                 eventID
             };
-            if (!this.alreadyVoted(eventID)) {
+            if (savedVote) {
+                voteData = JSON.parse(savedVote);
+            }
+            voteData.cardID.push(cardID);
+            if (!this.alreadyVoted(eventID, cardID)) {
                 // API call to increment likes
-                /* */
+                api_1.like(cardID)
+                    .then(() => {
+                    document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+                })
+                    .catch((err) => {
+                    console.log(`Error: like not inserted - ${err}`);
+                });
                 this.setState({ voted: true });
                 localStorage.setItem(`kudosVote-${eventID}`, JSON.stringify(voteData));
             }
@@ -894,10 +906,13 @@ class Card extends react_1.Component {
                 react_1.default.createElement("p", null, this.props.text)),
             this.yourChoice(this.props.eventID, this.props.cardID) ? (react_1.default.createElement("div", { className: "card__likes-yourChoice", title: "your choice" }, this.props.likes)) : (react_1.default.createElement("div", { onClick: this.vote, "data-eventid": this.props.eventID, "data-cardid": this.props.cardID, className: "card__likes", title: "vote" }, this.props.likes))));
     }
-    alreadyVoted(eventID) {
+    alreadyVoted(eventID, cardID) {
         const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
         if (savedVote) {
-            return true;
+            const data = JSON.parse(savedVote);
+            if (data.cardID.includes(cardID)) {
+                return true;
+            }
         }
         return false;
     }
@@ -905,7 +920,7 @@ class Card extends react_1.Component {
         const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
         if (savedVote) {
             const data = JSON.parse(savedVote);
-            if (data.cardID === cardID) {
+            if (data.cardID.includes(cardID)) {
                 return true;
             }
         }

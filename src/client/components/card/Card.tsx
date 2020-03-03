@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { CARD_TYPE } from '../../../common/constants';
 import { CardIcon } from '../cardIcon/CardIcon';
+import { like } from '../../utils/api';
 import './Card.css';
 
 export interface Props {
@@ -56,14 +57,27 @@ export default class Card extends Component<Props, State> {
   private vote = (event: any) => {
     const eventID = event.currentTarget.dataset.eventid;
     const cardID = event.currentTarget.dataset.cardid;
-    const voteData = {
-      cardID,
+    const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
+    let voteData = {
+      cardID: [],
       eventID
     };
 
-    if (!this.alreadyVoted(eventID)) {
+    if (savedVote) {
+      voteData = JSON.parse(savedVote);
+    }
+
+    voteData.cardID.push(cardID as never);
+
+    if (!this.alreadyVoted(eventID, cardID)) {
       // API call to increment likes
-      /* */
+      like(cardID)
+        .then(() => {
+          document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+        })
+        .catch((err: Error) => {
+          console.log(`Error: like not inserted - ${err}`);
+        });
 
       this.setState({ voted: true });
       localStorage.setItem(`kudosVote-${eventID}`, JSON.stringify(voteData));
@@ -72,11 +86,15 @@ export default class Card extends Component<Props, State> {
     return;
   };
 
-  private alreadyVoted(eventID: string): boolean {
+  private alreadyVoted(eventID: string, cardID: string): boolean {
     const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
 
     if (savedVote) {
-      return true;
+      const data = JSON.parse(savedVote);
+
+      if (data.cardID.includes(cardID)) {
+        return true;
+      }
     }
 
     return false;
@@ -87,7 +105,7 @@ export default class Card extends Component<Props, State> {
 
     if (savedVote) {
       const data = JSON.parse(savedVote);
-      if (data.cardID === cardID) {
+      if (data.cardID.includes(cardID)) {
         return true;
       }
     }
