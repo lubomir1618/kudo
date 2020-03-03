@@ -10,7 +10,7 @@ export interface Event {
 }
 
 export interface Card {
-  _id?: string;
+  _id: string;
   author?: string;
   awardedTo: string;
   created?: number;
