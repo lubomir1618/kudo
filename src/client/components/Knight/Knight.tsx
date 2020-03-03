@@ -8,7 +8,7 @@ export interface Props {
 export const Knight = (props: Props) => (
   <div className="kudoKnight">
     <div>
-      <img src="img/007-crusader.png" />
+      <img src="/img/007-crusader.png" />
     </div>
     <div className="kudoKnight__content">
       <h3>Kudo Knight</h3>
