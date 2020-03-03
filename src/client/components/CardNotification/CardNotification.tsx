@@ -9,7 +9,7 @@ export interface State {
 }
 
 class CardNotification extends Component<Props, State> {
-  audio = new Audio('audio/notification.wav');
+  audio = new Audio('/audio/notification.wav');
 
   constructor(props: Props) {
     super(props);
