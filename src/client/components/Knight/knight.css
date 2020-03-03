@@ -1,27 +1,29 @@
 .kudoKnight {
-    font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
-    background: linear-gradient(180deg, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%), #C6D8D3;
-    display: flex;
-    position: relative;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%), #c6d8d3;
+  display: flex;
+  position: relative;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 .kudoKnight__content {
-    margin-left: 110px;
+  margin-left: 110px;
+  margin-bottom: 16px;
 }
 .kudoKnight h3 {
-    margin-top: 20px;
-    font-size: 9px;
-    color: #6D686D;
+  margin-top: 20px;
+  font-size: 9px;
+  color: #6d686d;
 }
 
 .kudoKnight h2 {
-    font-size: 18px;
-    color: #331832;
-    margin-top: -5px;
+  font-size: 18px;
+  color: #331832;
+  margin-top: -5px;
+  margin-left: 0px;
 }
 .kudoKnight img {
-    position: absolute;
-    height: 120%;
-    bottom: 0;
+  position: absolute;
+  height: 120%;
+  bottom: 0;
 }
