@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { CARD_TYPE } from '../../../common/constants';
 import { CardIcon } from '../cardIcon/CardIcon';
+import { like } from '../../utils/api';
 import './Card.css';
 
 export interface Props {
@@ -63,7 +64,13 @@ export default class Card extends Component<Props, State> {
 
     if (!this.alreadyVoted(eventID)) {
       // API call to increment likes
-      /* */
+      like(cardID)
+        .then(() => {
+          document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+        })
+        .catch((err: Error) => {
+          console.log(`Error: like not inserted - ${err}`);
+        });
 
       this.setState({ voted: true });
       localStorage.setItem(`kudosVote-${eventID}`, JSON.stringify(voteData));

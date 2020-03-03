@@ -857,6 +857,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const CardIcon_1 = __webpack_require__(50);
+const api_1 = __webpack_require__(33);
 __webpack_require__(57);
 class Card extends react_1.Component {
     constructor(props) {
@@ -870,7 +871,13 @@ class Card extends react_1.Component {
             };
             if (!this.alreadyVoted(eventID)) {
                 // API call to increment likes
-                /* */
+                api_1.like(cardID)
+                    .then(() => {
+                    document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+                })
+                    .catch((err) => {
+                    console.log(`Error: like not inserted - ${err}`);
+                });
                 this.setState({ voted: true });
                 localStorage.setItem(`kudosVote-${eventID}`, JSON.stringify(voteData));
             }
