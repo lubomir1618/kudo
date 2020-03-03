@@ -18,6 +18,11 @@
   color: #331832;
   text-transform: capitalize;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.kudoForm .typePicker:hover {
+  background-color: #fae8c1;
 }
 
 .kudoForm .typePicker .cardIcon {
@@ -132,6 +137,11 @@
   font-weight: bold;
   background: linear-gradient(180deg, #F0544F 0%, #D74945 100%), #F0544F;
   cursor: pointer;
+}
+
+.kudoForm .submit.disabled {
+  pointer-events: none;
+  background: linear-gradient(180deg, #cecece 0%, #bcbdc4 100%), #bcbdc4;
 }
 
 @keyframes blink {

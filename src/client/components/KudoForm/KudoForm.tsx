@@ -1,11 +1,11 @@
 import React, { RefObject } from 'react';
 import SelectSearch from 'react-select-search';
 import * as I from '../../../common/interfaces';
+import { insert } from '../../utils/api';
 import { CARD_TYPE } from '../../../common/constants';
 import { CardIcon } from '../cardIcon/CardIcon';
 import data from '../../assets/data';
 import './KudoForm.css';
-import { insert } from '../../utils/api';
 
 const enum FORM_ERROR {
   name = 'name',
@@ -32,6 +32,7 @@ interface IState {
 
 interface IProps {
   eventId: string;
+  isActive: boolean;
 }
 
 export default class KudoForm extends React.Component<IProps, IState> {
@@ -63,6 +64,8 @@ export default class KudoForm extends React.Component<IProps, IState> {
   }
 
   public render() {
+    const buttonClass = this.props.isActive ? '' : 'disabled';
+
     return (
       <div className='kudoForm' ref={this.formRef}>
         <div className='typePicker'>
@@ -76,7 +79,7 @@ export default class KudoForm extends React.Component<IProps, IState> {
             <textarea ref={this.messageRef} placeholder='Sprava' />
           </div>
         </div>
-        <div className='submit' onClick={() => this.onSubmit()}>Daj Kudos</div>
+        <div className={`submit ${buttonClass}`} onClick={() => this.onSubmit()}>Daj Kudos</div>
       </div>
     );
   }
@@ -144,33 +147,33 @@ export default class KudoForm extends React.Component<IProps, IState> {
   }
 
   private onSubmit(): void {
-    if (this.state.name === undefined) {
-      this.drawRed(FORM_ERROR.name)
-    } else if (!this.messageRef.current
-      || (this.messageRef.current && this.messageRef.current.value.trim().length === 0)
-      || (this.messageRef.current && this.messageRef.current.value === 'Sprava')
-    ) {
-      this.drawRed(FORM_ERROR.message);
-    } else {
-      const new_card = {
-        author: 'anonymous',
-        awardedTo: this.state.name,
-        created: new Date().getTime(),
-        eventId: this.eventId,
-        likes: 0,
-        text: this.messageRef.current.value,
-        title: '',
-        type: this.state.type
-      }
+    if (this.props.isActive) {
+      if (this.state.name === undefined) {
+        this.drawRed(FORM_ERROR.name)
+      } else if (!this.messageRef.current
+        || (this.messageRef.current && this.messageRef.current.value.trim().length === 0)
+        || (this.messageRef.current && this.messageRef.current.value === 'Sprava')
+      ) {
+        this.drawRed(FORM_ERROR.message);
+      } else {
+        const new_card = {
+          awardedTo: this.state.name,
+          created: new Date().getTime(),
+          eventId: this.eventId,
+          likes: 0,
+          text: this.messageRef.current.value,
+          type: this.state.type
+        }
 
-      insert<I.Card>('/api/cards', new_card as I.Card)
-        .then(() => {
-          this.clearForm();
-          document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
-        })
-        .catch((err: Error) => {
-          console.log('Error: card not inserted');
-        });
+        insert<I.Card>('/api/cards', new_card as I.Card)
+          .then(() => {
+            this.clearForm();
+            document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+          })
+          .catch((err: Error) => {
+            console.log('Error: card not inserted');
+          });
+      }
     }
   }
 

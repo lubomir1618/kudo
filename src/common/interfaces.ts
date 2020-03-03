@@ -11,13 +11,11 @@ export interface Event {
 
 export interface Card {
   _id: string;
-  author?: string;
   awardedTo: string;
-  created?: number;
+  created: number;
   eventId: string;
   likes: number;
   text: string;
-  title: string;
   type: T.CARD_TYPE;
 }
 
