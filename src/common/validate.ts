@@ -1,4 +1,5 @@
 import * as I from './interfaces';
+import { CARD_TYPE } from './constants';
 
 export function hasData(data: any, type = 'string'): boolean {
   if (data === undefined || data === null) {
@@ -44,16 +45,18 @@ export function isCardValid(card: I.Card) {
   if (!(card.awardedTo && card.awardedTo !== '')) {
     bugs.push('awardedTo');
   }
+  /*
   if (!(card.eventId && card.eventId !== '')) {
     bugs.push('eventId');
   }
   if (!(card.title && card.title !== '')) {
     bugs.push('title');
   }
+  */
   if (!(card.text && card.text !== '')) {
     bugs.push('text');
   }
-  if (!(card.type && ['awesome', 'normal'].includes(card.type))) {
+  if (!(card.type && CARD_TYPE[card.type])) {
     bugs.push('type');
   }
 

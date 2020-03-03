@@ -1,9 +1,11 @@
 import React, { RefObject } from 'react';
 import SelectSearch from 'react-select-search';
+import * as I from '../../../common/interfaces';
 import { CARD_TYPE } from '../../../common/constants';
 import { CardIcon } from '../cardIcon/CardIcon';
 import data from '../../assets/data';
 import './KudoForm.css';
+import { insert } from '../../utils/api';
 
 const enum FORM_ERROR {
   name = 'name',
@@ -28,12 +30,18 @@ interface IState {
   name: string | undefined;
 }
 
-export default class KudoForm extends React.Component<{}, IState> {
+interface IProps {
+  eventId: string;
+}
+
+export default class KudoForm extends React.Component<IProps, IState> {
+  private eventId: string;
   private formRef: RefObject<HTMLDivElement>;
   private messageRef: RefObject<HTMLTextAreaElement>;
 
-  constructor(props: any) {
+  constructor(props: IProps) {
     super(props);
+    this.eventId = props.eventId;
     this.formRef = React.createRef();
     this.messageRef = React.createRef();
 
@@ -46,14 +54,12 @@ export default class KudoForm extends React.Component<{}, IState> {
   public componentDidMount() {
     if (this.formRef.current && this.messageRef.current) {
       const name_options = this.formRef.current.querySelector('.name .select-search-box__options');
+      const type_options = this.formRef.current.querySelector('.typePicker .select-search-box__options');
       const message_height = this.messageRef.current.parentElement!.offsetHeight;
 
-      (name_options as HTMLDivElement).style.maxHeight = `${message_height}px`;
+      (name_options as HTMLDivElement).style.maxHeight = `${message_height - 1}px`;
+      (type_options as HTMLDivElement).style.height = `${message_height + 55}px`;
     }
-  }
-
-  public shouldComponentUpdate(nextState: IState): boolean {
-    return false;
   }
 
   public render() {
@@ -97,13 +103,13 @@ export default class KudoForm extends React.Component<{}, IState> {
 
   private renderValue(label: string): JSX.Element {
     return (<div className='typeTitle'>
-      <CardIcon {...{cardType: label.replace(' ', '_') as CARD_TYPE }} /> {label}
+      <CardIcon {...{cardType: label.replace(' ', '_') as CARD_TYPE }} />{label}
     </div>);
   }
 
   private renderOption(valueProps: ISelectResponse): JSX.Element {
     return (<div>
-      <CardIcon {...{cardType: valueProps.value as CARD_TYPE }} /> {valueProps.name}
+      <CardIcon {...{cardType: valueProps.value as CARD_TYPE }} /><div>{valueProps.name}</div>
     </div>);
   }
 
@@ -146,11 +152,30 @@ export default class KudoForm extends React.Component<{}, IState> {
     ) {
       this.drawRed(FORM_ERROR.message);
     } else {
-      console.log(`
-        type: ${this.state.type}
-        name: ${this.state.name}
-        message: ${this.messageRef.current.value}
-      `);
+      const new_card = {
+        author: 'anonymous',
+        awardedTo: this.state.name,
+        created: new Date().getTime(),
+        eventId: this.eventId,
+        likes: 0,
+        text: this.messageRef.current.value,
+        title: '',
+        type: this.state.type
+      }
+
+      insert<I.Card>('/api/cards', new_card as I.Card)
+        .then(() => {
+          this.clearForm();
+          document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+        })
+        .catch((err: Error) => {
+          console.log('Error: card not inserted');
+        });
     }
+  }
+
+  private clearForm(): void {
+    this.setState({ name: undefined });
+    this.messageRef.current!.value = '';
   }
 }

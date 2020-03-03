@@ -7,9 +7,9 @@ const cardTypes = Object.values(CARD_TYPE);
 
 export const props_1 = {
   awarded: 'Janka Kudlikova',
-  cardID: 333,
+  cardID: '2222bbbb',
   cardType: cardTypes[Math.floor(Math.random() * cardTypes.length)],
-  eventID: 6,
+  eventID: 'eeee1111',
   highlighted: false,
   likes: 9,
   text: 'Donut chupa chups jelly brownie choco late chocolate bar cookie'
@@ -17,9 +17,9 @@ export const props_1 = {
 
 export const props_2 = {
   awarded: 'Linda Ivanko',
-  cardID: 333,
+  cardID: 'aaaa1111',
   cardType: cardTypes[Math.floor(Math.random() * cardTypes.length)],
-  eventID: 63,
+  eventID: 'eeee1111',
   highlighted: true,
   likes: 12,
   text:

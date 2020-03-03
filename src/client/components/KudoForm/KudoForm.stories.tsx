@@ -4,4 +4,4 @@ import KudoForm from './KudoForm';
 
 storiesOf('KudoForm', module)
   .addDecorator((story) => <div style={{ padding: '3rem', background: '#cecece' }}>{story()}</div>)
-  .add('default', () => <KudoForm />);
+  .add('default', () => <KudoForm eventId={'aaaa1111'} />);
