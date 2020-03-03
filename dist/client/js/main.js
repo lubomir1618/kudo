@@ -306,19 +306,17 @@ function isUserValid(user) {
     return bugs.length ? bugs : true;
 }
 exports.isUserValid = isUserValid;
-function isCardValid(card) {
+function isCardValid(card, event) {
     const bugs = [];
+    if (!(event && event._id === card.eventId && event.dateFrom < card.created && event.dateTo < card.created)) {
+        bugs.push('created');
+    }
     if (!(card.awardedTo && card.awardedTo !== '')) {
         bugs.push('awardedTo');
     }
-    /*
     if (!(card.eventId && card.eventId !== '')) {
-      bugs.push('eventId');
+        bugs.push('eventId');
     }
-    if (!(card.title && card.title !== '')) {
-      bugs.push('title');
-    }
-    */
     if (!(card.text && card.text !== '')) {
         bugs.push('text');
     }
@@ -500,11 +498,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(1));
 const react_select_search_1 = __importDefault(__webpack_require__(46));
+const api_1 = __webpack_require__(33);
 const constants_1 = __webpack_require__(36);
 const CardIcon_1 = __webpack_require__(52);
 const data_1 = __importDefault(__webpack_require__(55));
 __webpack_require__(56);
-const api_1 = __webpack_require__(33);
 const CARD_TYPES = Object.values(constants_1.CARD_TYPE);
 const PEOPLE = [...data_1.default];
 PEOPLE.map((folk) => {
@@ -582,31 +580,33 @@ class KudoForm extends react_1.default.Component {
         }, 700);
     }
     onSubmit() {
-        if (this.state.name === undefined) {
-            this.drawRed("name" /* name */);
-        }
-        else if (!this.messageRef.current
-            || (this.messageRef.current && this.messageRef.current.value.trim().length === 0)
-            || (this.messageRef.current && this.messageRef.current.value === 'Sprava')) {
-            this.drawRed("message" /* message */);
-        }
-        else {
-            const new_card = {
-                awardedTo: this.state.name,
-                created: new Date().getTime(),
-                eventId: this.eventId,
-                likes: 0,
-                text: this.messageRef.current.value,
-                type: this.state.type
-            };
-            api_1.insert('/api/cards', new_card)
-                .then(() => {
-                this.clearForm();
-                document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
-            })
-                .catch((err) => {
-                console.log('Error: card not inserted');
-            });
+        if (this.props.isActive) {
+            if (this.state.name === undefined) {
+                this.drawRed("name" /* name */);
+            }
+            else if (!this.messageRef.current
+                || (this.messageRef.current && this.messageRef.current.value.trim().length === 0)
+                || (this.messageRef.current && this.messageRef.current.value === 'Sprava')) {
+                this.drawRed("message" /* message */);
+            }
+            else {
+                const new_card = {
+                    awardedTo: this.state.name,
+                    created: new Date().getTime(),
+                    eventId: this.eventId,
+                    likes: 0,
+                    text: this.messageRef.current.value,
+                    type: this.state.type
+                };
+                api_1.insert('/api/cards', new_card)
+                    .then(() => {
+                    this.clearForm();
+                    document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+                })
+                    .catch((err) => {
+                    console.log('Error: card not inserted');
+                });
+            }
         }
     }
     clearForm() {
@@ -1189,7 +1189,7 @@ module.exports = exported;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".kudoEvent {\n  background: url('/img/lich_king_bg.jpg');\n  background-size: cover;\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n  display: flex;\n  flex-direction: row;\n  padding-right: 0px;\n  height: 100vh;\n  width: 100%;\n}\n\n.kudoEvent .event_info {\n  flex-basis: 460px;\n  width: 460px;\n  min-width: 460px;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: start;\n  justify-content: center;\n  padding: 50px 50px 0 100px;\n}\n\n.kudoEvent .event_info > div {\n  width: 100%;\n  margin-bottom: 50px;\n}\n\n.kudoEvent .event_info .eventInfo {\n  margin-bottom: 28px;\n}\n\n.kudoEvent .event_info .kudoForm {\n  margin-bottom: 0px;\n}\n\n.kudoEvent .event_cards {\n  margin-left: 100px;\n  padding-top: 50px;\n  height: 100%;\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  overflow-x: scroll;\n  flex: 1;\n}\n\n.kudoEvent .event_cards .card {\n  width: 296px;\n}\n\n@media only screen and (max-width: 800px) {\n  .kudoEvent {\n    padding: 0;\n  }\n\n  .kudoEvent .event_info {\n    flex-basis: 320px;\n    width: 320px;\n    min-width: 320px;\n    padding: 0px 10px 0 0px;\n  }\n\n  .kudoEvent .event_cards {\n    margin-left: 50px;\n  }\n}\n\n@media only screen and (max-width: 580px) {\n  .kudoEvent {\n    background: #0b1f39;\n    background: linear-gradient(140deg, #825640 0%, #0b1f39 100%);\n    flex-direction: column;\n    padding: 0px;\n    height: auto;\n  }\n\n  .kudoEvent .event_info {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards .card {\n    margin: 10px 0;\n    min-width: unset;\n    width: 100%;\n  }\n\n  .kudoEvent .event_cards .card .card__text {\n    min-width: unset;\n  }\n}\n", ""]);
+exports.push([module.i, ".kudoEvent {\n  background: url('/img/lich_king_bg.jpg');\n  background-size: cover;\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n  display: flex;\n  flex-direction: row;\n  padding-right: 0px;\n  height: 100vh;\n  width: 100%;\n}\n\n.kudoEvent .event_info {\n  flex-basis: 460px;\n  width: 460px;\n  min-width: 460px;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: start;\n  justify-content: center;\n  padding: 50px 50px 0 100px;\n}\n\n.kudoEvent .event_info > div {\n  width: 100%;\n  margin-bottom: 50px;\n}\n\n.kudoEvent .event_info .eventInfo {\n  margin-bottom: 28px;\n}\n\n.kudoEvent .event_info .kudoForm {\n  margin-bottom: 0px;\n}\n\n.kudoEvent .event_cards {\n  margin-left: 100px;\n  padding-top: 50px;\n  height: 100%;\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  overflow-x: scroll;\n  flex: 1;\n}\n\n.kudoEvent .event_cards .card {\n  width: 296px;\n}\n\n@media only screen and (max-width: 800px) {\n  .kudoEvent {\n    padding: 0 0 0 20px;\n  }\n\n  .kudoEvent .event_info {\n    flex-basis: 320px;\n    width: 320px;\n    min-width: 320px;\n    padding: 0px 10px 0 0px;\n  }\n\n  .kudoEvent .event_cards {\n    margin-left: 50px;\n  }\n}\n\n@media only screen and (max-width: 580px) {\n  .kudoEvent {\n    background: #0b1f39;\n    background: linear-gradient(140deg, #825640 0%, #0b1f39 100%);\n    flex-direction: column;\n    padding: 0px;\n    height: auto;\n  }\n\n  .kudoEvent .event_info {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards .card {\n    margin: 10px 0;\n    min-width: unset;\n    width: 100%;\n  }\n\n  .kudoEvent .event_cards .card .card__text {\n    min-width: unset;\n  }\n}\n", ""]);
 // Exports
 module.exports = exports;
 
