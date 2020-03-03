@@ -1,6 +1,7 @@
 import * as I from '../../common/interfaces';
 import { isUserValid } from '../../common/validate';
 import { insert, select } from './api';
+import { Card } from './../../common/interfaces'
 
 const form = document.getElementById('form-user') as HTMLFormElement;
 const loading = document.querySelector('.loading') as HTMLImageElement;
@@ -72,4 +73,32 @@ export function vodka() {
         console.error(`💥 Error: ${err.message}`);
       });
   }
+}
+
+
+interface IkudoNum {
+  name: string;
+  count: number
+}
+interface IkudoObj {
+  [key:string]: IkudoNum
+}
+
+export function getKudoNumberList(cards: Card[]):IkudoNum[]  {
+  let list = cards.reduce((acc:IkudoObj, val:Card) => {
+    if (acc[val.awardedTo]) { acc[val.awardedTo].count += 1; } else {
+      acc[val.awardedTo] = {name: val.awardedTo, count: 1}
+    }
+    return acc;
+  }, {})
+
+  return Object.values(list).sort((a:any, b:any) => a.count > b.count ? -1 : 1);
+}
+
+export function getKudoKnight(kudoNumList:IkudoNum[]): string {
+  const winner = kudoNumList.shift()
+  if (winner) {
+    return winner.name
+  }
+  return 'No knight yet';
 }

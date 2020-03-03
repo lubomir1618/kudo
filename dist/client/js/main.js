@@ -19,7 +19,7 @@ const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const react_router_dom_1 = __webpack_require__(12);
 const KudoEvent_1 = __importDefault(__webpack_require__(32));
-__webpack_require__(61);
+__webpack_require__(63);
 function App() {
     // let id = useParams().id;
     return (React.createElement(react_router_dom_1.BrowserRouter, null,
@@ -78,11 +78,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(1));
 const api_1 = __webpack_require__(33);
-const Knight_1 = __webpack_require__(34);
-const EventInfo_1 = __webpack_require__(39);
-const KudoForm_1 = __importDefault(__webpack_require__(42));
-const Card_1 = __importDefault(__webpack_require__(56));
-__webpack_require__(59);
+const client_1 = __webpack_require__(34);
+const Knight_1 = __webpack_require__(37);
+const EventInfo_1 = __webpack_require__(42);
+const KudoForm_1 = __importDefault(__webpack_require__(45));
+const Card_1 = __importDefault(__webpack_require__(58));
+__webpack_require__(61);
 class KudoEvent extends react_1.default.Component {
     constructor(props) {
         super(props);
@@ -153,7 +154,9 @@ class KudoEvent extends react_1.default.Component {
     }
     getKnight() {
         // TODO get most frequent name from array
-        return react_1.default.createElement(Knight_1.Knight, Object.assign({}, { mostKudos: 'Pyotr Ilyich Tchaikovsky' }));
+        const list = client_1.getKudoNumberList(this.state.cards);
+        return react_1.default.createElement("div", { title: JSON.stringify(list) },
+            react_1.default.createElement(Knight_1.Knight, Object.assign({}, { mostKudos: client_1.getKudoKnight(list) })));
     }
 }
 exports.default = KudoEvent;
@@ -162,6 +165,184 @@ exports.default = KudoEvent;
 /***/ }),
 /* 33 */,
 /* 34 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const validate_1 = __webpack_require__(35);
+const api_1 = __webpack_require__(33);
+const form = document.getElementById('form-user');
+const loading = document.querySelector('.loading');
+const API_URL = '/api/users';
+const usersElement = document.querySelector('.allUsers');
+function vodka() {
+    loading.style.display = 'none';
+    listAllUsers();
+    form.addEventListener('submit', (event) => {
+        var _a, _b;
+        const formData = new FormData(form);
+        const name = ((_a = formData.get('name')) === null || _a === void 0 ? void 0 : _a.toString()) || '';
+        const surname = ((_b = formData.get('surname')) === null || _b === void 0 ? void 0 : _b.toString()) || '';
+        const user = {
+            name,
+            surname
+        };
+        if (!validate_1.isUserValid(user)) {
+            return false;
+        }
+        console.log('user', user);
+        form.style.display = 'none';
+        loading.style.display = '';
+        api_1.insert('/api/users', user)
+            .then((createdUser) => {
+            form.style.display = '';
+            loading.style.display = 'none';
+            form.reset();
+            listAllUsers();
+            console.log(createdUser);
+        })
+            .catch((err) => {
+            console.error(`💥 Error: ${err.message}`);
+        });
+        event.preventDefault();
+    });
+    function listAllUsers() {
+        api_1.select('/api/users')
+            .then((users) => {
+            usersElement.textContent = '';
+            users.reverse();
+            users.forEach((user) => {
+                const div = document.createElement('div');
+                const header = document.createElement('h4');
+                const surname = document.createElement('p');
+                const created = document.createElement('small');
+                header.textContent = user.name;
+                surname.textContent = user.surname;
+                created.textContent = new Date(user.created).toString();
+                div.appendChild(header);
+                div.appendChild(surname);
+                div.appendChild(created);
+                usersElement.appendChild(div);
+            });
+        })
+            .catch((err) => {
+            console.error(`💥 Error: ${err.message}`);
+        });
+    }
+}
+exports.vodka = vodka;
+function getKudoNumberList(cards) {
+    let list = cards.reduce((acc, val) => {
+        if (acc[val.awardedTo]) {
+            acc[val.awardedTo].count += 1;
+        }
+        else {
+            acc[val.awardedTo] = { name: val.awardedTo, count: 1 };
+        }
+        return acc;
+    }, {});
+    return Object.values(list).sort((a, b) => a.count > b.count ? -1 : 1);
+}
+exports.getKudoNumberList = getKudoNumberList;
+function getKudoKnight(kudoNumList) {
+    const winner = kudoNumList.shift();
+    if (winner) {
+        return winner.name;
+    }
+    return 'No knight yet';
+}
+exports.getKudoKnight = getKudoKnight;
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const constants_1 = __webpack_require__(36);
+function hasData(data, type = 'string') {
+    if (data === undefined || data === null) {
+        return false;
+    }
+    switch (type) {
+        case 'number':
+            return typeof data === 'number' || !isNaN(data);
+        case 'boolean':
+            return typeof data === 'boolean';
+        default:
+            return data !== '';
+    }
+}
+exports.hasData = hasData;
+function hasOneOf(data, check) {
+    if (hasData(data)) {
+        return check.includes(data);
+    }
+    return false;
+}
+exports.hasOneOf = hasOneOf;
+function isLikeValid(_id) {
+    return hasData(_id) ? true : ['_id'];
+}
+exports.isLikeValid = isLikeValid;
+function isUserValid(user) {
+    const bugs = [];
+    if (!(user.name && user.name !== '')) {
+        bugs.push('name');
+    }
+    if (!(user.surname && user.surname !== '')) {
+        bugs.push('surname');
+    }
+    return bugs.length ? bugs : true;
+}
+exports.isUserValid = isUserValid;
+function isCardValid(card) {
+    const bugs = [];
+    if (!(card.awardedTo && card.awardedTo !== '')) {
+        bugs.push('awardedTo');
+    }
+    /*
+    if (!(card.eventId && card.eventId !== '')) {
+      bugs.push('eventId');
+    }
+    if (!(card.title && card.title !== '')) {
+      bugs.push('title');
+    }
+    */
+    if (!(card.text && card.text !== '')) {
+        bugs.push('text');
+    }
+    if (!(card.type && constants_1.CARD_TYPE[card.type])) {
+        bugs.push('type');
+    }
+    return bugs.length ? bugs : true;
+}
+exports.isCardValid = isCardValid;
+function isEventValid(event) {
+    const bugs = [];
+    if (!hasData(event.dateFrom, 'number')) {
+        bugs.push('dateFrom');
+    }
+    if (!hasData(event.dateTo, 'number')) {
+        bugs.push('dateTo');
+    }
+    if (!hasData(event.name)) {
+        bugs.push('name');
+    }
+    if (!hasOneOf(event.state, ['past', 'active', 'future'])) {
+        bugs.push('state');
+    }
+    return bugs.length ? bugs : true;
+}
+exports.isEventValid = isEventValid;
+
+
+/***/ }),
+/* 36 */,
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -175,7 +356,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
-__webpack_require__(35);
+__webpack_require__(38);
 exports.Knight = (props) => (React.createElement("div", { className: "kudoKnight" },
     React.createElement("div", null,
         React.createElement("img", { src: "/img/007-crusader.png" })),
@@ -185,11 +366,11 @@ exports.Knight = (props) => (React.createElement("div", { className: "kudoKnight
 
 
 /***/ }),
-/* 35 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(36);
-            var content = __webpack_require__(37);
+var api = __webpack_require__(39);
+            var content = __webpack_require__(40);
 
             content = content.__esModule ? content.default : content;
 
@@ -211,22 +392,22 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 36 */,
-/* 37 */
+/* 39 */,
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(38);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".kudoKnight {\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%), #c6d8d3;\n  display: flex;\n  position: relative;\n  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);\n  border-radius: 10px;\n}\n.kudoKnight__content {\n  margin-left: 110px;\n  margin-bottom: 16px;\n}\n.kudoKnight h3 {\n  margin-top: 20px;\n  font-size: 9px;\n  color: #6d686d;\n}\n\n.kudoKnight h2 {\n  font-size: 18px;\n  color: #331832;\n  margin-top: -5px;\n  margin-left: 0px;\n}\n.kudoKnight img {\n  position: absolute;\n  height: 120%;\n  bottom: 0;\n}\n", ""]);
+exports.push([module.i, ".kudoKnight {\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n  background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%), #c6d8d3;\n  display: flex;\n  position: relative;\n  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);\n  border-radius: 10px;\n  padding: 5px;\n}\n.kudoKnight__content {\n  margin-left: 110px;\n  margin-bottom: 16px;\n}\n.kudoKnight h3 {\n  margin-top: 20px;\n  font-size: 12px;\n  color: #6d686d;\n}\n\n.kudoKnight h2 {\n  font-size: 18px;\n  color: #331832;\n  margin-top: -5px;\n  margin-left: 0px;\n}\n.kudoKnight img {\n  position: absolute;\n  height: 120%;\n  bottom: 0;\n}\n", ""]);
 // Exports
 module.exports = exports;
 
 
 /***/ }),
-/* 38 */,
-/* 39 */
+/* 41 */,
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -236,7 +417,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(1));
-__webpack_require__(40);
+__webpack_require__(43);
 function getDate(dateFrom, dateTo) {
     const yearFrom = new Date(dateFrom).getFullYear();
     const monthFrom = new Date(dateFrom).getMonth() + 1;
@@ -262,11 +443,11 @@ exports.EventInfo = (props) => {
 
 
 /***/ }),
-/* 40 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(36);
-            var content = __webpack_require__(41);
+var api = __webpack_require__(39);
+            var content = __webpack_require__(44);
 
             content = content.__esModule ? content.default : content;
 
@@ -288,11 +469,11 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 41 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(38);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ":root {\n  --text-color: #ffffff;\n}\n\n.eventInfo {\n  position: relative;\n  margin-bottom: 10px;\n}\n\n.eventInfo h1,\nh2 {\n  font-family: 'Ubuntu_Normal';\n  font-style: normal;\n  color: var(--text-color);\n  margin: 2px;\n}\n\n.eventInfo h1 {\n  font-size: 24px;\n  line-height: 28px;\n}\n\n.eventInfo h2 {\n  font-size: 14px;\n  line-height: 17px;\n}\n", ""]);
@@ -301,7 +482,7 @@ module.exports = exports;
 
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -311,11 +492,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(1));
-const react_select_search_1 = __importDefault(__webpack_require__(43));
-const constants_1 = __webpack_require__(49);
-const CardIcon_1 = __webpack_require__(50);
-const data_1 = __importDefault(__webpack_require__(53));
-__webpack_require__(54);
+const react_select_search_1 = __importDefault(__webpack_require__(46));
+const constants_1 = __webpack_require__(36);
+const CardIcon_1 = __webpack_require__(52);
+const data_1 = __importDefault(__webpack_require__(55));
+__webpack_require__(56);
 const api_1 = __webpack_require__(33);
 const CARD_TYPES = Object.values(constants_1.CARD_TYPE);
 const PEOPLE = [...data_1.default];
@@ -431,14 +612,13 @@ exports.default = KudoForm;
 
 
 /***/ }),
-/* 43 */,
-/* 44 */,
-/* 45 */,
 /* 46 */,
 /* 47 */,
 /* 48 */,
 /* 49 */,
-/* 50 */
+/* 50 */,
+/* 51 */,
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -448,8 +628,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(1));
-const constants_1 = __webpack_require__(49);
-__webpack_require__(51);
+const constants_1 = __webpack_require__(36);
+__webpack_require__(53);
 function getIcon(cardType) {
     switch (cardType) {
         case constants_1.CARD_TYPE.great_job:
@@ -479,11 +659,11 @@ exports.CardIcon = (props) => {
 
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(36);
-            var content = __webpack_require__(52);
+var api = __webpack_require__(39);
+            var content = __webpack_require__(54);
 
             content = content.__esModule ? content.default : content;
 
@@ -505,11 +685,11 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(38);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".cardIcon {\n  width: 100%;\n  height: 100%;\n}\n\n.cardIcon img {\n  width: 100%;\n  height: 100%;\n  min-width: 20px;\n  min-height: 20px;\n}\n", ""]);
@@ -518,7 +698,7 @@ module.exports = exports;
 
 
 /***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -808,11 +988,11 @@ exports.default = [
 
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(36);
-            var content = __webpack_require__(55);
+var api = __webpack_require__(39);
+            var content = __webpack_require__(57);
 
             content = content.__esModule ? content.default : content;
 
@@ -834,11 +1014,11 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 55 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(38);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, ".kudoForm {\n  background-color: #ffffff;\n  border-radius: 10px;\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n}\n\n.kudoForm input, .kudoForm textarea {\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n}\n\n.kudoForm .typePicker {\n  display: flex;\n  align-items: center;\n  height: 67px;\n  border-radius: 10px 10px 0 0;\n  background-color: #FDF0D5;\n  font-size: 20px;\n  color: #331832;\n  text-transform: capitalize;\n  cursor: pointer;\n}\n\n.kudoForm .typePicker .cardIcon {\n  max-width: 40px;\n  max-height: 40px;\n  margin-right: 16px;\n}\n\n.kudoForm .typeTitle {\n  display: flex;\n  flex-direction: row;\n  justify-content: center;\n  align-items: center;\n}\n\n.kudoForm .typePicker .select-search-box__options {\n  display: flex;\n  flex-wrap: wrap;\n}\n\n.kudoForm .typePicker .select-search-box__option > div {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.kudoForm .typePicker .select-search-box__options .cardIcon {\n  margin-right: 10px;\n  width: 30px;\n  max-width: 30px;\n  max-height: 30px;\n  min-width: 30px;\n}\n\n.kudoForm .typePicker .select-search-box__options li {\n  width: 50%;\n  padding: 14px;\n  height: 59px;\n  text-transform: capitalize;\n  background-color: #fbf8f4;\n}\n\n.kudoForm .main {\n  height: 237px;\n  display: flex;\n  flex-direction: column;\n}\n\n.kudoForm .name {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0 23px;\n  height: 55px;\n  font-size: 12px;\n  color: #6D686D;\n  border-bottom: 1px solid rgba(198, 216, 211, 0.3);\n}\n\n.kudoForm .name .select-search-box__search {\n  background-color: transparent;\n  width: 100%;\n  height: 53px;\n  margin-left: 20px;\n  border-radius: initial;\n  border: none;\n  font-size: 16px;\n  color: #6D686D;\n  margin-bottom: 0px;\n}\n\n\n.kudoForm .name .select-search-box .select-search-box__select {\n  top: 55px;\n  width: calc(100% - 23px);\n}\n\n.kudoForm .message {\n  display: flex;\n  align-items: center;\n  padding: 21px 23px;\n  flex-grow: 1;\n}\n\n.kudoForm .message textarea {\n  flex-grow: 1;\n  height: 100%;\n  width: 100%;\n  font-size: 12px;\n  color: #6D686D;\n  resize: none;\n  border: none;\n  outline: none;\n  background: transparent;\n  padding: 0;\n  margin: 0;\n}\n\n.kudoForm .name.red,\n.kudoForm .message.red {\n  animation: blink 0.7s ease;\n}\n\n.kudoForm .submit {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  height: 49px;\n  border-radius: 0 0 10px 10px;\n  font-size: 18px;\n  color: #ffffff;\n  font-weight: bold;\n  background: linear-gradient(180deg, #F0544F 0%, #D74945 100%), #F0544F;\n  cursor: pointer;\n}\n\n@keyframes blink {\n  0% {\n    background: transparent;\n  }\n  50% {\n    background: #f0544fc7;\n  }\n  100% {\n    background: transparent;\n  }\n}\n\n/* react-select-search */\n.select-search-box {\n  width: 100%;\n  position: relative;\n  box-sizing: border-box;\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n}\n\n.select-search-box *,\n.select-search-box *::after,\n.select-search-box *::before {\n  box-sizing: inherit;\n}\n\n.select-search-box__select {\n  display: none;\n}\n\n.select-search-box__select.select-search-box__select--display {\n  display: block;\n  border-radius: 0;\n}\n\n.select-search-box__search {\n  outline: none;\n}\n\n.select-search-box__value {\n  position: relative;\n}\n\n.select-search-box__value::after {\n  content: '';\n  display: inline-block;\n  position: absolute;\n  top: calc(50% - 9px);\n  right: 19px;\n  width: 11px;\n  height: 11px;\n  transform: rotate(45deg);\n  border-right: 1px solid #000;\n  border-bottom: 1px solid #000;\n  pointer-events: none;\n}\n\n.select-search-box__input {\n  display: block;\n  height: 36px;\n  width: 100%;\n  padding: 0 16px;\n  background: #fff;\n  border: none;\n  box-shadow: 0 .0625rem .125rem rgba(0, 0, 0, 0.15);\n  border-radius: 3px;\n  outline: none;\n  font-size: 14px;\n  text-align: left;\n  line-height: 36px;\n  -webkit-appearance: none;\n}\n\n.select-search-box__input::-webkit-search-decoration,\n.select-search-box__input::-webkit-search-cancel-button,\n.select-search-box__input::-webkit-search-results-button,\n.select-search-box__input::-webkit-search-results-decoration {\n  -webkit-appearance:none;\n}\n\n.select-search-box__input:hover {\n  border-color: #2FCC8B;\n}\n\n.select-search-box__input:not([readonly]):focus {\n  cursor: initial;\n}\n\n.select-search-box__select {\n  background: #fff;\n  box-shadow: 0 .0625rem .125rem rgba(0, 0, 0, 0.15);\n}\n\n.select-search-box:not(.select-search-box--multiple) .select-search-box__select {\n  position: absolute;\n  z-index: 2;\n  top: 53px;\n  right: 0;\n  left: 0;\n  overflow: auto;\n  max-height: 360px;\n}\n\n.select-search-box__options {\n  list-style: none;\n  padding-left: 0;\n  margin: 0;\n}\n\n.select-search-box__option {\n  display: flex;\n  align-items: center;\n  justify-content: start;\n  height: 47px;\n  width: 100%;\n  padding: 0 16px;\n  background: #fff;\n  border: none;\n  outline: none;\n  font-size: 14px;\n  text-align: left;\n  cursor: pointer;\n}\n\n.select-search-box__option.is-selected {\n  background: #2FCC8B;\n  color: #fff;\n}\n\n.select-search-box__option.is-highlighted,\n.select-search-box__option:not(.is-selected):hover {\n  background: rgba(47, 204, 139, 0.1);\n}\n\n.select-search-box__option.is-highlighted.is-selected,\n.select-search-box__option.is-selected:hover {\n  background: #2eb378;\n  color: #fff;\n}", ""]);
@@ -847,7 +1027,7 @@ module.exports = exports;
 
 
 /***/ }),
-/* 56 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -931,49 +1111,10 @@ exports.default = Card;
 
 
 /***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(36);
-            var content = __webpack_require__(58);
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-/* 58 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(38);
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ":root {\n  --card-bg-color-text: rgba(255, 255, 255, 0.9);\n  --card-bg-color-body-highlighted: rgba(253, 240, 213, 0.9);\n  --card-bg-color-icon: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%),\n    rgba(198, 216, 211, 0.9);\n  --card-text-color-h3: #331832;\n  --card-text-color: #6d686d;\n  --card-bg-color-likes: #f0544f;\n  --card-bg-color-likes-noVote: #bcbdc4;\n  --card-text-color-likes: #ffffff;\n}\n\n.card {\n  display: flex;\n  position: relative;\n  min-height: 80px;\n  border-radius: 0px 10px 10px 0px;\n  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);\n  background: transparent;\n  border-radius: 10px;\n  margin: 11px;\n}\n\n.card .card__icon {\n  min-width: 70px;\n  width: 70px;\n  background: var(--card-bg-color-icon);\n  border-radius: 10px 0px 0px 10px;\n  text-align: center;\n}\n\n.card .card__icon img {\n  width: 33px;\n  margin: 0 auto;\n}\n\n.card .card__text,\n.card .card__text-highlighted {\n  min-width: 226px;\n  width: 100%;\n}\n\n.card .card__text,\n.card .card__text-highlighted {\n  border-radius: 0px 10px 10px 0px;\n  padding: 20px 17px 20px 17px;\n  background: var(--card-bg-color-text);\n}\n.card .card__text-highlighted {\n  background: var(--card-bg-color-body-highlighted);\n}\n\n.card .card__text h3,\n.card .card__text-highlighted h3 {\n  font-family: 'Ubuntu_Normal';\n  font-size: 14px;\n  line-height: 16px;\n  color: var(--card-text-color-h3);\n  margin: 0px;\n  margin-bottom: 6px;\n}\n\n.card .card__text p,\n.card .card__text-highlighted p {\n  font-family: 'Ubuntu_Normal';\n  font-size: 11px;\n  line-height: 14px;\n  color: var(--card-text-color);\n  margin: 0px;\n}\n\n.card .card__likes,\n.card .card__likes-yourChoice {\n  width: 22px;\n  height: 22px;\n  position: absolute;\n  top: -11px;\n  right: -11px;\n  background: var(--card-bg-color-likes-noVote);\n  border-radius: 50%;\n  color: var(--card-text-color-likes);\n  font-family: 'Ubuntu_Normal';\n  font-size: 10px;\n  line-height: 22px;\n  text-align: center;\n  transition: background-color 0.3s ease-out;\n}\n.card .card__likes {\n  cursor: pointer;\n}\n\n.card .card__likes-yourChoice {\n  background: var(--card-bg-color-likes);\n  animation: pulse 0.3s;\n  animation-iteration-count: 2;\n}\n\n@keyframes pulse {\n  from {\n    transform: scale(1, 1);\n  }\n  50% {\n    transform: scale(1.3, 1.3);\n  }\n  to {\n    transform: scale(1, 1);\n  }\n}\n", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
 /* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(36);
+var api = __webpack_require__(39);
             var content = __webpack_require__(60);
 
             content = content.__esModule ? content.default : content;
@@ -1000,10 +1141,10 @@ module.exports = exported;
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(38);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".kudoEvent {\n  background-color: #cecece;\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n  display: flex;\n  flex-direction: row;\n  padding: 120px 0 60px 140px;\n  padding-right: 0px;\n  height: 100vh;\n  width: 100%;\n}\n\n.kudoEvent .event_info {\n  width: 22%;\n  min-width: 270px;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: start;\n  justify-content: center;\n}\n\n.kudoEvent .event_info > div {\n  width: 100%;\n  margin-bottom: 50px;\n}\n\n.kudoEvent .event_info .eventInfo {\n  margin-bottom: 28px;\n}\n\n.kudoEvent .event_info .kudoForm {\n  margin-bottom: 0px;\n}\n\n.kudoEvent .event_cards {\n  margin-left: 100px;\n  margin-right: 20px;\n  height: 100%;\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  flex-wrap: wrap;\n  overflow-x: scroll;\n  padding: 10px 0;\n}\n\n.kudoEvent .event_cards .card {\n  width: 296px;\n}\n\n@media only screen and (max-width: 800px) {\n  .kudoEvent {\n    padding: 60px 0 40px 60px;\n  }\n\n  .kudoEvent .event_cards {\n    margin-left: 50px;\n  }\n}\n\n@media only screen and (max-width: 580px) {\n  .kudoEvent {\n    flex-direction: column;\n    padding: 0px;\n    height: auto;\n  }\n\n  .kudoEvent .event_info {\n    width: 80%;\n    margin: 6rem auto;\n  }\n\n  .kudoEvent .event_cards {\n    width: 88%;\n    margin: 3rem auto;\n    max-width: unset;\n    padding: 20px;\n  }\n\n  .kudoEvent .event_cards .card {\n    margin: 10px 0;\n    min-width: unset;\n    width: auto;\n  }\n\n  .kudoEvent .event_cards .card .card__text {\n    min-width: unset;\n  }\n}", ""]);
+exports.push([module.i, ":root {\n  --card-bg-color-text: rgba(255, 255, 255, 0.9);\n  --card-bg-color-body-highlighted: rgba(253, 240, 213, 0.9);\n  --card-bg-color-icon: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%),\n    rgba(198, 216, 211, 0.9);\n  --card-text-color-h3: #331832;\n  --card-text-color: #6d686d;\n  --card-bg-color-likes: #f0544f;\n  --card-bg-color-likes-noVote: #bcbdc4;\n  --card-text-color-likes: #ffffff;\n}\n\n.card {\n  display: flex;\n  position: relative;\n  min-height: 80px;\n  border-radius: 0px 10px 10px 0px;\n  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);\n  background: transparent;\n  border-radius: 10px;\n  margin: 11px;\n}\n\n.card .card__icon {\n  min-width: 70px;\n  width: 70px;\n  background: var(--card-bg-color-icon);\n  border-radius: 10px 0px 0px 10px;\n  text-align: center;\n}\n\n.card .card__icon img {\n  width: 33px;\n  margin: 0 auto;\n}\n\n.card .card__text,\n.card .card__text-highlighted {\n  min-width: 226px;\n  width: 100%;\n}\n\n.card .card__text,\n.card .card__text-highlighted {\n  border-radius: 0px 10px 10px 0px;\n  padding: 20px 17px 20px 17px;\n  background: var(--card-bg-color-text);\n}\n.card .card__text-highlighted {\n  background: var(--card-bg-color-body-highlighted);\n}\n\n.card .card__text h3,\n.card .card__text-highlighted h3 {\n  font-family: 'Ubuntu_Normal';\n  font-size: 14px;\n  line-height: 16px;\n  color: var(--card-text-color-h3);\n  margin: 0px;\n  margin-bottom: 6px;\n}\n\n.card .card__text p,\n.card .card__text-highlighted p {\n  font-family: 'Ubuntu_Normal';\n  font-size: 11px;\n  line-height: 14px;\n  color: var(--card-text-color);\n  margin: 0px;\n}\n\n.card .card__likes,\n.card .card__likes-yourChoice {\n  width: 22px;\n  height: 22px;\n  position: absolute;\n  top: -11px;\n  right: -11px;\n  background: var(--card-bg-color-likes-noVote);\n  border-radius: 50%;\n  color: var(--card-text-color-likes);\n  font-family: 'Ubuntu_Normal';\n  font-size: 10px;\n  line-height: 22px;\n  text-align: center;\n  transition: background-color 0.3s ease-out;\n}\n.card .card__likes {\n  cursor: pointer;\n}\n\n.card .card__likes-yourChoice {\n  background: var(--card-bg-color-likes);\n  animation: pulse 0.3s;\n  animation-iteration-count: 2;\n}\n\n@keyframes pulse {\n  from {\n    transform: scale(1, 1);\n  }\n  50% {\n    transform: scale(1.3, 1.3);\n  }\n  to {\n    transform: scale(1, 1);\n  }\n}\n", ""]);
 // Exports
 module.exports = exports;
 
@@ -1012,7 +1153,7 @@ module.exports = exports;
 /* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(36);
+var api = __webpack_require__(39);
             var content = __webpack_require__(62);
 
             content = content.__esModule ? content.default : content;
@@ -1039,8 +1180,47 @@ module.exports = exported;
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(38);
-var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(63);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".kudoEvent {\n  background-color: #cecece;\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n  display: flex;\n  flex-direction: row;\n  padding: 120px 0 60px 140px;\n  padding-right: 0px;\n  height: 100vh;\n  width: 100%;\n}\n\n.kudoEvent .event_info {\n  width: 22%;\n  min-width: 270px;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: start;\n  justify-content: center;\n}\n\n.kudoEvent .event_info > div {\n  width: 100%;\n  margin-bottom: 50px;\n}\n\n.kudoEvent .event_info .eventInfo {\n  margin-bottom: 28px;\n}\n\n.kudoEvent .event_info .kudoForm {\n  margin-bottom: 0px;\n}\n\n.kudoEvent .event_cards {\n  margin-left: 100px;\n  margin-right: 20px;\n  height: 100%;\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  flex-wrap: wrap;\n  overflow-x: scroll;\n  padding: 10px 0;\n}\n\n.kudoEvent .event_cards .card {\n  width: 296px;\n}\n\n@media only screen and (max-width: 800px) {\n  .kudoEvent {\n    padding: 60px 0 40px 60px;\n  }\n\n  .kudoEvent .event_cards {\n    margin-left: 50px;\n  }\n}\n\n@media only screen and (max-width: 580px) {\n  .kudoEvent {\n    flex-direction: column;\n    padding: 0px;\n    height: auto;\n  }\n\n  .kudoEvent .event_info {\n    width: 80%;\n    margin: 6rem auto;\n  }\n\n  .kudoEvent .event_cards {\n    width: 88%;\n    margin: 3rem auto;\n    max-width: unset;\n    padding: 20px;\n  }\n\n  .kudoEvent .event_cards .card {\n    margin: 10px 0;\n    min-width: unset;\n    width: auto;\n  }\n\n  .kudoEvent .event_cards .card .card__text {\n    min-width: unset;\n  }\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 63 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(39);
+            var content = __webpack_require__(64);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
+var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(65);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
 // Module
@@ -1050,11 +1230,11 @@ module.exports = exports;
 
 
 /***/ }),
-/* 63 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(38);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, "/* Box sizing rules */\n*,\n*::before,\n*::after {\n  box-sizing: border-box;\n}\n\n/* Remove default padding */\nul[class],\nol[class] {\n  padding: 0;\n}\n\n/* Remove default margin */\nbody,\nh1,\nh2,\nh3,\nh4,\np,\nul[class],\nol[class],\nli,\nfigure,\nfigcaption,\nblockquote,\ndl,\ndd {\n  margin: 0;\n}\n\n/* Set core body defaults */\nbody {\n  min-height: 100vh;\n  scroll-behavior: smooth;\n  text-rendering: optimizeSpeed;\n  line-height: 1.5;\n}\n\n/* Remove list styles on ul, ol elements with a class attribute */\nul[class],\nol[class] {\n  list-style: none;\n}\n\n/* A elements that don't have a class get default styles */\na:not([class]) {\n  text-decoration-skip-ink: auto;\n}\n\n/* Make images easier to work with */\nimg {\n  max-width: 100%;\n  display: block;\n}\n\n/* Inherit fonts for inputs and buttons */\ninput,\nbutton,\ntextarea,\nselect {\n  font: inherit;\n}\n", ""]);
