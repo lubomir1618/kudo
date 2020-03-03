@@ -52,7 +52,14 @@
 
 @media only screen and (max-width: 800px) {
   .kudoEvent {
-    padding: 60px 0 40px 60px;
+    padding: 0 0 0 20px;
+  }
+
+  .kudoEvent .event_info {
+    flex-basis: 320px;
+    width: 320px;
+    min-width: 320px;
+    padding: 0px 10px 0 0px;
   }
 
   .kudoEvent .event_cards {
@@ -62,27 +69,29 @@
 
 @media only screen and (max-width: 580px) {
   .kudoEvent {
+    background: #0b1f39;
+    background: linear-gradient(140deg, #825640 0%, #0b1f39 100%);
     flex-direction: column;
     padding: 0px;
     height: auto;
   }
 
   .kudoEvent .event_info {
-    width: 80%;
-    margin: 6rem auto;
+    width: 100%;
+    margin: 0;
+    padding: 7%;
   }
 
   .kudoEvent .event_cards {
-    width: 88%;
-    margin: 3rem auto;
-    max-width: unset;
-    padding: 20px;
+    width: 100%;
+    margin: 0;
+    padding: 7%;
   }
 
   .kudoEvent .event_cards .card {
     margin: 10px 0;
     min-width: unset;
-    width: auto;
+    width: 100%;
   }
 
   .kudoEvent .event_cards .card .card__text {
