@@ -1,6 +1,6 @@
 (window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["admin"],{
 
-/***/ 66:
+/***/ 67:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18,8 +18,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
-const EventForm_1 = __importDefault(__webpack_require__(67));
-const EventList_1 = __importDefault(__webpack_require__(70));
+const EventForm_1 = __importDefault(__webpack_require__(68));
+const EventList_1 = __importDefault(__webpack_require__(71));
 ReactDOM.render(React.createElement("div", { className: "eventAdmin" },
     React.createElement("header", null,
         React.createElement("h1", null, "Event admin")),
@@ -29,7 +29,7 @@ ReactDOM.render(React.createElement("div", { className: "eventAdmin" },
 
 /***/ }),
 
-/***/ 67:
+/***/ 68:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45,7 +45,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const api_1 = __webpack_require__(33);
 const E = __importStar(__webpack_require__(36));
-__webpack_require__(68);
+__webpack_require__(69);
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -138,11 +138,11 @@ exports.default = EventForm;
 
 /***/ }),
 
-/***/ 68:
+/***/ 69:
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(39);
-            var content = __webpack_require__(69);
+            var content = __webpack_require__(70);
 
             content = content.__esModule ? content.default : content;
 
@@ -165,7 +165,7 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 69:
+/***/ 70:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -179,7 +179,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 70:
+/***/ 71:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -258,5 +258,5 @@ exports.default = EventList;
 
 /***/ })
 
-},[[66,"runtime","vendor","common"]]]);
+},[[67,"runtime","vendor","common"]]]);
 //# sourceMappingURL=admin.js.map

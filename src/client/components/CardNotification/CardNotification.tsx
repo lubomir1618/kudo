@@ -29,7 +29,7 @@ class CardNotification extends Component<Props, State> {
   componentWillUnmount() {
     this.audio.removeEventListener('ended', () => this.setState({ play: false }));
     document.removeEventListener('kudoz::newNotification', () => {
-      this.setState({ play: true });
+      this.setState({ play: false });
     });
   }
 
