@@ -39,10 +39,10 @@ export function isUserValid(user: I.User) {
   return bugs.length ? bugs : true;
 }
 
-export function isCardValid(card: I.Card, event: I.Event|undefined) {
+export function isCardValid(card: I.Card, event: I.Event | undefined) {
   const bugs: string[] = [];
 
-  if (!(event && event._id === card.eventId && event.dateFrom < card.created && event.dateTo < card.created)) {
+  if (!(event && String(event._id) === card.eventId && event.dateFrom < card.created && event.dateTo > card.created)) {
     bugs.push('created');
   }
   if (!(card.awardedTo && card.awardedTo !== '')) {
