@@ -19,7 +19,7 @@ const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const react_router_dom_1 = __webpack_require__(12);
 const KudoEvent_1 = __importDefault(__webpack_require__(32));
-__webpack_require__(63);
+__webpack_require__(64);
 function App() {
     // let id = useParams().id;
     return (React.createElement(react_router_dom_1.BrowserRouter, null,
@@ -82,8 +82,8 @@ const client_1 = __webpack_require__(34);
 const Knight_1 = __webpack_require__(37);
 const EventInfo_1 = __webpack_require__(42);
 const KudoForm_1 = __importDefault(__webpack_require__(45));
-const Card_1 = __importDefault(__webpack_require__(58));
-__webpack_require__(61);
+const Card_1 = __importDefault(__webpack_require__(59));
+__webpack_require__(62);
 class KudoEvent extends react_1.default.Component {
     constructor(props) {
         super(props);
@@ -507,7 +507,8 @@ const api_1 = __webpack_require__(33);
 const constants_1 = __webpack_require__(36);
 const CardIcon_1 = __webpack_require__(52);
 const data_1 = __importDefault(__webpack_require__(55));
-__webpack_require__(56);
+const CardNotification_1 = __importDefault(__webpack_require__(56));
+__webpack_require__(57);
 const CARD_TYPES = Object.values(constants_1.CARD_TYPE);
 const PEOPLE = [...data_1.default];
 PEOPLE.map((folk) => {
@@ -535,15 +536,16 @@ class KudoForm extends react_1.default.Component {
     }
     render() {
         const buttonClass = this.props.isActive ? '' : 'disabled';
-        return (react_1.default.createElement("div", { className: 'kudoForm', ref: this.formRef },
-            react_1.default.createElement("div", { className: 'typePicker' }, this.typePicker()),
-            react_1.default.createElement("div", { className: 'main' },
-                react_1.default.createElement("div", { className: 'name' },
+        return (react_1.default.createElement("div", { className: "kudoForm", ref: this.formRef },
+            react_1.default.createElement("div", { className: "typePicker" }, this.typePicker()),
+            react_1.default.createElement("div", { className: "main" },
+                react_1.default.createElement("div", { className: "name" },
                     "Meno ",
                     this.peoplePicker()),
-                react_1.default.createElement("div", { className: 'message' },
-                    react_1.default.createElement("textarea", { ref: this.messageRef, placeholder: 'Sprava' }))),
-            react_1.default.createElement("div", { className: `submit ${buttonClass}`, onClick: () => this.onSubmit() }, "Daj Kudos")));
+                react_1.default.createElement("div", { className: "message" },
+                    react_1.default.createElement("textarea", { ref: this.messageRef, placeholder: "Sprava" }))),
+            react_1.default.createElement("div", { className: `submit ${buttonClass}`, onClick: () => this.onSubmit() }, "Daj Kudos"),
+            react_1.default.createElement(CardNotification_1.default, null)));
     }
     typePicker() {
         const options = CARD_TYPES.map((type) => {
@@ -555,9 +557,8 @@ class KudoForm extends react_1.default.Component {
         const handleClick = (valueProps) => this.onTypeSelect(valueProps);
         return (react_1.default.createElement(react_select_search_1.default, { options: options, value: this.state.type, search: false, onChange: handleClick, renderOption: this.renderOption, renderValue: this.renderValue }));
     }
-    ;
     renderValue(label) {
-        return (react_1.default.createElement("div", { className: 'typeTitle' },
+        return (react_1.default.createElement("div", { className: "typeTitle" },
             react_1.default.createElement(CardIcon_1.CardIcon, Object.assign({}, { cardType: label.replace(' ', '_') })),
             label));
     }
@@ -568,9 +569,8 @@ class KudoForm extends react_1.default.Component {
     }
     peoplePicker() {
         const handleClick = (valueProps) => this.onFolkSelect(valueProps);
-        return (react_1.default.createElement(react_select_search_1.default, { options: PEOPLE, onChange: handleClick, placeholder: 'Select name', value: this.state.name }));
+        return react_1.default.createElement(react_select_search_1.default, { options: PEOPLE, onChange: handleClick, placeholder: "Select name", value: this.state.name });
     }
-    ;
     onTypeSelect(valueProps) {
         this.setState({ type: valueProps.value });
     }
@@ -589,9 +589,9 @@ class KudoForm extends react_1.default.Component {
             if (this.state.name === undefined) {
                 this.drawRed("name" /* name */);
             }
-            else if (!this.messageRef.current
-                || (this.messageRef.current && this.messageRef.current.value.trim().length === 0)
-                || (this.messageRef.current && this.messageRef.current.value === 'Sprava')) {
+            else if (!this.messageRef.current ||
+                (this.messageRef.current && this.messageRef.current.value.trim().length === 0) ||
+                (this.messageRef.current && this.messageRef.current.value === 'Sprava')) {
                 this.drawRed("message" /* message */);
             }
             else {
@@ -607,6 +607,7 @@ class KudoForm extends react_1.default.Component {
                     .then(() => {
                     this.clearForm();
                     document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+                    document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
                 })
                     .catch((err) => {
                     console.log('Error: card not inserted');
@@ -1002,8 +1003,51 @@ exports.default = [
 /* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(1));
+class CardNotification extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.audio = new Audio('/audio/notification.wav');
+        this.state = {
+            play: this.props.playMusic ? this.props.playMusic : false
+        };
+    }
+    componentDidMount() {
+        this.audio.addEventListener('ended', () => this.setState({ play: false }));
+        document.addEventListener('kudoz::newNotification', () => {
+            this.setState({ play: true });
+        });
+    }
+    componentWillUnmount() {
+        this.audio.removeEventListener('ended', () => this.setState({ play: false }));
+        document.removeEventListener('kudoz::newNotification', () => {
+            this.setState({ play: false });
+        });
+    }
+    render() {
+        this.state.play ? this.audio.play() : this.audio.pause();
+        return react_1.default.createElement("div", null);
+    }
+}
+exports.default = CardNotification;
+
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var api = __webpack_require__(39);
-            var content = __webpack_require__(57);
+            var content = __webpack_require__(58);
 
             content = content.__esModule ? content.default : content;
 
@@ -1025,7 +1069,7 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -1038,7 +1082,7 @@ module.exports = exports;
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1054,7 +1098,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const CardIcon_1 = __webpack_require__(52);
 const api_1 = __webpack_require__(33);
-__webpack_require__(59);
+__webpack_require__(60);
 class Card extends react_1.Component {
     constructor(props) {
         super(props);
@@ -1122,11 +1166,11 @@ exports.default = Card;
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(39);
-            var content = __webpack_require__(60);
+            var content = __webpack_require__(61);
 
             content = content.__esModule ? content.default : content;
 
@@ -1148,7 +1192,7 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -1161,11 +1205,11 @@ module.exports = exports;
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(39);
-            var content = __webpack_require__(62);
+            var content = __webpack_require__(63);
 
             content = content.__esModule ? content.default : content;
 
@@ -1187,7 +1231,7 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -1200,11 +1244,11 @@ module.exports = exports;
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(39);
-            var content = __webpack_require__(64);
+            var content = __webpack_require__(65);
 
             content = content.__esModule ? content.default : content;
 
@@ -1226,12 +1270,12 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 64 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
-var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(65);
+var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(66);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
 // Module
@@ -1241,7 +1285,7 @@ module.exports = exports;
 
 
 /***/ }),
-/* 65 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
