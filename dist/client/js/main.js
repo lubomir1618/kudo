@@ -88,6 +88,7 @@ class KudoEvent extends react_1.default.Component {
     constructor(props) {
         super(props);
         this.eventId = this.props.match.params.id;
+        this.defaultRefreshInterval = 60 * 1000; // 60 seconds
         this.state = {
             cards: [],
             event: undefined,
@@ -99,30 +100,34 @@ class KudoEvent extends react_1.default.Component {
         document.addEventListener('kudoz::cardListRefresh', () => {
             this.getData();
         });
+        window.clearInterval(this.interval);
+        this.interval = window.setInterval(() => {
+            this.getData();
+        }, this.defaultRefreshInterval);
+    }
+    componentWillUnmount() {
+        window.clearInterval(this.interval);
     }
     render() {
-        return (this.state.event
-            ? react_1.default.createElement("div", { className: 'kudoEvent' },
-                react_1.default.createElement("div", { className: "event_info" },
-                    this.getEvent(),
-                    this.getKnight(),
-                    react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active })),
-                react_1.default.createElement("div", { className: "event_cards" }, this.processCards()))
-            : react_1.default.createElement("div", null));
+        return this.state.event ? (react_1.default.createElement("div", { className: "kudoEvent" },
+            react_1.default.createElement("div", { className: "event_info" },
+                this.getEvent(),
+                this.getKnight(),
+                react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active })),
+            react_1.default.createElement("div", { className: "event_cards" }, this.processCards()))) : (react_1.default.createElement("div", null));
     }
     getData() {
         const now = new Date().getTime();
         api_1.select('/api/cards', { eventId: this.eventId }).then((data) => {
             if (Array.isArray(data)) {
-                data.sort((a, b) => (a.likes > b.likes) ? -1 : 1);
+                data.sort((a, b) => (a.likes > b.likes ? -1 : 1));
                 this.setState({ cards: data });
             }
             else {
                 this.setState({ cards: [data] });
             }
         });
-        api_1.select('/api/events', { _id: this.eventId })
-            .then((data) => {
+        api_1.select('/api/events', { _id: this.eventId }).then((data) => {
             this.setState({
                 event: data,
                 is_active: data.dateFrom < now && now < data.dateTo
@@ -142,7 +147,7 @@ class KudoEvent extends react_1.default.Component {
     }
     processCards() {
         const cards = [];
-        this.state.cards.forEach(card_data => {
+        this.state.cards.forEach((card_data) => {
             const card_props = {
                 awarded: card_data.awardedTo,
                 cardID: card_data._id,
@@ -157,13 +162,13 @@ class KudoEvent extends react_1.default.Component {
         return cards;
     }
     isHighligted(cardId) {
-        return this.state.cards.map(card => card._id).indexOf(cardId) < 7;
+        return this.state.cards.map((card) => card._id).indexOf(cardId) < 7;
     }
     getKnight() {
         // TODO get most frequent name from array
         const list = client_1.getKudoNumberList(this.state.cards);
-        return react_1.default.createElement("div", { title: JSON.stringify(list) },
-            react_1.default.createElement(Knight_1.Knight, Object.assign({}, { mostKudos: client_1.getKudoKnight(list) })));
+        return (react_1.default.createElement("div", { title: JSON.stringify(list) },
+            react_1.default.createElement(Knight_1.Knight, Object.assign({}, { mostKudos: client_1.getKudoKnight(list) }))));
     }
 }
 exports.default = KudoEvent;
