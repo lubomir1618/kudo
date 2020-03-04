@@ -36,7 +36,6 @@
 
 .card .card__text,
 .card .card__text-highlighted {
-  min-width: 226px;
   width: 100%;
 }
 
