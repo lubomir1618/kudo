@@ -82,7 +82,8 @@ const client_1 = __webpack_require__(34);
 const Knight_1 = __webpack_require__(37);
 const EventInfo_1 = __webpack_require__(42);
 const KudoForm_1 = __importDefault(__webpack_require__(45));
-const Card_1 = __importDefault(__webpack_require__(59));
+const Card_1 = __importDefault(__webpack_require__(58));
+const CardNotification_1 = __importDefault(__webpack_require__(61));
 __webpack_require__(62);
 class KudoEvent extends react_1.default.Component {
     constructor(props) {
@@ -114,12 +115,16 @@ class KudoEvent extends react_1.default.Component {
                 this.getEvent(),
                 this.getKnight(),
                 react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active })),
-            react_1.default.createElement("div", { className: "event_cards" }, this.processCards()))) : (react_1.default.createElement("div", null));
+            react_1.default.createElement("div", { className: "event_cards" }, this.processCards()),
+            react_1.default.createElement(CardNotification_1.default, null))) : (react_1.default.createElement("div", null));
     }
     getData() {
         const now = new Date().getTime();
         api_1.select('/api/cards', { eventId: this.eventId }).then((data) => {
             if (Array.isArray(data)) {
+                if (this.state.cards.length < data.length) {
+                    document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
+                }
                 data.sort((a, b) => (a.likes > b.likes ? -1 : 1));
                 this.setState({ cards: data });
             }
@@ -507,8 +512,7 @@ const api_1 = __webpack_require__(33);
 const constants_1 = __webpack_require__(36);
 const CardIcon_1 = __webpack_require__(52);
 const data_1 = __importDefault(__webpack_require__(55));
-const CardNotification_1 = __importDefault(__webpack_require__(56));
-__webpack_require__(57);
+__webpack_require__(56);
 const CARD_TYPES = Object.values(constants_1.CARD_TYPE);
 const PEOPLE = [...data_1.default];
 PEOPLE.map((folk) => {
@@ -544,8 +548,7 @@ class KudoForm extends react_1.default.Component {
                     this.peoplePicker()),
                 react_1.default.createElement("div", { className: "message" },
                     react_1.default.createElement("textarea", { ref: this.messageRef, placeholder: "Sprava" }))),
-            react_1.default.createElement("div", { className: `submit ${buttonClass}`, onClick: () => this.onSubmit() }, "Daj Kudos"),
-            react_1.default.createElement(CardNotification_1.default, null)));
+            react_1.default.createElement("div", { className: `submit ${buttonClass}`, onClick: () => this.onSubmit() }, "Daj Kudos")));
     }
     typePicker() {
         const options = CARD_TYPES.map((type) => {
@@ -607,7 +610,6 @@ class KudoForm extends react_1.default.Component {
                     .then(() => {
                     this.clearForm();
                     document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
-                    document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
                 })
                     .catch((err) => {
                     console.log('Error: card not inserted');
@@ -1003,51 +1005,8 @@ exports.default = [
 /* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(1));
-class CardNotification extends react_1.Component {
-    constructor(props) {
-        super(props);
-        this.audio = new Audio('/audio/notification.wav');
-        this.state = {
-            play: this.props.playMusic ? this.props.playMusic : false
-        };
-    }
-    componentDidMount() {
-        this.audio.addEventListener('ended', () => this.setState({ play: false }));
-        document.addEventListener('kudoz::newNotification', () => {
-            this.setState({ play: true });
-        });
-    }
-    componentWillUnmount() {
-        this.audio.removeEventListener('ended', () => this.setState({ play: false }));
-        document.removeEventListener('kudoz::newNotification', () => {
-            this.setState({ play: false });
-        });
-    }
-    render() {
-        this.state.play ? this.audio.play() : this.audio.pause();
-        return react_1.default.createElement("div", null);
-    }
-}
-exports.default = CardNotification;
-
-
-/***/ }),
-/* 57 */
-/***/ (function(module, exports, __webpack_require__) {
-
 var api = __webpack_require__(39);
-            var content = __webpack_require__(58);
+            var content = __webpack_require__(57);
 
             content = content.__esModule ? content.default : content;
 
@@ -1069,7 +1028,7 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -1082,7 +1041,7 @@ module.exports = exports;
 
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1098,7 +1057,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const CardIcon_1 = __webpack_require__(52);
 const api_1 = __webpack_require__(33);
-__webpack_require__(60);
+__webpack_require__(59);
 class Card extends react_1.Component {
     constructor(props) {
         super(props);
@@ -1166,11 +1125,11 @@ exports.default = Card;
 
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(39);
-            var content = __webpack_require__(61);
+            var content = __webpack_require__(60);
 
             content = content.__esModule ? content.default : content;
 
@@ -1192,7 +1151,7 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -1202,6 +1161,49 @@ exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.push([module.i, ":root {\n  --card-bg-color-text: rgba(255, 255, 255, 0.9);\n  --card-bg-color-body-highlighted: rgba(253, 240, 213, 0.9);\n  --card-bg-color-icon: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%),\n    rgba(198, 216, 211, 0.9);\n  --card-text-color-h3: #331832;\n  --card-text-color: #6d686d;\n  --card-bg-color-likes: #f0544f;\n  --card-bg-color-likes-noVote: #2eb378;\n  --card-text-color-likes: #ffffff;\n}\n\n.card {\n  display: flex;\n  position: relative;\n  min-height: 80px;\n  border-radius: 0px 10px 10px 0px;\n  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);\n  background: transparent;\n  border-radius: 10px;\n  margin: 11px;\n}\n\n.card .card__icon {\n  min-width: 70px;\n  width: 70px;\n  background: var(--card-bg-color-icon);\n  border-radius: 10px 0px 0px 10px;\n  text-align: center;\n}\n\n.card .card__icon img {\n  width: 33px;\n  margin: 0 auto;\n}\n\n.card .card__text,\n.card .card__text-highlighted {\n  width: 100%;\n}\n\n.card .card__text,\n.card .card__text-highlighted {\n  border-radius: 0px 10px 10px 0px;\n  padding: 20px 17px 20px 17px;\n  background: var(--card-bg-color-text);\n}\n.card .card__text-highlighted {\n  background: var(--card-bg-color-body-highlighted);\n}\n\n.card .card__text h3,\n.card .card__text-highlighted h3 {\n  font-family: 'Ubuntu_Normal';\n  font-size: 14px;\n  line-height: 16px;\n  color: var(--card-text-color-h3);\n  margin: 0px;\n  margin-bottom: 6px;\n}\n\n.card .card__text p,\n.card .card__text-highlighted p {\n  font-family: 'Ubuntu_Normal';\n  font-size: 12px;\n  line-height: 14px;\n  color: var(--card-text-color);\n  margin: 0px;\n}\n\n.card .card__likes,\n.card .card__likes-yourChoice {\n  width: 22px;\n  height: 22px;\n  position: absolute;\n  top: -11px;\n  right: -11px;\n  background: var(--card-bg-color-likes-noVote);\n  border-radius: 50%;\n  color: var(--card-text-color-likes);\n  font-family: 'Ubuntu_Normal';\n  font-size: 10px;\n  line-height: 22px;\n  text-align: center;\n  transition: background-color 0.3s ease-out;\n}\n.card .card__likes {\n  cursor: pointer;\n}\n\n.card .card__likes-yourChoice {\n  background: var(--card-bg-color-likes);\n  animation: pulse 0.3s;\n  animation-iteration-count: 2;\n}\n\n@keyframes pulse {\n  from {\n    transform: scale(1, 1);\n  }\n  50% {\n    transform: scale(1.3, 1.3);\n  }\n  to {\n    transform: scale(1, 1);\n  }\n}\n", ""]);
 // Exports
 module.exports = exports;
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(1));
+class CardNotification extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.audio = new Audio('/audio/notification.wav');
+        this.state = {
+            play: this.props.playMusic ? this.props.playMusic : false
+        };
+    }
+    componentDidMount() {
+        this.audio.addEventListener('ended', () => this.setState({ play: false }));
+        document.addEventListener('kudoz::newNotification', () => {
+            this.setState({ play: true });
+        });
+    }
+    componentWillUnmount() {
+        this.audio.removeEventListener('ended', () => this.setState({ play: false }));
+        document.removeEventListener('kudoz::newNotification', () => {
+            this.setState({ play: false });
+        });
+    }
+    render() {
+        this.state.play ? this.audio.play() : this.audio.pause();
+        return react_1.default.createElement("div", null);
+    }
+}
+exports.default = CardNotification;
 
 
 /***/ }),

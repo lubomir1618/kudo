@@ -1,11 +1,12 @@
 import React from 'react';
 import * as I from '../../../common/interfaces';
 import { select } from '../../utils/api';
-import { getKudoNumberList, getKudoKnight } from '../../utils/client';
+import { getKudoKnight, getKudoNumberList } from '../../utils/client';
 import { Knight } from '../Knight/Knight';
 import { EventInfo } from '../eventInfo/EventInfo';
 import KudoForm from '../KudoForm/KudoForm';
 import Card from '../card/Card';
+import CardNotification from '../CardNotification/CardNotification';
 import './KudoEvent.css';
 
 interface IState {
@@ -55,6 +56,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
           <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
         </div>
         <div className="event_cards">{this.processCards()}</div>
+        <CardNotification />
       </div>
     ) : (
       <div />
@@ -66,6 +68,10 @@ export default class KudoEvent extends React.Component<{}, IState> {
 
     select<I.Card[]>('/api/cards', { eventId: this.eventId }).then((data) => {
       if (Array.isArray(data)) {
+        if (this.state.cards.length < data.length) {
+          document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
+        }
+
         data.sort((a, b) => (a.likes > b.likes ? -1 : 1));
         this.setState({ cards: data });
       } else {
