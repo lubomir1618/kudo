@@ -12,6 +12,7 @@ export interface Props {
   likes: number;
   text: string;
   cardType: CARD_TYPE;
+  isActive: boolean;
 }
 
 export interface State {
@@ -63,26 +64,27 @@ export default class Card extends Component<Props, State> {
       eventID
     };
 
-    if (savedVote) {
-      voteData = JSON.parse(savedVote);
+    if (this.props.isActive) {
+      if (savedVote) {
+        voteData = JSON.parse(savedVote);
+      }
+
+      voteData.cardID.push(cardID as never);
+
+      if (!this.alreadyVoted(eventID, cardID)) {
+        // API call to increment likes
+        like(cardID)
+          .then(() => {
+            document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+          })
+          .catch((err: Error) => {
+            console.log(`Error: like not inserted - ${err}`);
+          });
+
+        this.setState({ voted: true });
+        localStorage.setItem(`kudosVote-${eventID}`, JSON.stringify(voteData));
+      }
     }
-
-    voteData.cardID.push(cardID as never);
-
-    if (!this.alreadyVoted(eventID, cardID)) {
-      // API call to increment likes
-      like(cardID)
-        .then(() => {
-          document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
-        })
-        .catch((err: Error) => {
-          console.log(`Error: like not inserted - ${err}`);
-        });
-
-      this.setState({ voted: true });
-      localStorage.setItem(`kudosVote-${eventID}`, JSON.stringify(voteData));
-    }
-
     return;
   };
 
