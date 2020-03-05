@@ -5,7 +5,6 @@ import { insert } from '../../utils/api';
 import { CARD_TYPE } from '../../../common/constants';
 import { CardIcon } from '../cardIcon/CardIcon';
 import data from '../../assets/data';
-import CardNotification from '../CardNotification/CardNotification';
 import './KudoForm.css';
 
 const enum FORM_ERROR {
@@ -79,7 +78,6 @@ export default class KudoForm extends React.Component<IProps, IState> {
         <div className={`submit ${buttonClass}`} onClick={() => this.onSubmit()}>
           Daj Kudos
         </div>
-        <CardNotification />
       </div>
     );
   }
@@ -171,7 +169,6 @@ export default class KudoForm extends React.Component<IProps, IState> {
           .then(() => {
             this.clearForm();
             document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
-            document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
           })
           .catch((err: Error) => {
             console.log('Error: card not inserted');
