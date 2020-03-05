@@ -159,6 +159,7 @@ class KudoEvent extends react_1.default.Component {
                 cardType: card_data.type,
                 eventID: card_data.eventId,
                 highlighted: this.isHighligted(card_data._id),
+                isActive: this.state.is_active,
                 likes: card_data.likes,
                 text: card_data.text
             };
@@ -1069,21 +1070,23 @@ class Card extends react_1.Component {
                 cardID: [],
                 eventID
             };
-            if (savedVote) {
-                voteData = JSON.parse(savedVote);
-            }
-            voteData.cardID.push(cardID);
-            if (!this.alreadyVoted(eventID, cardID)) {
-                // API call to increment likes
-                api_1.like(cardID)
-                    .then(() => {
-                    document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
-                })
-                    .catch((err) => {
-                    console.log(`Error: like not inserted - ${err}`);
-                });
-                this.setState({ voted: true });
-                localStorage.setItem(`kudosVote-${eventID}`, JSON.stringify(voteData));
+            if (this.props.isActive) {
+                if (savedVote) {
+                    voteData = JSON.parse(savedVote);
+                }
+                voteData.cardID.push(cardID);
+                if (!this.alreadyVoted(eventID, cardID)) {
+                    // API call to increment likes
+                    api_1.like(cardID)
+                        .then(() => {
+                        document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+                    })
+                        .catch((err) => {
+                        console.log(`Error: like not inserted - ${err}`);
+                    });
+                    this.setState({ voted: true });
+                    localStorage.setItem(`kudosVote-${eventID}`, JSON.stringify(voteData));
+                }
             }
             return;
         };
@@ -1098,7 +1101,22 @@ class Card extends react_1.Component {
             react_1.default.createElement("div", { className: this.props.highlighted ? 'card__text-highlighted ' : 'card__text' },
                 react_1.default.createElement("h3", null, this.props.awarded),
                 react_1.default.createElement("p", null, this.props.text)),
-            this.yourChoice(this.props.eventID, this.props.cardID) ? (react_1.default.createElement("div", { className: "card__likes-yourChoice", title: "your choice" }, this.props.likes)) : (react_1.default.createElement("div", { onClick: this.vote, "data-eventid": this.props.eventID, "data-cardid": this.props.cardID, className: "card__likes", title: "vote" }, this.props.likes))));
+            this.getVoteButton()));
+    }
+    getVoteButton() {
+        console.log('active ', this.props.isActive);
+        if (this.props.isActive === false) {
+            console.log('no vote');
+            return (react_1.default.createElement("div", { className: "card__likes-noVote", title: "event is inactive" }, this.props.likes));
+        }
+        else if (this.yourChoice(this.props.eventID, this.props.cardID)) {
+            console.log('your choice');
+            return (react_1.default.createElement("div", { className: "card__likes-yourChoice", title: "your choice" }, this.props.likes));
+        }
+        else {
+            console.log('vote');
+            return (react_1.default.createElement("div", { onClick: this.vote, "data-eventid": this.props.eventID, "data-cardid": this.props.cardID, className: "card__likes", title: "vote" }, this.props.likes));
+        }
     }
     alreadyVoted(eventID, cardID) {
         const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
@@ -1158,7 +1176,7 @@ module.exports = exported;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ":root {\n  --card-bg-color-text: rgba(255, 255, 255, 0.9);\n  --card-bg-color-body-highlighted: rgba(253, 240, 213, 0.9);\n  --card-bg-color-icon: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%),\n    rgba(198, 216, 211, 0.9);\n  --card-text-color-h3: #331832;\n  --card-text-color: #6d686d;\n  --card-bg-color-likes: #f0544f;\n  --card-bg-color-likes-noVote: #2eb378;\n  --card-text-color-likes: #ffffff;\n}\n\n.card {\n  display: flex;\n  position: relative;\n  min-height: 80px;\n  border-radius: 0px 10px 10px 0px;\n  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);\n  background: transparent;\n  border-radius: 10px;\n  margin: 11px;\n}\n\n.card .card__icon {\n  min-width: 70px;\n  width: 70px;\n  background: var(--card-bg-color-icon);\n  border-radius: 10px 0px 0px 10px;\n  text-align: center;\n}\n\n.card .card__icon img {\n  width: 33px;\n  margin: 0 auto;\n}\n\n.card .card__text,\n.card .card__text-highlighted {\n  width: 100%;\n}\n\n.card .card__text,\n.card .card__text-highlighted {\n  border-radius: 0px 10px 10px 0px;\n  padding: 20px 17px 20px 17px;\n  background: var(--card-bg-color-text);\n}\n.card .card__text-highlighted {\n  background: var(--card-bg-color-body-highlighted);\n}\n\n.card .card__text h3,\n.card .card__text-highlighted h3 {\n  font-family: 'Ubuntu_Normal';\n  font-size: 14px;\n  line-height: 16px;\n  color: var(--card-text-color-h3);\n  margin: 0px;\n  margin-bottom: 6px;\n}\n\n.card .card__text p,\n.card .card__text-highlighted p {\n  font-family: 'Ubuntu_Normal';\n  font-size: 12px;\n  line-height: 14px;\n  color: var(--card-text-color);\n  margin: 0px;\n}\n\n.card .card__likes,\n.card .card__likes-yourChoice {\n  width: 22px;\n  height: 22px;\n  position: absolute;\n  top: -11px;\n  right: -11px;\n  background: var(--card-bg-color-likes-noVote);\n  border-radius: 50%;\n  color: var(--card-text-color-likes);\n  font-family: 'Ubuntu_Normal';\n  font-size: 10px;\n  line-height: 22px;\n  text-align: center;\n  transition: background-color 0.3s ease-out;\n}\n.card .card__likes {\n  cursor: pointer;\n}\n\n.card .card__likes-yourChoice {\n  background: var(--card-bg-color-likes);\n  animation: pulse 0.3s;\n  animation-iteration-count: 2;\n}\n\n@keyframes pulse {\n  from {\n    transform: scale(1, 1);\n  }\n  50% {\n    transform: scale(1.3, 1.3);\n  }\n  to {\n    transform: scale(1, 1);\n  }\n}\n", ""]);
+exports.push([module.i, ":root {\n  --card-bg-color-text: rgba(255, 255, 255, 0.9);\n  --card-bg-color-body-highlighted: rgba(253, 240, 213, 0.9);\n  --card-bg-color-icon: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%),\n    rgba(198, 216, 211, 0.9);\n  --card-text-color-h3: #331832;\n  --card-text-color: #6d686d;\n  --card-bg-color-likes: #f0544f;\n  --card-bg-color-likes-yourChoice: #2eb378;\n  --card-bg-color-likes-noVote: #bcbdc4;\n  --card-text-color-likes: #ffffff;\n}\n\n.card {\n  display: flex;\n  position: relative;\n  min-height: 80px;\n  border-radius: 0px 10px 10px 0px;\n  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);\n  background: transparent;\n  border-radius: 10px;\n  margin: 11px;\n}\n\n.card .card__icon {\n  min-width: 70px;\n  width: 70px;\n  background: var(--card-bg-color-icon);\n  border-radius: 10px 0px 0px 10px;\n  text-align: center;\n}\n\n.card .card__icon img {\n  width: 33px;\n  margin: 0 auto;\n}\n\n.card .card__text,\n.card .card__text-highlighted {\n  width: 100%;\n}\n\n.card .card__text,\n.card .card__text-highlighted {\n  border-radius: 0px 10px 10px 0px;\n  padding: 20px 17px 20px 17px;\n  background: var(--card-bg-color-text);\n}\n.card .card__text-highlighted {\n  background: var(--card-bg-color-body-highlighted);\n}\n\n.card .card__text h3,\n.card .card__text-highlighted h3 {\n  font-family: 'Ubuntu_Normal';\n  font-size: 14px;\n  line-height: 16px;\n  color: var(--card-text-color-h3);\n  margin: 0px;\n  margin-bottom: 6px;\n}\n\n.card .card__text p,\n.card .card__text-highlighted p {\n  font-family: 'Ubuntu_Normal';\n  font-size: 12px;\n  line-height: 14px;\n  color: var(--card-text-color);\n  margin: 0px;\n}\n\n.card .card__likes,\n.card .card__likes-yourChoice,\n.card .card__likes-noVote {\n  width: 22px;\n  height: 22px;\n  position: absolute;\n  top: -11px;\n  right: -11px;\n  background: var(--card-bg-color-likes-yourChoice);\n  border-radius: 50%;\n  color: var(--card-text-color-likes);\n  font-family: 'Ubuntu_Normal';\n  font-size: 10px;\n  line-height: 22px;\n  text-align: center;\n  transition: background-color 0.3s ease-out;\n}\n.card .card__likes {\n  cursor: pointer;\n}\n\n.card .card__likes-noVote {\n  background: var(--card-bg-color-likes-noVote);\n}\n\n.card .card__likes-yourChoice {\n  background: var(--card-bg-color-likes);\n  animation: pulse 0.3s;\n  animation-iteration-count: 2;\n}\n\n@keyframes pulse {\n  from {\n    transform: scale(1, 1);\n  }\n  50% {\n    transform: scale(1.3, 1.3);\n  }\n  to {\n    transform: scale(1, 1);\n  }\n}\n", ""]);
 // Exports
 module.exports = exports;
 

@@ -7,6 +7,7 @@
   --card-text-color: #6d686d;
   --card-bg-color-likes: #f0544f;
   --card-bg-color-likes-yourChoice: #2eb378;
+  --card-bg-color-likes-noVote: #bcbdc4;
   --card-text-color-likes: #ffffff;
 }
 
@@ -69,7 +70,8 @@
 }
 
 .card .card__likes,
-.card .card__likes-yourChoice {
+.card .card__likes-yourChoice,
+.card .card__likes-noVote {
   width: 22px;
   height: 22px;
   position: absolute;
@@ -86,6 +88,10 @@
 }
 .card .card__likes {
   cursor: pointer;
+}
+
+.card .card__likes-noVote {
+  background: var(--card-bg-color-likes-noVote);
 }
 
 .card .card__likes-yourChoice {
