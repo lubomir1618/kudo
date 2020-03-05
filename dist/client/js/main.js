@@ -1104,17 +1104,13 @@ class Card extends react_1.Component {
             this.getVoteButton()));
     }
     getVoteButton() {
-        console.log('active ', this.props.isActive);
         if (this.props.isActive === false) {
-            console.log('no vote');
             return (react_1.default.createElement("div", { className: "card__likes-noVote", title: "event is inactive" }, this.props.likes));
         }
         else if (this.yourChoice(this.props.eventID, this.props.cardID)) {
-            console.log('your choice');
             return (react_1.default.createElement("div", { className: "card__likes-yourChoice", title: "your choice" }, this.props.likes));
         }
         else {
-            console.log('vote');
             return (react_1.default.createElement("div", { onClick: this.vote, "data-eventid": this.props.eventID, "data-cardid": this.props.cardID, className: "card__likes", title: "vote" }, this.props.likes));
         }
     }

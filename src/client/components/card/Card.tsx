@@ -76,23 +76,19 @@ export default class Card extends Component<Props, State> {
   };
 
   private getVoteButton() {
-    console.log('active ', this.props.isActive);
     if (this.props.isActive === false) {
-      console.log('no vote');
       return (
         <div className="card__likes-noVote" title="event is inactive">
           {this.props.likes}
         </div>
       );
     } else if (this.yourChoice(this.props.eventID, this.props.cardID!)) {
-      console.log('your choice');
       return (
         <div className="card__likes-yourChoice" title="your choice">
           {this.props.likes}
         </div>
       );
     } else {
-      console.log('vote');
       return (
         <div
           onClick={this.vote}
