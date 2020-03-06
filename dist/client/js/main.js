@@ -123,6 +123,7 @@ class KudoEvent extends react_1.default.Component {
         api_1.select('/api/cards', { eventId: this.eventId }).then((data) => {
             if (Array.isArray(data)) {
                 if (this.state.cards.length < data.length) {
+                    console.log(this.state.cards.length, data.length);
                     document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
                 }
                 data.sort((a, b) => (a.likes > b.likes ? -1 : 1));
@@ -251,7 +252,7 @@ function vodka() {
 }
 exports.vodka = vodka;
 function getKudoNumberList(cards) {
-    let list = cards.reduce((acc, val) => {
+    const list = cards.reduce((acc, val) => {
         if (acc[val.awardedTo]) {
             acc[val.awardedTo].count += 1;
         }
@@ -260,7 +261,7 @@ function getKudoNumberList(cards) {
         }
         return acc;
     }, {});
-    return Object.values(list).sort((a, b) => a.count > b.count ? -1 : 1);
+    return Object.values(list).sort((a, b) => (a.count > b.count ? -1 : 1));
 }
 exports.getKudoNumberList = getKudoNumberList;
 function getKudoKnight(kudoNumList) {
@@ -271,6 +272,14 @@ function getKudoKnight(kudoNumList) {
     return 'No knight yet';
 }
 exports.getKudoKnight = getKudoKnight;
+function soundTurnedOn() {
+    const sound = localStorage.getItem('kudosSound');
+    if (sound && sound === 'on') {
+        return true;
+    }
+    return false;
+}
+exports.soundTurnedOn = soundTurnedOn;
 
 
 /***/ }),
@@ -1192,6 +1201,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
+const client_1 = __webpack_require__(34);
 class CardNotification extends react_1.Component {
     constructor(props) {
         super(props);
@@ -1213,7 +1223,7 @@ class CardNotification extends react_1.Component {
         });
     }
     render() {
-        this.state.play ? this.audio.play() : this.audio.pause();
+        this.state.play && client_1.soundTurnedOn() ? this.audio.play() : this.audio.pause();
         return react_1.default.createElement("div", null);
     }
 }

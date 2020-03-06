@@ -69,6 +69,8 @@ export default class KudoEvent extends React.Component<{}, IState> {
     select<I.Card[]>('/api/cards', { eventId: this.eventId }).then((data) => {
       if (Array.isArray(data)) {
         if (this.state.cards.length < data.length) {
+          console.log(this.state.cards.length, data.length);
+
           document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
         }
 
