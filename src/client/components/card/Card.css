@@ -6,7 +6,8 @@
   --card-text-color-h3: #331832;
   --card-text-color: #6d686d;
   --card-bg-color-likes: #f0544f;
-  --card-bg-color-likes-noVote: #2eb378;
+  --card-bg-color-likes-yourChoice: #2eb378;
+  --card-bg-color-likes-noVote: #bcbdc4;
   --card-text-color-likes: #ffffff;
 }
 
@@ -69,13 +70,14 @@
 }
 
 .card .card__likes,
-.card .card__likes-yourChoice {
+.card .card__likes-yourChoice,
+.card .card__likes-noVote {
   width: 22px;
   height: 22px;
   position: absolute;
   top: -11px;
   right: -11px;
-  background: var(--card-bg-color-likes-noVote);
+  background: var(--card-bg-color-likes-yourChoice);
   border-radius: 50%;
   color: var(--card-text-color-likes);
   font-family: 'Ubuntu_Normal';
@@ -86,6 +88,10 @@
 }
 .card .card__likes {
   cursor: pointer;
+}
+
+.card .card__likes-noVote {
+  background: var(--card-bg-color-likes-noVote);
 }
 
 .card .card__likes-yourChoice {

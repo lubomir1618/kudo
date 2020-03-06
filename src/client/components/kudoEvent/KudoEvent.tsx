@@ -111,6 +111,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
         cardType: card_data.type,
         eventID: card_data.eventId,
         highlighted: this.isHighligted(card_data._id),
+        isActive: this.state.is_active,
         likes: card_data.likes,
         text: card_data.text
       };

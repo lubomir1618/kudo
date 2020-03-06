@@ -11,6 +11,7 @@ export const props_1 = {
   cardType: cardTypes[Math.floor(Math.random() * cardTypes.length)],
   eventID: 'eeee1111',
   highlighted: false,
+  isActive: true,
   likes: 9,
   text: 'Donut chupa chups jelly brownie choco late chocolate bar cookie'
 };
@@ -21,6 +22,7 @@ export const props_2 = {
   cardType: cardTypes[Math.floor(Math.random() * cardTypes.length)],
   eventID: 'eeee1111',
   highlighted: true,
+  isActive: true,
   likes: 12,
   text:
     'Gummi bears carrot cake powder pie jujubes. Halvah jelly chocolate bar gingerbread dragée macaroon. Bonbon cotton candy jujubes cotton candy'

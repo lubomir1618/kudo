@@ -12,6 +12,7 @@ export interface Props {
   likes: number;
   text: string;
   cardType: CARD_TYPE;
+  isActive: boolean;
 }
 
 export interface State {
@@ -36,20 +37,7 @@ export default class Card extends Component<Props, State> {
           <h3>{this.props.awarded}</h3>
           <p>{this.props.text}</p>
         </div>
-        {this.yourChoice(this.props.eventID, this.props.cardID!) ? (
-          <div className="card__likes-yourChoice" title="your choice">
-            {this.props.likes}
-          </div>
-        ) : (
-          <div
-            onClick={this.vote}
-            data-eventid={this.props.eventID}
-            data-cardid={this.props.cardID!}
-            className="card__likes"
-            title="vote">
-            {this.props.likes}
-          </div>
-        )}
+        {this.getVoteButton()}
       </div>
     );
   }
@@ -63,28 +51,56 @@ export default class Card extends Component<Props, State> {
       eventID
     };
 
-    if (savedVote) {
-      voteData = JSON.parse(savedVote);
+    if (this.props.isActive) {
+      if (savedVote) {
+        voteData = JSON.parse(savedVote);
+      }
+
+      voteData.cardID.push(cardID as never);
+
+      if (!this.alreadyVoted(eventID, cardID)) {
+        // API call to increment likes
+        like(cardID)
+          .then(() => {
+            document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+          })
+          .catch((err: Error) => {
+            console.log(`Error: like not inserted - ${err}`);
+          });
+
+        this.setState({ voted: true });
+        localStorage.setItem(`kudosVote-${eventID}`, JSON.stringify(voteData));
+      }
     }
-
-    voteData.cardID.push(cardID as never);
-
-    if (!this.alreadyVoted(eventID, cardID)) {
-      // API call to increment likes
-      like(cardID)
-        .then(() => {
-          document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
-        })
-        .catch((err: Error) => {
-          console.log(`Error: like not inserted - ${err}`);
-        });
-
-      this.setState({ voted: true });
-      localStorage.setItem(`kudosVote-${eventID}`, JSON.stringify(voteData));
-    }
-
     return;
   };
+
+  private getVoteButton() {
+    if (this.props.isActive === false) {
+      return (
+        <div className="card__likes-noVote" title="event is inactive">
+          {this.props.likes}
+        </div>
+      );
+    } else if (this.yourChoice(this.props.eventID, this.props.cardID!)) {
+      return (
+        <div className="card__likes-yourChoice" title="your choice">
+          {this.props.likes}
+        </div>
+      );
+    } else {
+      return (
+        <div
+          onClick={this.vote}
+          data-eventid={this.props.eventID}
+          data-cardid={this.props.cardID!}
+          className="card__likes"
+          title="vote">
+          {this.props.likes}
+        </div>
+      );
+    }
+  }
 
   private alreadyVoted(eventID: string, cardID: string): boolean {
     const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
