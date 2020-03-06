@@ -70,13 +70,13 @@ export default class KudoForm extends React.Component<IProps, IState> {
       <div className="kudoForm" ref={this.formRef}>
         <div className="typePicker">{this.typePicker()}</div>
         <div className="main">
-          <div className="name">Meno {this.peoplePicker()}</div>
+          <div className="name">Name {this.peoplePicker()}</div>
           <div className="message">
-            <textarea ref={this.messageRef} placeholder="Sprava" />
+            <textarea ref={this.messageRef} placeholder="Message" />
           </div>
         </div>
         <div className={`submit ${buttonClass}`} onClick={() => this.onSubmit()}>
-          Daj Kudos
+          Give Kudos
         </div>
       </div>
     );
