@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { RefObject } from 'react';
 import * as I from '../../../common/interfaces';
 import { select } from '../../utils/api';
 import { getKudoKnight, getKudoNumberList } from '../../utils/client';
 import { Knight } from '../Knight/Knight';
 import { EventInfo } from '../eventInfo/EventInfo';
 import KudoForm from '../KudoForm/KudoForm';
-import Card from '../card/Card';
+import Card, { Props } from '../card/Card';
 import CardNotification from '../CardNotification/CardNotification';
 import './KudoEvent.css';
+
+const TWOMIN = 120000;
+const REFRESH = 60 * 1000; // 60 seconds
 
 interface IState {
   cards: I.Card[];
@@ -18,12 +21,12 @@ interface IState {
 export default class KudoEvent extends React.Component<{}, IState> {
   private eventId: string;
   public interval!: ReturnType<Window['setInterval']>;
-  public defaultRefreshInterval: number;
+  private newCardRef: RefObject<HTMLDivElement>;
 
   constructor(props: any) {
     super(props);
     this.eventId = (this.props as any).match.params.id;
-    this.defaultRefreshInterval = 60 * 1000; // 60 seconds
+    this.newCardRef = React.createRef();
     this.state = {
       cards: [],
       event: undefined,
@@ -40,7 +43,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
     window.clearInterval(this.interval);
     this.interval = window.setInterval(() => {
       this.getData();
-    }, this.defaultRefreshInterval);
+    }, REFRESH);
   }
 
   componentWillUnmount() {
@@ -57,6 +60,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
         </div>
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />
+        {this.getNewCard()}
       </div>
     ) : (
       <div />
@@ -65,7 +69,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
 
   private getData() {
     const now = new Date().getTime();
-
+    
     select<I.Card[]>('/api/cards', { eventId: this.eventId }).then((data) => {
       if (Array.isArray(data)) {
         if (this.state.cards.length < data.length) {
@@ -105,21 +109,23 @@ export default class KudoEvent extends React.Component<{}, IState> {
     const cards: JSX.Element[] = [];
 
     this.state.cards.forEach((card_data) => {
-      const card_props = {
-        awarded: card_data.awardedTo,
-        cardID: card_data._id,
-        cardType: card_data.type,
-        eventID: card_data.eventId,
-        highlighted: this.isHighligted(card_data._id),
-        isActive: this.state.is_active,
-        likes: card_data.likes,
-        text: card_data.text
-      };
-
-      cards.push(<Card key={card_props.cardID} {...card_props} />);
+      cards.push(<Card key={card_data._id} {...this.getCardProps(card_data)} />);
     });
 
     return cards;
+  }
+
+  private getCardProps(card_data: I.Card): Props {
+    return {
+      awarded: card_data.awardedTo,
+      cardID: card_data._id,
+      cardType: card_data.type,
+      eventID: card_data.eventId,
+      highlighted: this.isHighligted(card_data._id),
+      isActive: this.state.is_active,
+      likes: card_data.likes,
+      text: card_data.text
+    };
   }
 
   private isHighligted(cardId: string): boolean {
@@ -135,5 +141,24 @@ export default class KudoEvent extends React.Component<{}, IState> {
         <Knight {...{ mostKudos: getKudoKnight(list) }} />
       </div>
     );
+  }
+
+  private getNewCard(): JSX.Element {
+    const last_card = this.state.cards.length > 0
+      ? this.state.cards[this.state.cards.length - 1]
+      : undefined;
+    const diff = new Date().getTime() - TWOMIN;
+
+    if (last_card && last_card.created > diff) {
+      setTimeout(() => {
+        if (this.newCardRef.current) {
+          this.newCardRef.current.remove();
+        }
+      }, REFRESH);
+
+      return <div className='newCard' ref={this.newCardRef}><Card key={last_card._id} {...this.getCardProps(last_card)} /></div>
+    }
+
+    return <div />;
   }
 }

@@ -47,6 +47,66 @@
   width: 296px;
 }
 
+.kudoEvent .newCard {
+  display: flex;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 4%;
+  position: absolute;
+  background: rgba(83, 83, 83, 0.3);
+}
+
+.kudoEvent .newCard .card {
+  height: 70%;
+  width: 70%;
+  margin: auto;
+  animation: popup 0.3s ease-out;
+}
+
+.kudoEvent .newCard .card .card__icon {
+  width: 33%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%),
+    rgba(198, 216, 211, 1);
+}
+
+.kudoEvent .newCard .card .card__icon img {
+  width: 60%;
+}
+
+.kudoEvent .newCard .card .card__text,
+.kudoEvent .newCard .card .card__text-highlighted {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #fdf0d5;
+}
+
+.kudoEvent .newCard .card .card__text h3,
+.kudoEvent .newCard .card .card__text-highlighted h3 {
+  font-size: 46px;
+  line-height: 54px;
+  padding: 1rem 2rem;
+  text-align: center;
+  margin: 0;
+}
+
+.kudoEvent .newCard .card .card__text p,
+.kudoEvent .newCard .card .card__text-highlighted p {
+  font-size: 40px;
+  line-height: 49px;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.kudoEvent .newCard .card .card__likes {
+  display: none;
+}
+
 @media only screen and (max-width: 800px) {
   .kudoEvent {
     padding: 0 0 0 20px;
@@ -93,5 +153,14 @@
 
   .kudoEvent .event_cards .card .card__text {
     min-width: unset;
+  }
+}
+
+@keyframes popup {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
   }
 }
