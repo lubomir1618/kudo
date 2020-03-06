@@ -52,7 +52,7 @@
 
 .card .card__text h3,
 .card .card__text-highlighted h3 {
-  font-family: 'Ubuntu_Normal';
+  font-family: 'Ubuntu_Medium';
   font-size: 14px;
   line-height: 16px;
   color: var(--card-text-color-h3);
@@ -80,7 +80,7 @@
   background: var(--card-bg-color-likes-yourChoice);
   border-radius: 50%;
   color: var(--card-text-color-likes);
-  font-family: 'Ubuntu_Normal';
+  font-family: 'Ubuntu_Bold';
   font-size: 10px;
   line-height: 22px;
   text-align: center;

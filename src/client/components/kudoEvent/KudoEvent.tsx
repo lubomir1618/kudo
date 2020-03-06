@@ -135,7 +135,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
     const list = getKudoNumberList(this.state.cards);
 
     return (
-      <div title={JSON.stringify(list)}>
+      <div title={list.map((person) => `${person.name}:${person.count}`).join(', ')}>
         <Knight {...{ mostKudos: getKudoKnight(list) }} />
       </div>
     );

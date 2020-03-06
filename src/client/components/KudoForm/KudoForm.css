@@ -1,19 +1,21 @@
 .kudoForm {
   background-color: #ffffff;
   border-radius: 10px;
-  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+  font-family: 'Ubuntu_Normal';
 }
 
-.kudoForm input, .kudoForm textarea {
-  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+.kudoForm input,
+.kudoForm textarea {
+  font-family: 'Ubuntu_Normal';
 }
 
 .kudoForm .typePicker {
+  font-family: 'Ubuntu_Normal';
   display: flex;
   align-items: center;
   height: 67px;
   border-radius: 10px 10px 0 0;
-  background-color: #FDF0D5;
+  background-color: #fdf0d5;
   font-size: 20px;
   color: #331832;
   text-transform: capitalize;
@@ -22,7 +24,7 @@
 }
 
 .kudoForm .typePicker:hover {
-  background-color: #e4ab32;
+  background-color: #f9e6a3;
 }
 
 .kudoForm .typePicker .cardIcon {
@@ -84,7 +86,7 @@
   padding: 0 23px;
   height: 55px;
   font-size: 12px;
-  color: #6D686D;
+  color: #6d686d;
   border-bottom: 1px solid rgba(198, 216, 211, 0.3);
 }
 
@@ -96,10 +98,9 @@
   border-radius: initial;
   border: none;
   font-size: 16px;
-  color: #6D686D;
+  color: #6d686d;
   margin-bottom: 0px;
 }
-
 
 .kudoForm .name .select-search-box .select-search-box__select {
   top: 55px;
@@ -118,7 +119,7 @@
   height: 100%;
   width: 100%;
   font-size: 12px;
-  color: #6D686D;
+  color: #6d686d;
   resize: none;
   border: none;
   outline: none;
@@ -133,6 +134,7 @@
 }
 
 .kudoForm .submit {
+  font-family: 'Ubuntu_Bold';
   display: flex;
   align-items: center;
   justify-content: center;
@@ -141,11 +143,11 @@
   font-size: 18px;
   color: #ffffff;
   font-weight: bold;
-  background: linear-gradient(180deg, #F0544F 0%, #D74945 100%), #F0544F;
+  background: linear-gradient(180deg, #f0544f 0%, #d74945 100%), #f0544f;
   cursor: pointer;
 }
 .kudoForm .submit:hover {
-  background: #F0544F;
+  background: #de3934;
 }
 
 .kudoForm .submit.disabled {
@@ -170,7 +172,7 @@
   width: 100%;
   position: relative;
   box-sizing: border-box;
-  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
+  font-family: 'Ubuntu_Normal';
 }
 
 .select-search-box *,
@@ -217,7 +219,7 @@
   padding: 0 16px;
   background: #fff;
   border: none;
-  box-shadow: 0 .0625rem .125rem rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.15);
   border-radius: 3px;
   outline: none;
   font-size: 14px;
@@ -230,11 +232,11 @@
 .select-search-box__input::-webkit-search-cancel-button,
 .select-search-box__input::-webkit-search-results-button,
 .select-search-box__input::-webkit-search-results-decoration {
-  -webkit-appearance:none;
+  -webkit-appearance: none;
 }
 
 .select-search-box__input:hover {
-  border-color: #2FCC8B;
+  border-color: #2fcc8b;
 }
 
 .select-search-box__input:not([readonly]):focus {
@@ -243,7 +245,7 @@
 
 .select-search-box__select {
   background: #fff;
-  box-shadow: 0 .0625rem .125rem rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.15);
 }
 
 .select-search-box:not(.select-search-box--multiple) .select-search-box__select {
@@ -278,7 +280,7 @@
 }
 
 .select-search-box__option.is-selected {
-  background: #2FCC8B;
+  background: #2fcc8b;
   color: #fff;
 }
 
