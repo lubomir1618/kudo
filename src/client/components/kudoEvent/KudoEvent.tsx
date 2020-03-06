@@ -9,7 +9,7 @@ import Card, { Props } from '../card/Card';
 import CardNotification from '../CardNotification/CardNotification';
 import './KudoEvent.css';
 
-const TWOMIN = 120000;
+const MODAL_INTERVAL = 120000;
 const REFRESH = 60 * 1000; // 60 seconds
 
 interface IState {
@@ -20,7 +20,8 @@ interface IState {
 
 export default class KudoEvent extends React.Component<{}, IState> {
   private eventId: string;
-  public interval!: ReturnType<Window['setInterval']>;
+  private interval!: ReturnType<Window['setInterval']>;
+  private timeout: any;
   private newCardRef: RefObject<HTMLDivElement>;
 
   constructor(props: any) {
@@ -37,6 +38,9 @@ export default class KudoEvent extends React.Component<{}, IState> {
   public componentDidMount() {
     this.getData();
     document.addEventListener('kudoz::cardListRefresh', () => {
+      if (this.newCardRef.current) {
+        this.newCardRef.current!.classList.remove('hidden');
+      }
       this.getData();
     });
 
@@ -48,9 +52,12 @@ export default class KudoEvent extends React.Component<{}, IState> {
 
   componentWillUnmount() {
     window.clearInterval(this.interval);
+    window.clearTimeout(this.timeout);
   }
 
   public render() {
+    const newCard = this.getNewCard();
+    
     return this.state.event ? (
       <div className="kudoEvent">
         <div className="event_info">
@@ -60,7 +67,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
         </div>
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />
-        {this.getNewCard()}
+        {newCard}
       </div>
     ) : (
       <div />
@@ -71,16 +78,12 @@ export default class KudoEvent extends React.Component<{}, IState> {
     const now = new Date().getTime();
     
     select<I.Card[]>('/api/cards', { eventId: this.eventId }).then((data) => {
-      if (Array.isArray(data)) {
-        if (this.state.cards.length < data.length) {
-          document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
-        }
-
-        data.sort((a, b) => (a.likes > b.likes ? -1 : 1));
-        this.setState({ cards: data });
-      } else {
-        this.setState({ cards: [data] });
+      if (this.state.cards.length < data.length) {
+        document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
       }
+
+      data.sort((a, b) => (a.likes > b.likes ? -1 : 1));
+      this.setState({ cards: data });
     });
 
     select<I.Event>('/api/events', { _id: this.eventId }).then((data) => {
@@ -144,21 +147,32 @@ export default class KudoEvent extends React.Component<{}, IState> {
   }
 
   private getNewCard(): JSX.Element {
-    const last_card = this.state.cards.length > 0
+    const diff = new Date().getTime() - MODAL_INTERVAL;
+    const new_card = this.state.cards.length > 0
       ? this.state.cards[this.state.cards.length - 1]
       : undefined;
-    const diff = new Date().getTime() - TWOMIN;
 
-    if (last_card && last_card.created > diff) {
-      setTimeout(() => {
-        if (this.newCardRef.current) {
-          this.newCardRef.current.remove();
-        }
+    if (new_card && new_card.created > diff) {
+      this.timeout = window.setTimeout(() => {
+        this.hideNewCard();
+        
       }, REFRESH);
 
-      return <div className='newCard' ref={this.newCardRef}><Card key={last_card._id} {...this.getCardProps(last_card)} /></div>
+      const onClick = () => this.hideNewCard();
+
+      return <div className='newCard' ref={this.newCardRef}>
+        <div>
+          <div className='close' onClick={onClick}><img src="/img/cancel.png" /></div>
+          <Card key={new_card._id} {...this.getCardProps(new_card)} />
+        </div>
+      </div>;
     }
 
     return <div />;
+  }
+
+  private hideNewCard(): void {
+    window.clearInterval(this.timeout);
+    this.newCardRef.current!.classList.add('hidden');
   }
 }
