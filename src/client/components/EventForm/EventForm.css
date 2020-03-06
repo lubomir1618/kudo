@@ -11,7 +11,7 @@ html {
   width: 500px;
   height: 325px;
   box-shadow: 0px 4px 10px var(--c-three);
-  font-family: 'Ubuntu_bold';
+  font-family: 'Ubuntu_Bold';
   position: fixed;
   top: 50%;
   left: 50%;
