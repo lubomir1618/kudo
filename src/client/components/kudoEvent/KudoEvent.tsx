@@ -9,6 +9,7 @@ import Card, { Props } from '../card/Card';
 import CardNotification from '../CardNotification/CardNotification';
 import KudoSettings from '../kudoSettings/KudoSettings';
 import './KudoEvent.css';
+import KudoSettings from '../kudoSettings/KudoSettings';
 
 const MODAL_INTERVAL = 120 * 1000;
 const MODAL_TIME = 120 * 1000;
@@ -96,6 +97,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />
         {this.state.shouldDisplayModal ? <CardModal newCardProps={newCard} onClick={this.hideModal} /> : null}
+        {newCard}
         <KudoSettings />
       </div>
     ) : (
