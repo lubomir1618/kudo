@@ -24,7 +24,7 @@
 }
 
 .kudoForm .typePicker:hover {
-  background-color: #e4ab32;
+  background-color: #f9e6a3;
 }
 
 .kudoForm .typePicker .cardIcon {
@@ -147,7 +147,7 @@
   cursor: pointer;
 }
 .kudoForm .submit:hover {
-  background: #f0544f;
+  background: #de3934;
 }
 
 .kudoForm .submit.disabled {
