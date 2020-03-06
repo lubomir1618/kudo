@@ -10,7 +10,7 @@ import CardNotification from '../CardNotification/CardNotification';
 import './KudoEvent.css';
 
 const MODAL_INTERVAL = 120000;
-const REFRESH = 60 * 1000; // 60 seconds
+const REFRESH = 15 * 1000; // 60 seconds
 
 interface IState {
   cards: I.Card[];
