@@ -275,9 +275,12 @@ function getKudoKnight(kudoNumList) {
 }
 exports.getKudoKnight = getKudoKnight;
 function soundTurnedOn() {
-    const sound = localStorage.getItem('kudosSound');
-    if (sound && sound === 'on') {
-        return true;
+    const data = localStorage.getItem('kudosSettings');
+    if (data) {
+        const soundSetting = JSON.parse(data);
+        if (soundSetting && soundSetting.sound === 'on') {
+            return true;
+        }
     }
     return false;
 }
@@ -1282,11 +1285,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importDefault(__webpack_require__(1));
-const SoundSwitch_1 = __webpack_require__(65);
+const SoundSwitch_1 = __importDefault(__webpack_require__(65));
 __webpack_require__(68);
 function KudoSettings() {
     return (react_1.default.createElement("div", { className: "kudoSettings" },
-        react_1.default.createElement(SoundSwitch_1.SoundSwitch, null)));
+        react_1.default.createElement(SoundSwitch_1.default, null)));
 }
 exports.default = KudoSettings;
 
@@ -1305,9 +1308,39 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = __importStar(__webpack_require__(1));
+const react_1 = __importStar(__webpack_require__(1));
+const client_1 = __webpack_require__(34);
 __webpack_require__(66);
-exports.SoundSwitch = (props) => React.createElement("div", { className: "soundSettings soundSwitch--on" });
+class SoundSwitch extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            sound: client_1.soundTurnedOn() ? 'on' : 'off'
+        };
+    }
+    render() {
+        return (react_1.default.createElement("div", { className: `soundSwitch ${this.state.sound === 'off' ? 'soundSwitch--off' : 'soundSwitch--on'}`, title: `${this.state.sound === 'off' ? 'Turn sound on' : 'Turn sound off'}`, onClick: this.soundOnOff.bind(this) }));
+    }
+    soundOnOff() {
+        this.setState({ sound: client_1.soundTurnedOn() ? 'off' : 'on' });
+        const data = localStorage.getItem('kudosSettings');
+        let settings;
+        if (data) {
+            settings = JSON.parse(data);
+            if (settings && settings.sound === 'on') {
+                settings.sound = 'off';
+            }
+            else {
+                settings.sound = 'on';
+            }
+        }
+        else {
+            settings = { sound: 'on' };
+        }
+        localStorage.setItem('kudosSettings', JSON.stringify(settings));
+    }
+}
+exports.default = SoundSwitch;
 
 
 /***/ }),
