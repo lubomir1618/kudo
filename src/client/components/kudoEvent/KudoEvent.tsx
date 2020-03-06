@@ -62,9 +62,6 @@ export default class KudoEvent extends React.Component<{}, IState> {
 
   componentDidUpdate(_prevProps:any, prevState:any) {
     if (prevState.cards.length < this.state.cards.length && !this.state.shouldDisplayModal) {
-    debugger;
-
-      // ries render modalu
       const new_card = this.state.cards[this.state.cards.length - 1];
       const diff = new Date().getTime() - MODAL_INTERVAL;
 
