@@ -10,6 +10,7 @@ import CardNotification from '../CardNotification/CardNotification';
 import './KudoEvent.css';
 
 const MODAL_INTERVAL = 120000;
+const MODAL_TIME = 120000;
 const REFRESH = 15 * 1000; // 60 seconds
 
 interface IState {
@@ -156,7 +157,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
       this.timeout = window.setTimeout(() => {
         this.hideNewCard();
         
-      }, REFRESH);
+      }, MODAL_TIME);
 
       const onClick = () => this.hideNewCard();
 
