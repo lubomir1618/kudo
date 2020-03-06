@@ -7,6 +7,7 @@ import { EventInfo } from '../eventInfo/EventInfo';
 import KudoForm from '../KudoForm/KudoForm';
 import Card, { Props } from '../card/Card';
 import CardNotification from '../CardNotification/CardNotification';
+import KudoSettings from '../kudoSettings/KudoSettings';
 import './KudoEvent.css';
 
 const MODAL_INTERVAL = 120 * 1000;
@@ -20,15 +21,17 @@ interface IState {
   shouldDisplayModal: boolean;
 }
 
-function CardModal({newCardProps, onClick}: any) {
+function CardModal({ newCardProps, onClick }: any) {
   return (
-    <div className='newCard'>
+    <div className="newCard">
       <div>
-        <div className='close' onClick={onClick}><img src="/img/cancel.png" /></div>
+        <div className="close" onClick={onClick}>
+          <img src="/img/cancel.png" />
+        </div>
         <Card {...newCardProps} />
       </div>
     </div>
-  )
+  );
 }
 
 export default class KudoEvent extends React.Component<{}, IState> {
@@ -44,7 +47,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
       cards: [],
       event: undefined,
       is_active: false,
-      shouldDisplayModal: false,
+      shouldDisplayModal: false
     };
   }
 
@@ -60,16 +63,16 @@ export default class KudoEvent extends React.Component<{}, IState> {
     }, REFRESH);
   }
 
-  componentDidUpdate(_prevProps:any, prevState:any) {
+  componentDidUpdate(_prevProps: any, prevState: any) {
     if (prevState.cards.length < this.state.cards.length && !this.state.shouldDisplayModal) {
       const new_card = this.state.cards[this.state.cards.length - 1];
       const diff = new Date().getTime() - MODAL_INTERVAL;
 
-      if (new_card && new_card.created > diff)  {
+      if (new_card && new_card.created > diff) {
         window.clearTimeout(this.timeout);
-        this.setState({shouldDisplayModal: true});
+        this.setState({ shouldDisplayModal: true });
         this.timeout = window.setTimeout(() => {
-          this.setState({shouldDisplayModal: false});
+          this.setState({ shouldDisplayModal: false });
         }, MODAL_TIME);
       }
     }
@@ -81,7 +84,8 @@ export default class KudoEvent extends React.Component<{}, IState> {
   }
 
   public render() {
-    const newCard = this.state.cards.length > 0 ? this.getCardProps(this.state.cards[this.state.cards.length -1]) : undefined;
+    const newCard =
+      this.state.cards.length > 0 ? this.getCardProps(this.state.cards[this.state.cards.length - 1]) : undefined;
     return this.state.event ? (
       <div className="kudoEvent">
         <div className="event_info">
@@ -91,7 +95,8 @@ export default class KudoEvent extends React.Component<{}, IState> {
         </div>
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />
-        { this.state.shouldDisplayModal ? <CardModal newCardProps={newCard} onClick={this.hideModal}/>: null }
+        {this.state.shouldDisplayModal ? <CardModal newCardProps={newCard} onClick={this.hideModal} /> : null}
+        <KudoSettings />
       </div>
     ) : (
       <div />
@@ -99,18 +104,18 @@ export default class KudoEvent extends React.Component<{}, IState> {
   }
 
   public hideModal(): void {
-    this.setState({shouldDisplayModal: false});
+    this.setState({ shouldDisplayModal: false });
   }
 
   private getData() {
     const now = new Date().getTime();
-    
+
     select<I.Card[]>('/api/cards', { eventId: this.eventId }).then((data) => {
       if (this.state.cards.length < data.length) {
         document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
       }
 
-      data.sort((a, b) => (b.likes - a.likes));
+      data.sort((a, b) => b.likes - a.likes);
       this.setState({ cards: data });
     });
 

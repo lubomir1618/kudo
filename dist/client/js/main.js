@@ -85,31 +85,26 @@ const KudoForm_1 = __importDefault(__webpack_require__(45));
 const Card_1 = __importDefault(__webpack_require__(58));
 const CardNotification_1 = __importDefault(__webpack_require__(61));
 __webpack_require__(62);
-const MODAL_INTERVAL = 120 * 1000;
-const MODAL_TIME = 120 * 1000;
+const MODAL_INTERVAL = 120000;
+const MODAL_TIME = 120000;
 const REFRESH = 15 * 1000; // 60 seconds
-function CardModal({ newCardProps, onClick }) {
-    return (react_1.default.createElement("div", { className: 'newCard' },
-        react_1.default.createElement("div", null,
-            react_1.default.createElement("div", { className: 'close', onClick: onClick },
-                react_1.default.createElement("img", { src: "/img/cancel.png" })),
-            react_1.default.createElement(Card_1.default, Object.assign({}, newCardProps)))));
-}
 class KudoEvent extends react_1.default.Component {
     constructor(props) {
         super(props);
         this.eventId = this.props.match.params.id;
-        this.hideModal = this.hideModal.bind(this);
+        this.newCardRef = react_1.default.createRef();
         this.state = {
             cards: [],
             event: undefined,
-            is_active: false,
-            shouldDisplayModal: false,
+            is_active: false
         };
     }
     componentDidMount() {
         this.getData();
         document.addEventListener('kudoz::cardListRefresh', () => {
+            if (this.newCardRef.current) {
+                this.newCardRef.current.classList.remove('hidden');
+            }
             this.getData();
         });
         window.clearInterval(this.interval);
@@ -117,25 +112,12 @@ class KudoEvent extends react_1.default.Component {
             this.getData();
         }, REFRESH);
     }
-    componentDidUpdate(_prevProps, prevState) {
-        if (prevState.cards.length < this.state.cards.length && !this.state.shouldDisplayModal) {
-            const new_card = this.state.cards[this.state.cards.length - 1];
-            const diff = new Date().getTime() - MODAL_INTERVAL;
-            if (new_card && new_card.created > diff) {
-                window.clearTimeout(this.timeout);
-                this.setState({ shouldDisplayModal: true });
-                this.timeout = window.setTimeout(() => {
-                    this.setState({ shouldDisplayModal: false });
-                }, MODAL_TIME);
-            }
-        }
-    }
     componentWillUnmount() {
         window.clearInterval(this.interval);
         window.clearTimeout(this.timeout);
     }
     render() {
-        const newCard = this.state.cards.length > 0 ? this.getCardProps(this.state.cards[this.state.cards.length - 1]) : undefined;
+        const newCard = this.getNewCard();
         return this.state.event ? (react_1.default.createElement("div", { className: "kudoEvent" },
             react_1.default.createElement("div", { className: "event_info" },
                 this.getEvent(),
@@ -143,18 +125,22 @@ class KudoEvent extends react_1.default.Component {
                 react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active })),
             react_1.default.createElement("div", { className: "event_cards" }, this.processCards()),
             react_1.default.createElement(CardNotification_1.default, null),
-            this.state.shouldDisplayModal ? react_1.default.createElement(CardModal, { newCardProps: newCard, onClick: this.hideModal }) : null)) : (react_1.default.createElement("div", null));
-    }
-    hideModal() {
-        this.setState({ shouldDisplayModal: false });
+            newCard)) : (react_1.default.createElement("div", null));
     }
     getData() {
         const now = new Date().getTime();
         api_1.select('/api/cards', { eventId: this.eventId }).then((data) => {
-            if (this.state.cards.length < data.length) {
-                document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
+            if (Array.isArray(data)) {
+                if (this.state.cards.length < data.length) {
+                    document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
+                }
+                data.sort((a, b) => (a.likes > b.likes ? -1 : 1));
+                this.setState({ cards: data });
             }
-            data.sort((a, b) => (b.likes - a.likes));
+            else {
+                this.setState({ cards: [data] });
+            }
+            data.sort((a, b) => (a.likes > b.likes ? -1 : 1));
             this.setState({ cards: data });
         });
         api_1.select('/api/events', { _id: this.eventId }).then((data) => {
@@ -202,6 +188,26 @@ class KudoEvent extends react_1.default.Component {
         const list = client_1.getKudoNumberList(this.state.cards);
         return (react_1.default.createElement("div", { title: list.map((person) => `${person.name}:${person.count}`).join(', ') },
             react_1.default.createElement(Knight_1.Knight, Object.assign({}, { mostKudos: client_1.getKudoKnight(list) }))));
+    }
+    getNewCard() {
+        const diff = new Date().getTime() - MODAL_INTERVAL;
+        const new_card = this.state.cards.length > 0 ? this.state.cards[this.state.cards.length - 1] : undefined;
+        if (new_card && new_card.created > diff) {
+            this.timeout = window.setTimeout(() => {
+                this.hideNewCard();
+            }, MODAL_TIME);
+            const onClick = () => this.hideNewCard();
+            return (react_1.default.createElement("div", { className: "newCard", ref: this.newCardRef },
+                react_1.default.createElement("div", null,
+                    react_1.default.createElement("div", { className: "close", onClick: onClick },
+                        react_1.default.createElement("img", { src: "/img/cancel.png" })),
+                    react_1.default.createElement(Card_1.default, Object.assign({ key: new_card._id }, this.getCardProps(new_card))))));
+        }
+        return react_1.default.createElement("div", null);
+    }
+    hideNewCard() {
+        window.clearInterval(this.timeout);
+        this.newCardRef.current.classList.add('hidden');
     }
 }
 exports.default = KudoEvent;
@@ -278,7 +284,7 @@ function vodka() {
 }
 exports.vodka = vodka;
 function getKudoNumberList(cards) {
-    let list = cards.reduce((acc, val) => {
+    const list = cards.reduce((acc, val) => {
         if (acc[val.awardedTo]) {
             acc[val.awardedTo].count += 1;
         }
@@ -287,7 +293,7 @@ function getKudoNumberList(cards) {
         }
         return acc;
     }, {});
-    return Object.values(list).sort((a, b) => a.count > b.count ? -1 : 1);
+    return Object.values(list).sort((a, b) => (a.count > b.count ? -1 : 1));
 }
 exports.getKudoNumberList = getKudoNumberList;
 function getKudoKnight(kudoNumList) {
@@ -298,6 +304,14 @@ function getKudoKnight(kudoNumList) {
     return 'No knight yet';
 }
 exports.getKudoKnight = getKudoKnight;
+function soundTurnedOn() {
+    const sound = localStorage.getItem('kudosSound');
+    if (sound && sound === 'on') {
+        return true;
+    }
+    return false;
+}
+exports.soundTurnedOn = soundTurnedOn;
 
 
 /***/ }),
@@ -1106,9 +1120,7 @@ class Card extends react_1.Component {
                     // API call to increment likes
                     api_1.like(cardID)
                         .then(() => {
-                        window.setTimeout(() => {
-                            document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
-                        }, 500);
+                        document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
                     })
                         .catch((err) => {
                         console.log(`Error: like not inserted - ${err}`);
@@ -1221,6 +1233,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
+const client_1 = __webpack_require__(34);
 class CardNotification extends react_1.Component {
     constructor(props) {
         super(props);
@@ -1242,7 +1255,7 @@ class CardNotification extends react_1.Component {
         });
     }
     render() {
-        this.state.play ? this.audio.play() : this.audio.pause();
+        this.state.play && client_1.soundTurnedOn() ? this.audio.play() : this.audio.pause();
         return react_1.default.createElement("div", null);
     }
 }

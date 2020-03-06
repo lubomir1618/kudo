@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { soundTurnedOn } from '../../utils/client';
 
 export interface Props {
   playMusic?: boolean;
@@ -34,7 +35,7 @@ class CardNotification extends Component<Props, State> {
   }
 
   render() {
-    this.state.play ? this.audio.play() : this.audio.pause();
+    this.state.play && soundTurnedOn() ? this.audio.play() : this.audio.pause();
     return <div />;
   }
 }

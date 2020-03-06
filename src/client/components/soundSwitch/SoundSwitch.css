@@ -1,0 +1,20 @@
+.soundSwitch,
+.soundSwitch--on,
+.soundSwitch--off {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.soundSwitch--on {
+  background: url('/img/volume.png');
+  background-size: 20px;
+}
+
+.soundSwitch--off {
+  background: url('/img/no-sound.png');
+  background-size: 20px;
+}
