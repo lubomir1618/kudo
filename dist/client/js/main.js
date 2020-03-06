@@ -544,11 +544,11 @@ class KudoForm extends react_1.default.Component {
             react_1.default.createElement("div", { className: "typePicker" }, this.typePicker()),
             react_1.default.createElement("div", { className: "main" },
                 react_1.default.createElement("div", { className: "name" },
-                    "Meno ",
+                    "Name ",
                     this.peoplePicker()),
                 react_1.default.createElement("div", { className: "message" },
-                    react_1.default.createElement("textarea", { ref: this.messageRef, placeholder: "Sprava" }))),
-            react_1.default.createElement("div", { className: `submit ${buttonClass}`, onClick: () => this.onSubmit() }, "Daj Kudos")));
+                    react_1.default.createElement("textarea", { ref: this.messageRef, placeholder: "Message" }))),
+            react_1.default.createElement("div", { className: `submit ${buttonClass}`, onClick: () => this.onSubmit() }, "Give Kudos")));
     }
     typePicker() {
         const options = CARD_TYPES.map((type) => {
