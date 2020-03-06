@@ -9,39 +9,48 @@ import Card, { Props } from '../card/Card';
 import CardNotification from '../CardNotification/CardNotification';
 import './KudoEvent.css';
 
-const MODAL_INTERVAL = 120000;
-const MODAL_TIME = 120000;
+const MODAL_INTERVAL = 120 * 1000;
+const MODAL_TIME = 120 * 1000;
 const REFRESH = 15 * 1000; // 60 seconds
 
 interface IState {
   cards: I.Card[];
   event: I.Event | undefined;
   is_active: boolean;
+  shouldDisplayModal: boolean;
+}
+
+function CardModal({newCardProps, onClick}: any) {
+  return (
+    <div className='newCard'>
+      <div>
+        <div className='close' onClick={onClick}><img src="/img/cancel.png" /></div>
+        <Card {...newCardProps} />
+      </div>
+    </div>
+  )
 }
 
 export default class KudoEvent extends React.Component<{}, IState> {
   private eventId: string;
   private interval!: ReturnType<Window['setInterval']>;
   private timeout: any;
-  private newCardRef: RefObject<HTMLDivElement>;
 
   constructor(props: any) {
     super(props);
     this.eventId = (this.props as any).match.params.id;
-    this.newCardRef = React.createRef();
+    this.hideModal = this.hideModal.bind(this);
     this.state = {
       cards: [],
       event: undefined,
-      is_active: false
+      is_active: false,
+      shouldDisplayModal: false,
     };
   }
 
   public componentDidMount() {
     this.getData();
     document.addEventListener('kudoz::cardListRefresh', () => {
-      if (this.newCardRef.current) {
-        this.newCardRef.current!.classList.remove('hidden');
-      }
       this.getData();
     });
 
@@ -51,14 +60,31 @@ export default class KudoEvent extends React.Component<{}, IState> {
     }, REFRESH);
   }
 
+  componentDidUpdate(_prevProps:any, prevState:any) {
+    if (prevState.cards.length < this.state.cards.length && !this.state.shouldDisplayModal) {
+    debugger;
+
+      // ries render modalu
+      const new_card = this.state.cards[this.state.cards.length - 1];
+      const diff = new Date().getTime() - MODAL_INTERVAL;
+
+      if (new_card && new_card.created > diff)  {
+        window.clearTimeout(this.timeout);
+        this.setState({shouldDisplayModal: true});
+        this.timeout = window.setTimeout(() => {
+          this.setState({shouldDisplayModal: false});
+        }, MODAL_TIME);
+      }
+    }
+  }
+
   componentWillUnmount() {
     window.clearInterval(this.interval);
     window.clearTimeout(this.timeout);
   }
 
   public render() {
-    const newCard = this.getNewCard();
-    
+    const newCard = this.state.cards.length > 0 ? this.getCardProps(this.state.cards[this.state.cards.length -1]) : undefined;
     return this.state.event ? (
       <div className="kudoEvent">
         <div className="event_info">
@@ -68,11 +94,15 @@ export default class KudoEvent extends React.Component<{}, IState> {
         </div>
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />
-        {newCard}
+        { this.state.shouldDisplayModal ? <CardModal newCardProps={newCard} onClick={this.hideModal}/>: null }
       </div>
     ) : (
       <div />
     );
+  }
+
+  public hideModal(): void {
+    this.setState({shouldDisplayModal: false});
   }
 
   private getData() {
@@ -83,7 +113,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
         document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
       }
 
-      data.sort((a, b) => (a.likes > b.likes ? -1 : 1));
+      data.sort((a, b) => (b.likes - a.likes));
       this.setState({ cards: data });
     });
 
@@ -145,35 +175,5 @@ export default class KudoEvent extends React.Component<{}, IState> {
         <Knight {...{ mostKudos: getKudoKnight(list) }} />
       </div>
     );
-  }
-
-  private getNewCard(): JSX.Element {
-    const diff = new Date().getTime() - MODAL_INTERVAL;
-    const new_card = this.state.cards.length > 0
-      ? this.state.cards[this.state.cards.length - 1]
-      : undefined;
-
-    if (new_card && new_card.created > diff) {
-      this.timeout = window.setTimeout(() => {
-        this.hideNewCard();
-        
-      }, MODAL_TIME);
-
-      const onClick = () => this.hideNewCard();
-
-      return <div className='newCard' ref={this.newCardRef}>
-        <div>
-          <div className='close' onClick={onClick}><img src="/img/cancel.png" /></div>
-          <Card key={new_card._id} {...this.getCardProps(new_card)} />
-        </div>
-      </div>;
-    }
-
-    return <div />;
-  }
-
-  private hideNewCard(): void {
-    window.clearInterval(this.timeout);
-    this.newCardRef.current!.classList.add('hidden');
   }
 }

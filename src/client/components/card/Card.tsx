@@ -62,7 +62,9 @@ export default class Card extends Component<Props, State> {
         // API call to increment likes
         like(cardID)
           .then(() => {
-            document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+            window.setTimeout(() => {
+              document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
+            }, 500);
           })
           .catch((err: Error) => {
             console.log(`Error: like not inserted - ${err}`);
