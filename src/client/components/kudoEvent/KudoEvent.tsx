@@ -8,6 +8,7 @@ import KudoForm from '../KudoForm/KudoForm';
 import Card from '../card/Card';
 import CardNotification from '../CardNotification/CardNotification';
 import './KudoEvent.css';
+import KudoSettings from '../kudoSettings/KudoSettings';
 
 interface IState {
   cards: I.Card[];
@@ -57,6 +58,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
         </div>
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />
+        <KudoSettings />
       </div>
     ) : (
       <div />

@@ -19,7 +19,7 @@ const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const react_router_dom_1 = __webpack_require__(12);
 const KudoEvent_1 = __importDefault(__webpack_require__(32));
-__webpack_require__(64);
+__webpack_require__(70);
 function App() {
     // let id = useParams().id;
     return (React.createElement(react_router_dom_1.BrowserRouter, null,
@@ -85,6 +85,7 @@ const KudoForm_1 = __importDefault(__webpack_require__(45));
 const Card_1 = __importDefault(__webpack_require__(58));
 const CardNotification_1 = __importDefault(__webpack_require__(61));
 __webpack_require__(62);
+const KudoSettings_1 = __importDefault(__webpack_require__(64));
 class KudoEvent extends react_1.default.Component {
     constructor(props) {
         super(props);
@@ -116,7 +117,8 @@ class KudoEvent extends react_1.default.Component {
                 this.getKnight(),
                 react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active })),
             react_1.default.createElement("div", { className: "event_cards" }, this.processCards()),
-            react_1.default.createElement(CardNotification_1.default, null))) : (react_1.default.createElement("div", null));
+            react_1.default.createElement(CardNotification_1.default, null),
+            react_1.default.createElement(KudoSettings_1.default, null))) : (react_1.default.createElement("div", null));
     }
     getData() {
         const now = new Date().getTime();
@@ -1273,8 +1275,47 @@ module.exports = exports;
 /* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(1));
+const SoundSwitch_1 = __webpack_require__(65);
+__webpack_require__(68);
+function KudoSettings() {
+    return (react_1.default.createElement("div", { className: "kudoSettings" },
+        react_1.default.createElement(SoundSwitch_1.SoundSwitch, null)));
+}
+exports.default = KudoSettings;
+
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const React = __importStar(__webpack_require__(1));
+__webpack_require__(66);
+exports.SoundSwitch = (props) => React.createElement("div", { className: "soundSettings soundSwitch--on" });
+
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var api = __webpack_require__(39);
-            var content = __webpack_require__(65);
+            var content = __webpack_require__(67);
 
             content = content.__esModule ? content.default : content;
 
@@ -1296,12 +1337,90 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
-var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(66);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".soundSwitch,\n.soundSwitch--on,\n.soundSwitch--off {\n  position: absolute;\n  top: 0px;\n  right: 0px;\n  width: 20px;\n  height: 20px;\n  cursor: pointer;\n}\n\n.soundSwitch--on {\n  background: url('/img/volume.png');\n  background-size: 20px;\n}\n\n.soundSwitch--off {\n  background: url('/img/no-sound.png');\n  background-size: 20px;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(39);
+            var content = __webpack_require__(69);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".kudoSettings {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  width: auto;\n  text-align: right;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(39);
+            var content = __webpack_require__(71);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
+var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(72);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
 // Module
@@ -1311,7 +1430,7 @@ module.exports = exports;
 
 
 /***/ }),
-/* 66 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports

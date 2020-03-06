@@ -105,9 +105,10 @@ export function getKudoKnight(kudoNumList: IkudoNum[]): string {
 }
 
 export function soundTurnedOn() {
-  const sound = localStorage.getItem('kudosSound');
+  const data = localStorage.getItem('kudosSettings');
+  const soundSetting = JSON.parse(data);
 
-  if (sound && sound === 'on') {
+  if (soundSetting && soundSetting.sound === 'on') {
     return true;
   }
 
