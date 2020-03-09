@@ -90,10 +90,12 @@ export default class KudoEvent extends React.Component<{}, IState> {
     return this.state.event ? (
       <div className="kudoEvent">
         <div className="event_info">
-          <QRcode url={window.location.href}/>
           {this.getEvent()}
           {this.getKnight()}
-          <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
+          {location.href.indexOf('?tv=true') > -1
+            ? <QRcode url={location.protocol + '//' + location.host + location.pathname}/>
+            : <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
+          }
         </div>
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />

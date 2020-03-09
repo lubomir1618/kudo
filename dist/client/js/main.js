@@ -140,10 +140,11 @@ class KudoEvent extends react_1.default.Component {
         const newCard = this.state.cards.length > 0 ? this.getCardProps(this.state.cards[this.state.cards.length - 1]) : undefined;
         return this.state.event ? (react_1.default.createElement("div", { className: "kudoEvent" },
             react_1.default.createElement("div", { className: "event_info" },
-                react_1.default.createElement(QRcode_1.default, { url: window.location.href }),
                 this.getEvent(),
                 this.getKnight(),
-                react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active })),
+                location.href.indexOf('?tv=true') > -1
+                    ? react_1.default.createElement(QRcode_1.default, { url: location.protocol + '//' + location.host + location.pathname })
+                    : react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active })),
             react_1.default.createElement("div", { className: "event_cards" }, this.processCards()),
             react_1.default.createElement(CardNotification_1.default, null),
             this.state.shouldDisplayModal ? react_1.default.createElement(CardModal, { newCardProps: newCard, onClick: this.hideModal }) : null,
@@ -1473,7 +1474,7 @@ const qrcode_1 = __importDefault(__webpack_require__(71));
 class QRcode extends react_1.Component {
     componentDidMount() {
         const canvas = document.getElementById('canvas');
-        qrcode_1.default.toCanvas(canvas, this.props.url, { errorCorrectionLevel: 'H', width: 130 });
+        qrcode_1.default.toCanvas(canvas, this.props.url, { errorCorrectionLevel: 'H', width: 190 });
     }
     render() {
         return (react_1.default.createElement("canvas", { id: "canvas" }));
