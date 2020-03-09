@@ -40,7 +40,7 @@ class Events {
     utils.serverLog('/events => create', req);
     const valid = isEventValid(req.body);
     if (valid === true) {
-      const event = {
+      const event: I.Event = {
         created: new Date().getTime(),
         dateFrom: Number(req.body.dateFrom),
         dateTo: Number(req.body.dateTo),

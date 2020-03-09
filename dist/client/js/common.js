@@ -114,7 +114,53 @@ exports.like = like;
 
 /***/ }),
 
-/***/ 36:
+/***/ 34:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function getKudoNumberList(cards) {
+    const list = cards.reduce((acc, val) => {
+        if (acc[val.awardedTo]) {
+            acc[val.awardedTo].count += 1;
+        }
+        else {
+            acc[val.awardedTo] = { name: val.awardedTo, count: 1 };
+        }
+        return acc;
+    }, {});
+    return Object.values(list).sort((a, b) => (a.count > b.count ? -1 : 1));
+}
+exports.getKudoNumberList = getKudoNumberList;
+function getKudoKnight(kudoNumList) {
+    const winner = kudoNumList.shift();
+    if (winner) {
+        return winner.name;
+    }
+    return 'No knight yet';
+}
+exports.getKudoKnight = getKudoKnight;
+function soundTurnedOn() {
+    const data = localStorage.getItem('kudosSettings');
+    if (data) {
+        const soundSetting = JSON.parse(data);
+        if (soundSetting && soundSetting.sound === 'on') {
+            return true;
+        }
+    }
+    return false;
+}
+exports.soundTurnedOn = soundTurnedOn;
+function encodePassword(pass) {
+    return `encoded:${pass}`;
+}
+exports.encodePassword = encodePassword;
+
+
+/***/ }),
+
+/***/ 50:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -137,6 +183,17 @@ var EVENT_STATE;
     EVENT_STATE["active"] = "active";
     EVENT_STATE["future"] = "future";
 })(EVENT_STATE = exports.EVENT_STATE || (exports.EVENT_STATE = {}));
+var USER_ROLE;
+(function (USER_ROLE) {
+    USER_ROLE["admin"] = "admin";
+    USER_ROLE["user"] = "user";
+})(USER_ROLE = exports.USER_ROLE || (exports.USER_ROLE = {}));
+var FORM_MODE;
+(function (FORM_MODE) {
+    FORM_MODE["hidden"] = "hidden";
+    FORM_MODE["insert"] = "insert";
+    FORM_MODE["update"] = "update";
+})(FORM_MODE = exports.FORM_MODE || (exports.FORM_MODE = {}));
 
 
 /***/ })

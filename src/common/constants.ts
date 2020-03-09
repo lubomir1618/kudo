@@ -14,3 +14,14 @@ export enum EVENT_STATE {
   active = 'active',
   future = 'future'
 }
+
+export enum USER_ROLE {
+  admin = 'admin',
+  user = 'user'
+}
+
+export enum FORM_MODE {
+  hidden = 'hidden',
+  insert = 'insert',
+  update = 'update'
+}

@@ -18,7 +18,7 @@ dotenv_1.default.config();
 const db = monk_1.default(process.env.MONGODB_URL || '');
 class Users {
     constructor() {
-        this.users = db.get('userslist');
+        this.users = db.get('users');
     }
     list(req, res) {
         utils.serverLog('/users => list', req);
@@ -49,7 +49,10 @@ class Users {
         if (valid === true) {
             const user = {
                 created: new Date().getTime(),
+                login: req.body.login,
                 name: req.body.name,
+                password: req.body.password,
+                role: req.body.role,
                 surname: req.body.surname
             };
             // save to db

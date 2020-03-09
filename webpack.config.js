@@ -75,7 +75,7 @@ module.exports = {
     new webpack.SourceMapDevToolPlugin({
       filename: '[name].js.map',
       exclude: /vendor.*.*/
-    }),
-    new MinifyPlugin({}, { exclude: /(admin|common|main)\.js/ })
+    })
+    // new MinifyPlugin({}, { exclude: /(admin|common|main)\.js/ })
   ]
 };

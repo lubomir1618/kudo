@@ -1,0 +1,18 @@
+[
+  {
+    "created": 1583753256736,
+    "name": "Super",
+    "surname": "User",
+    "login": "admin",
+    "password": "some-hash",
+    "role": "admin"
+  },
+  {
+    "created": 1583753256736,
+    "name": "Dalibor",
+    "surname": "Schon",
+    "login": "user",
+    "password": "some-hash",
+    "role": "user"
+  }
+]

@@ -1,5 +1,5 @@
 import * as I from './interfaces';
-import { CARD_TYPE } from './constants';
+import * as E from './constants';
 
 export function hasData(data: any, type = 'string'): boolean {
   if (data === undefined || data === null) {
@@ -22,6 +22,10 @@ export function hasOneOf(data: string, check: string[]): boolean {
   return false;
 }
 
+export function isSame(original: string, copy: string): boolean {
+  return original === copy;
+}
+
 export function isLikeValid(_id: string) {
   return hasData(_id) ? true : ['_id'];
 }
@@ -29,11 +33,36 @@ export function isLikeValid(_id: string) {
 export function isUserValid(user: I.User) {
   const bugs: string[] = [];
 
-  if (!(user.name && user.name !== '')) {
+  if (!hasData(user.name)) {
     bugs.push('name');
   }
-  if (!(user.surname && user.surname !== '')) {
+  if (!hasData(user.surname)) {
     bugs.push('surname');
+  }
+  if (!hasData(user.login)) {
+    bugs.push('login');
+  }
+  if (!hasData(user.password)) {
+    bugs.push('password');
+  }
+  if (!(user.role && E.USER_ROLE[user.role])) {
+    bugs.push('role');
+  }
+
+  return bugs.length ? bugs : true;
+}
+
+export function isPasswordValid(user: I.UserForm) {
+  const bugs: string[] = [];
+
+  if (!hasData(user.password)) {
+    bugs.push('password');
+  }
+  if (!hasData(user.passwordRepeat)) {
+    bugs.push('paswordRepeat');
+  }
+  if (!isSame(user.password, user.passwordRepeat)) {
+    bugs.push('paswordRepeat');
   }
 
   return bugs.length ? bugs : true;
@@ -54,7 +83,7 @@ export function isCardValid(card: I.Card, event: I.Event | undefined) {
   if (!(card.text && card.text !== '')) {
     bugs.push('text');
   }
-  if (!(card.type && CARD_TYPE[card.type])) {
+  if (!(card.type && E.CARD_TYPE[card.type])) {
     bugs.push('type');
   }
 
@@ -73,7 +102,7 @@ export function isEventValid(event: I.Event) {
   if (!hasData(event.name)) {
     bugs.push('name');
   }
-  if (!hasOneOf(event.state, ['past', 'active', 'future'])) {
+  if (!(event.state && E.EVENT_STATE[event.state])) {
     bugs.push('state');
   }
 

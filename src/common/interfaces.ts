@@ -1,16 +1,18 @@
 import * as T from './constants';
 
-export interface Event {
+export interface Table {
   _id?: string;
   created?: number;
+}
+
+export interface Event extends Table {
   dateFrom: number;
   dateTo: number;
   name: string;
   state: T.EVENT_STATE;
 }
 
-export interface Card {
-  _id: string;
+export interface Card extends Table {
   awardedTo: string;
   created: number;
   eventId: string;
@@ -19,15 +21,14 @@ export interface Card {
   type: T.CARD_TYPE;
 }
 
-export interface Admin {
-  _id?: string;
-  user: string;
-  pass: string;
-}
-
-export interface User {
-  _id?: string;
-  created?: number;
+export interface User extends Table {
   name: string;
   surname: string;
+  login: string;
+  password: string;
+  role: T.USER_ROLE;
+}
+
+export interface UserForm extends User {
+  passwordRepeat: string;
 }

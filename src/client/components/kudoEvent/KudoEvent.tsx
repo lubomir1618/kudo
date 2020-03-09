@@ -92,10 +92,11 @@ export default class KudoEvent extends React.Component<{}, IState> {
         <div className="event_info">
           {this.getEvent()}
           {this.getKnight()}
-          {location.href.indexOf('?tv=true') > -1
-            ? <QRcode url={location.protocol + '//' + location.host + location.pathname}/>
-            : <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
-          }
+          {location.href.indexOf('?tv=true') > -1 ? (
+            <QRcode url={location.protocol + '//' + location.host + location.pathname} />
+          ) : (
+            <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
+          )}
         </div>
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />
@@ -161,7 +162,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
       cardID: card_data._id,
       cardType: card_data.type,
       eventID: card_data.eventId,
-      highlighted: this.isHighligted(card_data._id),
+      highlighted: this.isHighligted(card_data._id as string),
       isActive: this.state.is_active,
       likes: card_data.likes,
       text: card_data.text

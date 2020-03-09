@@ -17,4 +17,15 @@ var EVENT_STATE;
     EVENT_STATE["active"] = "active";
     EVENT_STATE["future"] = "future";
 })(EVENT_STATE = exports.EVENT_STATE || (exports.EVENT_STATE = {}));
+var USER_ROLE;
+(function (USER_ROLE) {
+    USER_ROLE["admin"] = "admin";
+    USER_ROLE["user"] = "user";
+})(USER_ROLE = exports.USER_ROLE || (exports.USER_ROLE = {}));
+var FORM_MODE;
+(function (FORM_MODE) {
+    FORM_MODE["hidden"] = "hidden";
+    FORM_MODE["insert"] = "insert";
+    FORM_MODE["update"] = "update";
+})(FORM_MODE = exports.FORM_MODE || (exports.FORM_MODE = {}));
 //# sourceMappingURL=constants.js.map

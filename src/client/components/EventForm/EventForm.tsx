@@ -84,7 +84,7 @@ export default class EventForm extends Component<any, IEventFormState> {
             x
           </span>
         </div>
-        <form id="form-event-form">
+        <form id="form-event-form" autoComplete="off">
           <label htmlFor="dateFrom">Date from: </label>
           <input type="text" id="event-dateFrom" name="dateFrom" defaultValue={dateFrom} /> *
           <br />

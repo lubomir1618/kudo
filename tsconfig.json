@@ -3,7 +3,7 @@
     "baseUrl": "./src",
     "target": "es2017",
     "module": "commonjs",
-    "lib": ["es6", "es2017", "esnext", "dom"],
+    "lib": ["es6", "es2017", "esnext", "dom", "dom.iterable"],
     "declaration": false,
     "outDir": "dist",
     "rootDir": "src",
