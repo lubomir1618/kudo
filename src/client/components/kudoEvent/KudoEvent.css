@@ -3,7 +3,7 @@
   background-size: cover;
   font-family: 'Ubuntu', Arial, Helvetica, sans-serif;
   padding-right: 0px;
-  min-height: 100vh;
+  min-height: calc(100vh + 50px);
   width: 100%;
 }
 

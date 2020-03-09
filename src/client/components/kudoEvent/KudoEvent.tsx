@@ -9,6 +9,7 @@ import Card, { Props } from '../card/Card';
 import CardNotification from '../CardNotification/CardNotification';
 import KudoSettings from '../kudoSettings/KudoSettings';
 import './KudoEvent.css';
+import QRcode from '../qrcode/QRcode';
 
 const MODAL_INTERVAL = 120 * 1000;
 const MODAL_TIME = 120 * 1000;
@@ -91,7 +92,10 @@ export default class KudoEvent extends React.Component<{}, IState> {
         <div className="event_info">
           {this.getEvent()}
           {this.getKnight()}
-          <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
+          {location.href.indexOf('?tv=true') > -1
+            ? <QRcode url={location.protocol + '//' + location.host + location.pathname}/>
+            : <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
+          }
         </div>
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />
