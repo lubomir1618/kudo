@@ -19,7 +19,7 @@ const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const react_router_dom_1 = __webpack_require__(12);
 const KudoEvent_1 = __importDefault(__webpack_require__(32));
-__webpack_require__(70);
+__webpack_require__(104);
 function App() {
     // let id = useParams().id;
     return (React.createElement(react_router_dom_1.BrowserRouter, null,
@@ -86,6 +86,7 @@ const Card_1 = __importDefault(__webpack_require__(58));
 const CardNotification_1 = __importDefault(__webpack_require__(61));
 const KudoSettings_1 = __importDefault(__webpack_require__(62));
 __webpack_require__(68);
+const QRcode_1 = __importDefault(__webpack_require__(70));
 const MODAL_INTERVAL = 120 * 1000;
 const MODAL_TIME = 120 * 1000;
 const REFRESH = 15 * 1000; // 60 seconds
@@ -139,6 +140,7 @@ class KudoEvent extends react_1.default.Component {
         const newCard = this.state.cards.length > 0 ? this.getCardProps(this.state.cards[this.state.cards.length - 1]) : undefined;
         return this.state.event ? (react_1.default.createElement("div", { className: "kudoEvent" },
             react_1.default.createElement("div", { className: "event_info" },
+                react_1.default.createElement(QRcode_1.default, { url: window.location.href }),
                 this.getEvent(),
                 this.getKnight(),
                 react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active })),
@@ -1444,7 +1446,7 @@ module.exports = exported;
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
-exports.push([module.i, ".kudoEvent {\n  background: url('/img/lich_king_bg.jpg');\n  background-size: cover;\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n  padding-right: 0px;\n  min-height: 100vh;\n  width: 100%;\n}\n\n.kudoEvent .event_info {\n  float: left;\n  flex-basis: 460px;\n  width: 460px;\n  min-width: 460px;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: start;\n  justify-content: center;\n  padding: 50px 50px 0 100px;\n}\n\n.kudoEvent .event_info > div {\n  width: 100%;\n  margin-bottom: 50px;\n}\n\n.kudoEvent .event_info .eventInfo {\n  margin-bottom: 28px;\n}\n\n.kudoEvent .event_info .kudoForm {\n  margin-bottom: 0px;\n}\n\n.kudoEvent .event_cards {\n  margin-left: 100px;\n  padding: 50px 0;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  overflow-y: auto;\n  flex: 1;\n}\n\n.kudoEvent .event_cards .card {\n  width: 296px;\n}\n\n.kudoEvent .newCard {\n  display: flex;\n  z-index: 10;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  padding: 4%;\n  position: absolute;\n  background: rgba(83, 83, 83, 0.3);\n}\n\n.kudoEvent .newCard.hidden {\n  display: none;\n}\n\n.kudoEvent .newCard > div {\n  position: relative;\n  margin: auto;\n  width: 70%;\n  height: 70%;\n  animation: popup 0.3s ease-out;\n}\n\n.kudoEvent .newCard .close {\n  position: absolute;\n  right: 12px;\n  top: 12px;\n  width: 12px;\n  height: 12px;\n  z-index: 11;\n  cursor: pointer;\n}\n\n.kudoEvent .newCard .card {\n  height: 100%;\n  width: 100%;\n  margin: 0;\n}\n\n.kudoEvent .newCard .card .card__icon {\n  width: 33%;\n  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%),\n    rgba(198, 216, 211, 1);\n}\n\n.kudoEvent .newCard .card .card__icon img {\n  width: 60%;\n}\n\n.kudoEvent .newCard .card .card__text,\n.kudoEvent .newCard .card .card__text-highlighted {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  background: #fdf0d5;\n}\n\n.kudoEvent .newCard .card .card__text h3,\n.kudoEvent .newCard .card .card__text-highlighted h3 {\n  font-size: 46px;\n  line-height: 54px;\n  padding: 1rem 2rem;\n  text-align: center;\n  margin: 0;\n}\n\n.kudoEvent .newCard .card .card__text p,\n.kudoEvent .newCard .card .card__text-highlighted p {\n  font-size: 40px;\n  line-height: 49px;\n  padding: 1rem 2rem;\n  display: flex;\n  justify-content: center;\n  overflow: hidden;\n}\n\n.kudoEvent .newCard .card .card__likes {\n  display: none;\n}\n\n@media only screen and (max-width: 800px) {\n  .kudoEvent {\n    padding: 0 0 0 20px;\n  }\n\n  .kudoEvent .event_info {\n    flex-basis: 320px;\n    width: 320px;\n    min-width: 320px;\n    padding: 0px 10px 0 0px;\n  }\n\n  .kudoEvent .event_cards {\n    margin-left: 50px;\n  }\n}\n\n@media only screen and (max-width: 580px) {\n  .kudoEvent {\n    background: #0b1f39;\n    background: linear-gradient(140deg, #825640 0%, #0b1f39 100%);\n    flex-direction: column;\n    padding: 0px;\n    height: auto;\n  }\n\n  .kudoEvent .event_info {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards .card {\n    margin: 10px 0;\n    min-width: unset;\n    width: 100%;\n  }\n\n  .kudoEvent .event_cards .card .card__text {\n    min-width: unset;\n  }\n\n  .kudoEvent .newCard {\n    display: none;\n  }\n}\n\n@keyframes popup {\n  0% {\n    transform: scale(0);\n  }\n  100% {\n    transform: scale(1);\n  }\n}", ""]);
+exports.push([module.i, ".kudoEvent {\n  background: url('/img/lich_king_bg.jpg');\n  background-size: cover;\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n  padding-right: 0px;\n  min-height: calc(100vh + 50px);\n  width: 100%;\n}\n\n.kudoEvent .event_info {\n  float: left;\n  flex-basis: 460px;\n  width: 460px;\n  min-width: 460px;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: start;\n  justify-content: center;\n  padding: 50px 50px 0 100px;\n}\n\n.kudoEvent .event_info > div {\n  width: 100%;\n  margin-bottom: 50px;\n}\n\n.kudoEvent .event_info .eventInfo {\n  margin-bottom: 28px;\n}\n\n.kudoEvent .event_info .kudoForm {\n  margin-bottom: 0px;\n}\n\n.kudoEvent .event_cards {\n  margin-left: 100px;\n  padding: 50px 0;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  overflow-y: auto;\n  flex: 1;\n}\n\n.kudoEvent .event_cards .card {\n  width: 296px;\n}\n\n.kudoEvent .newCard {\n  display: flex;\n  z-index: 10;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  padding: 4%;\n  position: absolute;\n  background: rgba(83, 83, 83, 0.3);\n}\n\n.kudoEvent .newCard.hidden {\n  display: none;\n}\n\n.kudoEvent .newCard > div {\n  position: relative;\n  margin: auto;\n  width: 70%;\n  height: 70%;\n  animation: popup 0.3s ease-out;\n}\n\n.kudoEvent .newCard .close {\n  position: absolute;\n  right: 12px;\n  top: 12px;\n  width: 12px;\n  height: 12px;\n  z-index: 11;\n  cursor: pointer;\n}\n\n.kudoEvent .newCard .card {\n  height: 100%;\n  width: 100%;\n  margin: 0;\n}\n\n.kudoEvent .newCard .card .card__icon {\n  width: 33%;\n  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%),\n    rgba(198, 216, 211, 1);\n}\n\n.kudoEvent .newCard .card .card__icon img {\n  width: 60%;\n}\n\n.kudoEvent .newCard .card .card__text,\n.kudoEvent .newCard .card .card__text-highlighted {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  background: #fdf0d5;\n}\n\n.kudoEvent .newCard .card .card__text h3,\n.kudoEvent .newCard .card .card__text-highlighted h3 {\n  font-size: 46px;\n  line-height: 54px;\n  padding: 1rem 2rem;\n  text-align: center;\n  margin: 0;\n}\n\n.kudoEvent .newCard .card .card__text p,\n.kudoEvent .newCard .card .card__text-highlighted p {\n  font-size: 40px;\n  line-height: 49px;\n  padding: 1rem 2rem;\n  display: flex;\n  justify-content: center;\n  overflow: hidden;\n}\n\n.kudoEvent .newCard .card .card__likes {\n  display: none;\n}\n\n@media only screen and (max-width: 800px) {\n  .kudoEvent {\n    padding: 0 0 0 20px;\n  }\n\n  .kudoEvent .event_info {\n    flex-basis: 320px;\n    width: 320px;\n    min-width: 320px;\n    padding: 0px 10px 0 0px;\n  }\n\n  .kudoEvent .event_cards {\n    margin-left: 50px;\n  }\n}\n\n@media only screen and (max-width: 580px) {\n  .kudoEvent {\n    background: #0b1f39;\n    background: linear-gradient(140deg, #825640 0%, #0b1f39 100%);\n    flex-direction: column;\n    padding: 0px;\n    height: auto;\n  }\n\n  .kudoEvent .event_info {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards .card {\n    margin: 10px 0;\n    min-width: unset;\n    width: 100%;\n  }\n\n  .kudoEvent .event_cards .card .card__text {\n    min-width: unset;\n  }\n\n  .kudoEvent .newCard {\n    display: none;\n  }\n}\n\n@keyframes popup {\n  0% {\n    transform: scale(0);\n  }\n  100% {\n    transform: scale(1);\n  }\n}", ""]);
 // Exports
 module.exports = exports;
 
@@ -1453,8 +1455,72 @@ module.exports = exports;
 /* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(1));
+const qrcode_1 = __importDefault(__webpack_require__(71));
+class QRcode extends react_1.Component {
+    componentDidMount() {
+        const canvas = document.getElementById('canvas');
+        qrcode_1.default.toCanvas(canvas, this.props.url, { errorCorrectionLevel: 'H', width: 130 });
+    }
+    render() {
+        return (react_1.default.createElement("canvas", { id: "canvas" }));
+    }
+}
+exports.default = QRcode;
+
+
+/***/ }),
+/* 71 */,
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */,
+/* 77 */,
+/* 78 */,
+/* 79 */,
+/* 80 */,
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */,
+/* 85 */,
+/* 86 */,
+/* 87 */,
+/* 88 */,
+/* 89 */,
+/* 90 */,
+/* 91 */,
+/* 92 */,
+/* 93 */,
+/* 94 */,
+/* 95 */,
+/* 96 */,
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */,
+/* 101 */,
+/* 102 */,
+/* 103 */,
+/* 104 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var api = __webpack_require__(39);
-            var content = __webpack_require__(71);
+            var content = __webpack_require__(105);
 
             content = content.__esModule ? content.default : content;
 
@@ -1476,12 +1542,12 @@ var exported = content.locals ? content.locals : {};
 module.exports = exported;
 
 /***/ }),
-/* 71 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
-var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(72);
+var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(106);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
 // Module
@@ -1491,7 +1557,7 @@ module.exports = exports;
 
 
 /***/ }),
-/* 72 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
