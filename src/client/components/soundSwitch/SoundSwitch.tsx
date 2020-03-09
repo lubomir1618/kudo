@@ -6,6 +6,10 @@ export interface Props {
   temp?: string; // @TODO no needed
 }
 
+export interface Props {
+  temp?: string;
+}
+
 export interface State {
   sound: string;
 }
