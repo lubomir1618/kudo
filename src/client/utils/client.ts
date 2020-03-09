@@ -1,4 +1,5 @@
 import * as I from './../../common/interfaces';
+import bcrypt from 'bcryptjs';
 
 interface IkudoNum {
   name: string;
@@ -43,5 +44,7 @@ export function soundTurnedOn() {
 }
 
 export function encodePassword(pass: I.UserForm['password']): string {
-  return `encoded:${pass}`;
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(pass, salt);
+  return hash;
 }

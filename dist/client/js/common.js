@@ -1,5 +1,57 @@
 (window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["common"],{
 
+/***/ 124:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 127:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 208:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var CARD_TYPE;
+(function (CARD_TYPE) {
+    CARD_TYPE["great_job"] = "great_job";
+    CARD_TYPE["totally_awesome"] = "totally_awesome";
+    CARD_TYPE["well_done"] = "well_done";
+    CARD_TYPE["many_thanks"] = "many_thanks";
+    CARD_TYPE["very_happy"] = "very_happy";
+    CARD_TYPE["congrats"] = "congrats";
+    CARD_TYPE["proud"] = "proud";
+    CARD_TYPE["thank_you"] = "thank_you";
+})(CARD_TYPE = exports.CARD_TYPE || (exports.CARD_TYPE = {}));
+var EVENT_STATE;
+(function (EVENT_STATE) {
+    EVENT_STATE["past"] = "past";
+    EVENT_STATE["active"] = "active";
+    EVENT_STATE["future"] = "future";
+})(EVENT_STATE = exports.EVENT_STATE || (exports.EVENT_STATE = {}));
+var USER_ROLE;
+(function (USER_ROLE) {
+    USER_ROLE["admin"] = "admin";
+    USER_ROLE["user"] = "user";
+})(USER_ROLE = exports.USER_ROLE || (exports.USER_ROLE = {}));
+var FORM_MODE;
+(function (FORM_MODE) {
+    FORM_MODE["hidden"] = "hidden";
+    FORM_MODE["insert"] = "insert";
+    FORM_MODE["update"] = "update";
+})(FORM_MODE = exports.FORM_MODE || (exports.FORM_MODE = {}));
+
+
+/***/ }),
+
 /***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -119,7 +171,11 @@ exports.like = like;
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const bcryptjs_1 = __importDefault(__webpack_require__(35));
 function getKudoNumberList(cards) {
     const list = cards.reduce((acc, val) => {
         if (acc[val.awardedTo]) {
@@ -153,48 +209,26 @@ function soundTurnedOn() {
 }
 exports.soundTurnedOn = soundTurnedOn;
 function encodePassword(pass) {
-    return `encoded:${pass}`;
+    const salt = bcryptjs_1.default.genSaltSync(10);
+    const hash = bcryptjs_1.default.hashSync(pass, salt);
+    return hash;
 }
 exports.encodePassword = encodePassword;
 
 
 /***/ }),
 
-/***/ 50:
-/***/ (function(module, exports, __webpack_require__) {
+/***/ 58:
+/***/ (function(module, exports) {
 
-"use strict";
+/* (ignored) */
 
-Object.defineProperty(exports, "__esModule", { value: true });
-var CARD_TYPE;
-(function (CARD_TYPE) {
-    CARD_TYPE["great_job"] = "great_job";
-    CARD_TYPE["totally_awesome"] = "totally_awesome";
-    CARD_TYPE["well_done"] = "well_done";
-    CARD_TYPE["many_thanks"] = "many_thanks";
-    CARD_TYPE["very_happy"] = "very_happy";
-    CARD_TYPE["congrats"] = "congrats";
-    CARD_TYPE["proud"] = "proud";
-    CARD_TYPE["thank_you"] = "thank_you";
-})(CARD_TYPE = exports.CARD_TYPE || (exports.CARD_TYPE = {}));
-var EVENT_STATE;
-(function (EVENT_STATE) {
-    EVENT_STATE["past"] = "past";
-    EVENT_STATE["active"] = "active";
-    EVENT_STATE["future"] = "future";
-})(EVENT_STATE = exports.EVENT_STATE || (exports.EVENT_STATE = {}));
-var USER_ROLE;
-(function (USER_ROLE) {
-    USER_ROLE["admin"] = "admin";
-    USER_ROLE["user"] = "user";
-})(USER_ROLE = exports.USER_ROLE || (exports.USER_ROLE = {}));
-var FORM_MODE;
-(function (FORM_MODE) {
-    FORM_MODE["hidden"] = "hidden";
-    FORM_MODE["insert"] = "insert";
-    FORM_MODE["update"] = "update";
-})(FORM_MODE = exports.FORM_MODE || (exports.FORM_MODE = {}));
+/***/ }),
 
+/***/ 60:
+/***/ (function(module, exports) {
+
+/* (ignored) */
 
 /***/ })
 

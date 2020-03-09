@@ -1,6 +1,6 @@
 (window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["admin"],{
 
-/***/ 106:
+/***/ 260:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18,10 +18,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
-const EventForm_1 = __importDefault(__webpack_require__(107));
-const EventList_1 = __importDefault(__webpack_require__(110));
-const UserForm_1 = __importDefault(__webpack_require__(111));
-const UserList_1 = __importDefault(__webpack_require__(115));
+const EventForm_1 = __importDefault(__webpack_require__(261));
+const EventList_1 = __importDefault(__webpack_require__(264));
+const UserForm_1 = __importDefault(__webpack_require__(265));
+const UserList_1 = __importDefault(__webpack_require__(269));
 ReactDOM.render(React.createElement("div", { className: "eventAdmin" },
     React.createElement("header", null,
         React.createElement("h1", null, "Event admin")),
@@ -33,7 +33,7 @@ ReactDOM.render(React.createElement("div", { className: "eventAdmin" },
 
 /***/ }),
 
-/***/ 107:
+/***/ 261:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48,8 +48,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const api_1 = __webpack_require__(33);
-const E = __importStar(__webpack_require__(50));
-__webpack_require__(108);
+const E = __importStar(__webpack_require__(208));
+__webpack_require__(262);
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -142,11 +142,11 @@ exports.default = EventForm;
 
 /***/ }),
 
-/***/ 108:
+/***/ 262:
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(37);
-            var content = __webpack_require__(109);
+var api = __webpack_require__(195);
+            var content = __webpack_require__(263);
 
             content = content.__esModule ? content.default : content;
 
@@ -169,11 +169,11 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 109:
+/***/ 263:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(39);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(197);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, "html {\n  --c-one: #4d677f;\n  --c-two: white;\n  --c-three: rgba(3, 2, 2, 0.25);\n  --c-border: #dbe1e4;\n}\n\n#form-event {\n  border: 1px solid var(--c-border);\n  background-color: var(--c-two);\n  width: 500px;\n  height: 325px;\n  box-shadow: 0px 4px 10px var(--c-three);\n  font-family: 'Ubuntu_Bold';\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 10;\n}\n\n#form-event.hidden {\n  display: none;\n}\n\n#form-event .formEvent_header {\n  background-color: var(--c-one);\n  height: 26px;\n  line-height: 26px;\n}\n\n#form-event .formEvent_header .formEvent_header-text {\n  font-size: 16px;\n  margin-left: 10px;\n  color: var(--c-two);\n}\n\n#form-event .formEvent_header .formEvent_header-close {\n  display: block;\n  font-size: 16px;\n  margin-right: 4px;\n  background-color: var(--c-two);\n  color: var(--c-one);\n  border-radius: 50%;\n  width: 20px;\n  height: 20px;\n  float: right;\n  text-align: center;\n  line-height: 18px;\n  margin-top: 2px;\n  cursor: pointer;\n}\n\n#form-event form {\n  margin: 10px 20px;\n}\n\n#form-event label {\n  display: inline-block;\n  display: inline-block;\n  min-width: 120px;\n  text-align: right;\n  margin-right: 10px;\n  color: var(--c-one);\n}\n\n#form-event input,\n#form-event select {\n  min-width: 200px;\n}\n\n#form-event input[type='button'] {\n  position: relative;\n  margin: 0 58%;\n}\n", ""]);
@@ -183,7 +183,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 110:
+/***/ 264:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -263,7 +263,7 @@ exports.default = EventList;
 
 /***/ }),
 
-/***/ 111:
+/***/ 265:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -275,16 +275,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const V = __importStar(__webpack_require__(112));
+const V = __importStar(__webpack_require__(266));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
-const E = __importStar(__webpack_require__(50));
-__webpack_require__(113);
+const E = __importStar(__webpack_require__(208));
+__webpack_require__(267);
+const bcryptjs_1 = __importDefault(__webpack_require__(35));
 class UserForm extends react_1.Component {
     constructor(props) {
         super(props);
+        window.bcrypt = bcryptjs_1.default;
         this.newUser = {
             login: '',
             name: '',
@@ -297,6 +302,19 @@ class UserForm extends react_1.Component {
             mode: E.FORM_MODE.hidden,
             user: this.newUser
         };
+    }
+    test() {
+        const pass = 'qwerty1';
+        const hash = '$2a$10$10puYBADjAlfjHFeo3gbCe3aIzKN2R2G6.ZNuK.NjNs81wyUdXaji';
+        const info = document.getElementById('form-user-info');
+        bcryptjs_1.default
+            .compare(pass, hash)
+            .then((res) => {
+            info.innerText = res ? 'Pass ok' : 'Pass bad';
+        })
+            .catch((err) => {
+            info.innerText = 'Pass check error';
+        });
     }
     onClickHandler() {
         const rawData = this.newUser;
@@ -376,6 +394,7 @@ class UserForm extends react_1.Component {
                 react_1.default.createElement("br", null),
                 this.state.mode === E.FORM_MODE.insert ? (this.passRows()) : (react_1.default.createElement("input", { type: "hidden", id: "user-password", name: "password", defaultValue: password })),
                 react_1.default.createElement("input", { type: "button", className: "button-primary", onClick: this.onClickHandler.bind(this), value: button }),
+                react_1.default.createElement("input", { type: "button", onClick: this.test.bind(this), value: "Test" }),
                 react_1.default.createElement("div", { id: "form-user-info" }))));
     }
     passRows() {
@@ -419,7 +438,7 @@ exports.default = UserForm;
 
 /***/ }),
 
-/***/ 112:
+/***/ 266:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -432,7 +451,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const E = __importStar(__webpack_require__(50));
+const E = __importStar(__webpack_require__(208));
 function hasData(data, type = 'string') {
     if (data === undefined || data === null) {
         return false;
@@ -537,11 +556,11 @@ exports.isEventValid = isEventValid;
 
 /***/ }),
 
-/***/ 113:
+/***/ 267:
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(37);
-            var content = __webpack_require__(114);
+var api = __webpack_require__(195);
+            var content = __webpack_require__(268);
 
             content = content.__esModule ? content.default : content;
 
@@ -564,11 +583,11 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 114:
+/***/ 268:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(39);
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(197);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 // Module
 exports.push([module.i, "html {\n  --c-one: #4d677f;\n  --c-two: white;\n  --c-three: rgba(3, 2, 2, 0.25);\n  --c-border: #dbe1e4;\n}\n\n#form-user {\n  border: 1px solid var(--c-border);\n  background-color: var(--c-two);\n  width: 500px;\n  height: 425px;\n  box-shadow: 0px 4px 10px var(--c-three);\n  font-family: 'Ubuntu_Bold';\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 10;\n}\n\n#form-user.hidden {\n  display: none;\n}\n\n#form-user .formUser_header {\n  background-color: var(--c-one);\n  height: 26px;\n  line-height: 26px;\n}\n\n#form-user .formUser_header .formUser_header-text {\n  font-size: 16px;\n  margin-left: 10px;\n  color: var(--c-two);\n}\n\n#form-user .formUser_header .formUser_header-close {\n  display: block;\n  font-size: 16px;\n  margin-right: 4px;\n  background-color: var(--c-two);\n  color: var(--c-one);\n  border-radius: 50%;\n  width: 20px;\n  height: 20px;\n  float: right;\n  text-align: center;\n  line-height: 18px;\n  margin-top: 2px;\n  cursor: pointer;\n}\n\n#form-user form {\n  margin: 10px 20px;\n}\n\n#form-user label {\n  display: inline-block;\n  display: inline-block;\n  min-width: 120px;\n  text-align: right;\n  margin-right: 10px;\n  color: var(--c-one);\n}\n\n#form-user input,\n#form-user select {\n  min-width: 200px;\n}\n\n#form-user input[type='button'] {\n  position: relative;\n  margin: 0 58%;\n}\n", ""]);
@@ -578,7 +597,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 115:
+/***/ 269:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -660,5 +679,5 @@ exports.default = UserList;
 
 /***/ })
 
-},[[106,"runtime","vendor","common"]]]);
+},[[260,"runtime","vendor","common"]]]);
 //# sourceMappingURL=admin.js.map

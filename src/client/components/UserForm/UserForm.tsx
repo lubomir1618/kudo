@@ -6,6 +6,8 @@ import * as I from '../../../common/interfaces';
 import * as E from '../../../common/constants';
 import './UserForm.css';
 
+import bcrypt from 'bcryptjs';
+
 interface IUserFormState {
   user: I.User;
   mode: E.FORM_MODE;
@@ -16,6 +18,8 @@ export default class UserForm extends Component<any, IUserFormState> {
 
   constructor(props: any) {
     super(props);
+
+    (window as any).bcrypt = bcrypt;
 
     this.newUser = {
       login: '',
@@ -29,6 +33,20 @@ export default class UserForm extends Component<any, IUserFormState> {
       mode: E.FORM_MODE.hidden,
       user: this.newUser
     };
+  }
+
+  private test() {
+    const pass = 'qwerty1';
+    const hash = '$2a$10$10puYBADjAlfjHFeo3gbCe3aIzKN2R2G6.ZNuK.NjNs81wyUdXaji';
+    const info = document.getElementById('form-user-info') as HTMLDivElement;
+    bcrypt
+      .compare(pass, hash)
+      .then((res) => {
+        info.innerText = res ? 'Pass ok' : 'Pass bad';
+      })
+      .catch((err) => {
+        info.innerText = 'Pass check error';
+      });
   }
 
   public onClickHandler() {
@@ -123,6 +141,7 @@ export default class UserForm extends Component<any, IUserFormState> {
             <input type="hidden" id="user-password" name="password" defaultValue={password} />
           )}
           <input type="button" className="button-primary" onClick={this.onClickHandler.bind(this)} value={button} />
+          <input type="button" onClick={this.test.bind(this)} value="Test" />
           <div id="form-user-info" />
         </form>
       </div>
