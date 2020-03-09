@@ -175,6 +175,10 @@
   .kudoEvent .event_cards .card .card__text {
     min-width: unset;
   }
+
+  .kudoEvent .newCard {
+    display: none;
+  }
 }
 
 @keyframes popup {
