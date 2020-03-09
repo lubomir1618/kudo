@@ -85,13 +85,10 @@ const KudoForm_1 = __importDefault(__webpack_require__(45));
 const Card_1 = __importDefault(__webpack_require__(58));
 const CardNotification_1 = __importDefault(__webpack_require__(61));
 __webpack_require__(62);
-<<<<<<< HEAD
+const KudoSettings_1 = __importDefault(__webpack_require__(64));
 const MODAL_INTERVAL = 120000;
 const MODAL_TIME = 120000;
 const REFRESH = 15 * 1000; // 60 seconds
-=======
-const KudoSettings_1 = __importDefault(__webpack_require__(64));
->>>>>>> settings
 class KudoEvent extends react_1.default.Component {
     constructor(props) {
         super(props);
@@ -129,11 +126,8 @@ class KudoEvent extends react_1.default.Component {
                 react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active })),
             react_1.default.createElement("div", { className: "event_cards" }, this.processCards()),
             react_1.default.createElement(CardNotification_1.default, null),
-<<<<<<< HEAD
-            newCard)) : (react_1.default.createElement("div", null));
-=======
+            newCard,
             react_1.default.createElement(KudoSettings_1.default, null))) : (react_1.default.createElement("div", null));
->>>>>>> settings
     }
     getData() {
         const now = new Date().getTime();

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { soundTurnedOn } from '../../utils/client';
-import './soundSwitch.css';
+import './SoundSwitch.css';
 
 export interface Props {
-  temp?: string;
+  temp?: string; // @TODO no needed
 }
 
 export interface State {
