@@ -32,7 +32,6 @@ export default class SoundSwitch extends Component<any, State> {
 
     if (data) {
       settings = JSON.parse(data);
-
       if (settings && settings.sound === 'on') {
         settings.sound = 'off';
       } else {
