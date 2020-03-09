@@ -19,7 +19,7 @@ const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const react_router_dom_1 = __webpack_require__(12);
 const KudoEvent_1 = __importDefault(__webpack_require__(32));
-__webpack_require__(64);
+__webpack_require__(70);
 function App() {
     // let id = useParams().id;
     return (React.createElement(react_router_dom_1.BrowserRouter, null,
@@ -84,14 +84,15 @@ const EventInfo_1 = __webpack_require__(42);
 const KudoForm_1 = __importDefault(__webpack_require__(45));
 const Card_1 = __importDefault(__webpack_require__(58));
 const CardNotification_1 = __importDefault(__webpack_require__(61));
-__webpack_require__(62);
+const KudoSettings_1 = __importDefault(__webpack_require__(62));
+__webpack_require__(68);
 const MODAL_INTERVAL = 120 * 1000;
 const MODAL_TIME = 120 * 1000;
 const REFRESH = 15 * 1000; // 60 seconds
 function CardModal({ newCardProps, onClick }) {
-    return (react_1.default.createElement("div", { className: 'newCard' },
+    return (react_1.default.createElement("div", { className: "newCard" },
         react_1.default.createElement("div", null,
-            react_1.default.createElement("div", { className: 'close', onClick: onClick },
+            react_1.default.createElement("div", { className: "close", onClick: onClick },
                 react_1.default.createElement("img", { src: "/img/cancel.png" })),
             react_1.default.createElement(Card_1.default, Object.assign({}, newCardProps)))));
 }
@@ -104,7 +105,7 @@ class KudoEvent extends react_1.default.Component {
             cards: [],
             event: undefined,
             is_active: false,
-            shouldDisplayModal: false,
+            shouldDisplayModal: false
         };
     }
     componentDidMount() {
@@ -143,7 +144,8 @@ class KudoEvent extends react_1.default.Component {
                 react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active })),
             react_1.default.createElement("div", { className: "event_cards" }, this.processCards()),
             react_1.default.createElement(CardNotification_1.default, null),
-            this.state.shouldDisplayModal ? react_1.default.createElement(CardModal, { newCardProps: newCard, onClick: this.hideModal }) : null)) : (react_1.default.createElement("div", null));
+            this.state.shouldDisplayModal ? react_1.default.createElement(CardModal, { newCardProps: newCard, onClick: this.hideModal }) : null,
+            react_1.default.createElement(KudoSettings_1.default, null))) : (react_1.default.createElement("div", null));
     }
     hideModal() {
         this.setState({ shouldDisplayModal: false });
@@ -154,7 +156,7 @@ class KudoEvent extends react_1.default.Component {
             if (this.state.cards.length < data.length) {
                 document.dispatchEvent(new CustomEvent('kudoz::newNotification'));
             }
-            data.sort((a, b) => (b.likes - a.likes));
+            data.sort((a, b) => b.likes - a.likes);
             this.setState({ cards: data });
         });
         api_1.select('/api/events', { _id: this.eventId }).then((data) => {
@@ -287,7 +289,7 @@ function getKudoNumberList(cards) {
         }
         return acc;
     }, {});
-    return Object.values(list).sort((a, b) => a.count > b.count ? -1 : 1);
+    return Object.values(list).sort((a, b) => (a.count > b.count ? -1 : 1));
 }
 exports.getKudoNumberList = getKudoNumberList;
 function getKudoKnight(kudoNumList) {
@@ -298,6 +300,17 @@ function getKudoKnight(kudoNumList) {
     return 'No knight yet';
 }
 exports.getKudoKnight = getKudoKnight;
+function soundTurnedOn() {
+    const data = localStorage.getItem('kudosSettings');
+    if (data) {
+        const soundSetting = JSON.parse(data);
+        if (soundSetting && soundSetting.sound === 'on') {
+            return true;
+        }
+    }
+    return false;
+}
+exports.soundTurnedOn = soundTurnedOn;
 
 
 /***/ }),
@@ -1221,6 +1234,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
+const client_1 = __webpack_require__(34);
 class CardNotification extends react_1.Component {
     constructor(props) {
         super(props);
@@ -1242,7 +1256,7 @@ class CardNotification extends react_1.Component {
         });
     }
     render() {
-        this.state.play ? this.audio.play() : this.audio.pause();
+        this.state.play && client_1.soundTurnedOn() ? this.audio.play() : this.audio.pause();
         return react_1.default.createElement("div", null);
     }
 }
@@ -1253,39 +1267,69 @@ exports.default = CardNotification;
 /* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var api = __webpack_require__(39);
-            var content = __webpack_require__(63);
+"use strict";
 
-            content = content.__esModule ? content.default : content;
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importDefault(__webpack_require__(1));
+const SoundSwitch_1 = __importDefault(__webpack_require__(63));
+__webpack_require__(66);
+function KudoSettings() {
+    return (react_1.default.createElement("div", { className: "kudoSettings" },
+        react_1.default.createElement(SoundSwitch_1.default, null)));
+}
+exports.default = KudoSettings;
 
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
 
 /***/ }),
 /* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, ".kudoEvent {\n  background: url('/img/lich_king_bg.jpg');\n  background-size: cover;\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n  padding-right: 0px;\n  min-height: 100vh;\n  width: 100%;\n}\n\n.kudoEvent .event_info {\n  float: left;\n  flex-basis: 460px;\n  width: 460px;\n  min-width: 460px;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: start;\n  justify-content: center;\n  padding: 50px 50px 0 100px;\n}\n\n.kudoEvent .event_info > div {\n  width: 100%;\n  margin-bottom: 50px;\n}\n\n.kudoEvent .event_info .eventInfo {\n  margin-bottom: 28px;\n}\n\n.kudoEvent .event_info .kudoForm {\n  margin-bottom: 0px;\n}\n\n.kudoEvent .event_cards {\n  margin-left: 100px;\n  padding: 50px 0;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  overflow-y: auto;\n  flex: 1;\n}\n\n.kudoEvent .event_cards .card {\n  width: 296px;\n}\n\n.kudoEvent .newCard {\n  display: flex;\n  z-index: 10;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  padding: 4%;\n  position: absolute;\n  background: rgba(83, 83, 83, 0.3);\n}\n\n.kudoEvent .newCard.hidden {\n  display: none;\n}\n\n.kudoEvent .newCard > div {\n  position: relative;\n  margin: auto;\n  width: 70%;\n  height: 70%;\n  animation: popup 0.3s ease-out;\n}\n\n.kudoEvent .newCard .close {\n  position: absolute;\n  right: 12px;\n  top: 12px;\n  width: 12px;\n  height: 12px;\n  z-index: 11;\n  cursor: pointer;\n}\n\n.kudoEvent .newCard .card {\n  height: 100%;\n  width: 100%;\n  margin: 0;\n}\n\n.kudoEvent .newCard .card .card__icon {\n  width: 33%;\n  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%),\n    rgba(198, 216, 211, 1);\n}\n\n.kudoEvent .newCard .card .card__icon img {\n  width: 60%;\n}\n\n.kudoEvent .newCard .card .card__text,\n.kudoEvent .newCard .card .card__text-highlighted {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  background: #fdf0d5;\n}\n\n.kudoEvent .newCard .card .card__text h3,\n.kudoEvent .newCard .card .card__text-highlighted h3 {\n  font-size: 46px;\n  line-height: 54px;\n  padding: 1rem 2rem;\n  text-align: center;\n  margin: 0;\n}\n\n.kudoEvent .newCard .card .card__text p,\n.kudoEvent .newCard .card .card__text-highlighted p {\n  font-size: 40px;\n  line-height: 49px;\n  padding: 1rem 2rem;\n  display: flex;\n  justify-content: center;\n  overflow: hidden;\n}\n\n.kudoEvent .newCard .card .card__likes {\n  display: none;\n}\n\n@media only screen and (max-width: 800px) {\n  .kudoEvent {\n    padding: 0 0 0 20px;\n  }\n\n  .kudoEvent .event_info {\n    flex-basis: 320px;\n    width: 320px;\n    min-width: 320px;\n    padding: 0px 10px 0 0px;\n  }\n\n  .kudoEvent .event_cards {\n    margin-left: 50px;\n  }\n}\n\n@media only screen and (max-width: 580px) {\n  .kudoEvent {\n    background: #0b1f39;\n    background: linear-gradient(140deg, #825640 0%, #0b1f39 100%);\n    flex-direction: column;\n    padding: 0px;\n    height: auto;\n  }\n\n  .kudoEvent .event_info {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards .card {\n    margin: 10px 0;\n    min-width: unset;\n    width: 100%;\n  }\n\n  .kudoEvent .event_cards .card .card__text {\n    min-width: unset;\n  }\n}\n\n@keyframes popup {\n  0% {\n    transform: scale(0);\n  }\n  100% {\n    transform: scale(1);\n  }\n}", ""]);
-// Exports
-module.exports = exports;
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(1));
+const client_1 = __webpack_require__(34);
+__webpack_require__(64);
+class SoundSwitch extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            sound: client_1.soundTurnedOn() ? 'on' : 'off'
+        };
+    }
+    render() {
+        return (react_1.default.createElement("div", { className: `soundSwitch ${this.state.sound === 'off' ? 'soundSwitch--off' : 'soundSwitch--on'}`, title: `${this.state.sound === 'off' ? 'Turn sound on' : 'Turn sound off'}`, onClick: this.soundOnOff.bind(this) }));
+    }
+    soundOnOff() {
+        this.setState({ sound: client_1.soundTurnedOn() ? 'off' : 'on' });
+        const data = localStorage.getItem('kudosSettings');
+        let settings;
+        if (data) {
+            settings = JSON.parse(data);
+            if (settings && settings.sound === 'on') {
+                settings.sound = 'off';
+            }
+            else {
+                settings.sound = 'on';
+            }
+        }
+        else {
+            settings = { sound: 'on' };
+        }
+        localStorage.setItem('kudosSettings', JSON.stringify(settings));
+    }
+}
+exports.default = SoundSwitch;
 
 
 /***/ }),
@@ -1320,7 +1364,124 @@ module.exports = exported;
 
 // Imports
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
-var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(66);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".soundSwitch,\n.soundSwitch--on,\n.soundSwitch--off {\n  position: absolute;\n  top: 0px;\n  right: 0px;\n  width: 20px;\n  height: 20px;\n  cursor: pointer;\n}\n\n.soundSwitch--on {\n  background: url('/img/volume.png');\n  background-size: 20px;\n}\n\n.soundSwitch--off {\n  background: url('/img/no-sound.png');\n  background-size: 20px;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(39);
+            var content = __webpack_require__(67);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".kudoSettings {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n  width: auto;\n  text-align: right;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(39);
+            var content = __webpack_require__(69);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, ".kudoEvent {\n  background: url('/img/lich_king_bg.jpg');\n  background-size: cover;\n  font-family: 'Ubuntu', Arial, Helvetica, sans-serif;\n  padding-right: 0px;\n  min-height: 100vh;\n  width: 100%;\n}\n\n.kudoEvent .event_info {\n  float: left;\n  flex-basis: 460px;\n  width: 460px;\n  min-width: 460px;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  align-items: start;\n  justify-content: center;\n  padding: 50px 50px 0 100px;\n}\n\n.kudoEvent .event_info > div {\n  width: 100%;\n  margin-bottom: 50px;\n}\n\n.kudoEvent .event_info .eventInfo {\n  margin-bottom: 28px;\n}\n\n.kudoEvent .event_info .kudoForm {\n  margin-bottom: 0px;\n}\n\n.kudoEvent .event_cards {\n  margin-left: 100px;\n  padding: 50px 0;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n  overflow-y: auto;\n  flex: 1;\n}\n\n.kudoEvent .event_cards .card {\n  width: 296px;\n}\n\n.kudoEvent .newCard {\n  display: flex;\n  z-index: 10;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  padding: 4%;\n  position: absolute;\n  background: rgba(83, 83, 83, 0.3);\n}\n\n.kudoEvent .newCard.hidden {\n  display: none;\n}\n\n.kudoEvent .newCard > div {\n  position: relative;\n  margin: auto;\n  width: 70%;\n  height: 70%;\n  animation: popup 0.3s ease-out;\n}\n\n.kudoEvent .newCard .close {\n  position: absolute;\n  right: 12px;\n  top: 12px;\n  width: 12px;\n  height: 12px;\n  z-index: 11;\n  cursor: pointer;\n}\n\n.kudoEvent .newCard .card {\n  height: 100%;\n  width: 100%;\n  margin: 0;\n}\n\n.kudoEvent .newCard .card .card__icon {\n  width: 33%;\n  background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%),\n    rgba(198, 216, 211, 1);\n}\n\n.kudoEvent .newCard .card .card__icon img {\n  width: 60%;\n}\n\n.kudoEvent .newCard .card .card__text,\n.kudoEvent .newCard .card .card__text-highlighted {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  background: #fdf0d5;\n}\n\n.kudoEvent .newCard .card .card__text h3,\n.kudoEvent .newCard .card .card__text-highlighted h3 {\n  font-size: 46px;\n  line-height: 54px;\n  padding: 1rem 2rem;\n  text-align: center;\n  margin: 0;\n}\n\n.kudoEvent .newCard .card .card__text p,\n.kudoEvent .newCard .card .card__text-highlighted p {\n  font-size: 40px;\n  line-height: 49px;\n  padding: 1rem 2rem;\n  display: flex;\n  justify-content: center;\n  overflow: hidden;\n}\n\n.kudoEvent .newCard .card .card__likes {\n  display: none;\n}\n\n@media only screen and (max-width: 800px) {\n  .kudoEvent {\n    padding: 0 0 0 20px;\n  }\n\n  .kudoEvent .event_info {\n    flex-basis: 320px;\n    width: 320px;\n    min-width: 320px;\n    padding: 0px 10px 0 0px;\n  }\n\n  .kudoEvent .event_cards {\n    margin-left: 50px;\n  }\n}\n\n@media only screen and (max-width: 580px) {\n  .kudoEvent {\n    background: #0b1f39;\n    background: linear-gradient(140deg, #825640 0%, #0b1f39 100%);\n    flex-direction: column;\n    padding: 0px;\n    height: auto;\n  }\n\n  .kudoEvent .event_info {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards {\n    width: 100%;\n    margin: 0;\n    padding: 7%;\n  }\n\n  .kudoEvent .event_cards .card {\n    margin: 10px 0;\n    min-width: unset;\n    width: 100%;\n  }\n\n  .kudoEvent .event_cards .card .card__text {\n    min-width: unset;\n  }\n}\n\n@keyframes popup {\n  0% {\n    transform: scale(0);\n  }\n  100% {\n    transform: scale(1);\n  }\n}", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(39);
+            var content = __webpack_require__(71);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(41);
+var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(72);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
 // Module
@@ -1330,7 +1491,7 @@ module.exports = exports;
 
 
 /***/ }),
-/* 66 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
