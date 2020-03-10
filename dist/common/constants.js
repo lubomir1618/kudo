@@ -21,6 +21,7 @@ var USER_ROLE;
 (function (USER_ROLE) {
     USER_ROLE["admin"] = "admin";
     USER_ROLE["user"] = "user";
+    USER_ROLE["none"] = "none";
 })(USER_ROLE = exports.USER_ROLE || (exports.USER_ROLE = {}));
 var FORM_MODE;
 (function (FORM_MODE) {

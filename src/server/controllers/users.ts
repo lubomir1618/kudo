@@ -16,7 +16,7 @@ class Users {
     utils.serverLog('/users => list', req);
     this.users
       .find()
-      .then((data) => res.json(data))
+      .then((data) => res.json(this.stripPass(data)))
       .catch((err) => utils.errorHandler(res, err.message));
   }
 
@@ -32,7 +32,7 @@ class Users {
     }
     this.users
       .findOne(where)
-      .then((data) => res.json(data))
+      .then((data) => res.json(this.stripPass(data || [])))
       .catch((err) => utils.errorHandler(res, err.message));
   }
 
@@ -53,10 +53,18 @@ class Users {
         .insert(user)
         .then((data) => res.json(data))
         .catch((err) => utils.errorHandler(res, err.message));
-      console.log('user', user);
     } else {
       utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
     }
+  }
+
+  private stripPass(data: I.User | I.User[]): I.User | I.User[] {
+    const myData = Array.isArray(data) ? data : [data];
+    const out: I.User[] = myData.map((user) => {
+      const password = '👮‍♂️';
+      return { ...user, password };
+    });
+    return Array.isArray(data) ? out : out[0];
   }
 }
 

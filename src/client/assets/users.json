@@ -4,7 +4,7 @@
     "name": "Super",
     "surname": "User",
     "login": "admin",
-    "password": "some-hash",
+    "password": "$2a$10$/qGv9yuxFryvpKvam5d83.sVjfuHr5hIIsTZZbPBatcovff8u1o66",
     "role": "admin"
   },
   {

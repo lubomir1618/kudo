@@ -1,3 +1,4 @@
+import * as I from '../../common/interfaces';
 const headers = { 'content-type': 'application/json' };
 
 interface KeyVal {
@@ -30,6 +31,12 @@ export function select<T>(api: string, id?: string | KeyVal): Promise<T> {
     fetch(url, {
       method: 'GET'
     })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
       .then((response) => resolved(response.json()))
       .catch((err: Error) => rejected(err));
   });
@@ -103,6 +110,21 @@ export function like(_id: string): Promise<number> {
     })
       .then((response) => response.json())
       .then((data: { likes: number }) => resolved(data.likes))
+      .catch((err: Error) => rejected(err));
+  });
+}
+
+/**
+ * POST login & pass and get authentication result
+ */
+export function auth(api: string, data: { login: string; password: string }): Promise<I.Auth> {
+  return new Promise<I.Auth>((resolved, rejected) => {
+    fetch(api, {
+      body: JSON.stringify(data),
+      headers,
+      method: 'POST'
+    })
+      .then((response) => resolved(response.json()))
       .catch((err: Error) => rejected(err));
   });
 }

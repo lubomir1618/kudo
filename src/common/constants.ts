@@ -17,7 +17,8 @@ export enum EVENT_STATE {
 
 export enum USER_ROLE {
   admin = 'admin',
-  user = 'user'
+  user = 'user',
+  none = 'none'
 }
 
 export enum FORM_MODE {

@@ -20,11 +20,13 @@ const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const EventForm_1 = __importDefault(__webpack_require__(261));
 const EventList_1 = __importDefault(__webpack_require__(264));
-const UserForm_1 = __importDefault(__webpack_require__(265));
-const UserList_1 = __importDefault(__webpack_require__(269));
+const LoginForm_1 = __importDefault(__webpack_require__(265));
+const UserForm_1 = __importDefault(__webpack_require__(269));
+const UserList_1 = __importDefault(__webpack_require__(272));
 ReactDOM.render(React.createElement("div", { className: "eventAdmin" },
     React.createElement("header", null,
         React.createElement("h1", null, "Event admin")),
+    React.createElement(LoginForm_1.default, null),
     React.createElement(EventForm_1.default, null),
     React.createElement(UserForm_1.default, null),
     React.createElement(EventList_1.default, null),
@@ -275,6 +277,245 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(1));
+const V = __importStar(__webpack_require__(266));
+const api_1 = __webpack_require__(33);
+const client_1 = __webpack_require__(34);
+__webpack_require__(267);
+class LoginForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+    }
+    onLoginHandler() {
+        const info = document.getElementById('form-login-info');
+        const form = document.getElementById('form-login-form');
+        const formData = new FormData(form);
+        const login = formData.get('login');
+        const plainPassword = formData.get('password');
+        const okAuth = V.isAuthValid({ login, password: plainPassword });
+        if (okAuth === true) {
+            api_1.select('/api/auth', login)
+                .then((data) => {
+                const password = client_1.encodePassword(plainPassword, data.salt);
+                return api_1.auth('/api/auth', { login, password });
+            })
+                .then((data) => {
+                if (data.authenticated) {
+                    document.dispatchEvent(new CustomEvent('kudoz::authenticated', { detail: { role: data.role, session: '@todo' } }));
+                }
+                else {
+                    info.innerText = 'Error: authentication failed';
+                }
+            })
+                .catch((err) => {
+                info.innerText = 'Error: authentication failed';
+            });
+        }
+        else {
+            info.innerText = `Error: ${okAuth.join(', ')}`;
+            return;
+        }
+    }
+    render() {
+        return (react_1.default.createElement("div", { id: "form-login", key: "loginForm" },
+            react_1.default.createElement("div", { className: "formLogin_header" },
+                react_1.default.createElement("span", { className: "formLogin_header-text" }, "Sign in")),
+            react_1.default.createElement("form", { id: "form-login-form", autoComplete: "off" },
+                react_1.default.createElement("label", { htmlFor: "name" }, "Login:"),
+                react_1.default.createElement("input", { type: "text", id: "login-login", name: "login", placeholder: "enter login" }),
+                react_1.default.createElement("br", null),
+                react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
+                react_1.default.createElement("input", { type: "password", id: "login-password", autoComplete: "new-password", name: "password", placeholder: "enter password" })),
+            react_1.default.createElement("input", { type: "button", className: "button-primary", onClick: this.onLoginHandler.bind(this), value: "Sign in" }),
+            react_1.default.createElement("div", { id: "form-login-info" })));
+    }
+}
+exports.default = LoginForm;
+
+
+/***/ }),
+
+/***/ 266:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const E = __importStar(__webpack_require__(208));
+function hasData(data, type = 'string') {
+    if (data === undefined || data === null) {
+        return false;
+    }
+    switch (type) {
+        case 'number':
+            return typeof data === 'number' || !isNaN(data);
+        case 'boolean':
+            return typeof data === 'boolean';
+        default:
+            return data !== '';
+    }
+}
+exports.hasData = hasData;
+function hasOneOf(data, check) {
+    if (hasData(data)) {
+        return check.includes(data);
+    }
+    return false;
+}
+exports.hasOneOf = hasOneOf;
+function isSame(original, copy) {
+    return original === copy;
+}
+exports.isSame = isSame;
+function isLikeValid(_id) {
+    return hasData(_id) ? true : ['_id'];
+}
+exports.isLikeValid = isLikeValid;
+function isUserValid(user) {
+    let bugs = [];
+    const authValid = isAuthValid(user);
+    if (authValid !== true) {
+        bugs = authValid;
+    }
+    if (!hasData(user.name)) {
+        bugs.push('name');
+    }
+    if (!hasData(user.surname)) {
+        bugs.push('surname');
+    }
+    if (!(user.role && E.USER_ROLE[user.role])) {
+        bugs.push('role');
+    }
+    return bugs.length ? bugs : true;
+}
+exports.isUserValid = isUserValid;
+function isAuthValid(user) {
+    const bugs = [];
+    if (!hasData(user.login)) {
+        bugs.push('login');
+    }
+    if (!hasData(user.password)) {
+        bugs.push('password');
+    }
+    return bugs.length ? bugs : true;
+}
+exports.isAuthValid = isAuthValid;
+function isPasswordValid(user) {
+    const bugs = [];
+    if (!hasData(user.password)) {
+        bugs.push('password');
+    }
+    if (!hasData(user.passwordRepeat)) {
+        bugs.push('paswordRepeat');
+    }
+    if (!isSame(user.password, user.passwordRepeat)) {
+        bugs.push('paswordRepeat');
+    }
+    return bugs.length ? bugs : true;
+}
+exports.isPasswordValid = isPasswordValid;
+function isCardValid(card, event) {
+    const bugs = [];
+    if (!(event && String(event._id) === card.eventId && event.dateFrom < card.created && event.dateTo > card.created)) {
+        bugs.push('created');
+    }
+    if (!(card.awardedTo && card.awardedTo !== '')) {
+        bugs.push('awardedTo');
+    }
+    if (!(card.eventId && card.eventId !== '')) {
+        bugs.push('eventId');
+    }
+    if (!(card.text && card.text !== '')) {
+        bugs.push('text');
+    }
+    if (!(card.type && E.CARD_TYPE[card.type])) {
+        bugs.push('type');
+    }
+    return bugs.length ? bugs : true;
+}
+exports.isCardValid = isCardValid;
+function isEventValid(event) {
+    const bugs = [];
+    if (!hasData(event.dateFrom, 'number')) {
+        bugs.push('dateFrom');
+    }
+    if (!hasData(event.dateTo, 'number')) {
+        bugs.push('dateTo');
+    }
+    if (!hasData(event.name)) {
+        bugs.push('name');
+    }
+    if (!(event.state && E.EVENT_STATE[event.state])) {
+        bugs.push('state');
+    }
+    return bugs.length ? bugs : true;
+}
+exports.isEventValid = isEventValid;
+
+
+/***/ }),
+
+/***/ 267:
+/***/ (function(module, exports, __webpack_require__) {
+
+var api = __webpack_require__(195);
+            var content = __webpack_require__(268);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.i, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+var exported = content.locals ? content.locals : {};
+
+
+
+module.exports = exported;
+
+/***/ }),
+
+/***/ 268:
+/***/ (function(module, exports, __webpack_require__) {
+
+// Imports
+var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(197);
+exports = ___CSS_LOADER_API_IMPORT___(false);
+// Module
+exports.push([module.i, "html {\n  --c-one: #4d677f;\n  --c-two: white;\n  --c-three: rgba(3, 2, 2, 0.25);\n  --c-border: #dbe1e4;\n}\n\n#form-login {\n  border: 1px solid var(--c-border);\n  background-color: var(--c-two);\n  width: 500px;\n  height: 325px;\n  box-shadow: 0px 4px 10px var(--c-three);\n  font-family: 'Ubuntu_Bold';\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 10;\n}\n\n#form-login.hidden {\n  display: none;\n}\n\n#form-login .formLogin_header {\n  background-color: var(--c-one);\n  height: 26px;\n  line-height: 26px;\n}\n\n#form-login .formLogin_header .formLogin_header-text {\n  font-size: 16px;\n  margin-left: 10px;\n  color: var(--c-two);\n}\n\n#form-login .formLogin_header .formLogin_header-close {\n  display: block;\n  font-size: 16px;\n  margin-right: 4px;\n  background-color: var(--c-two);\n  color: var(--c-one);\n  border-radius: 50%;\n  width: 20px;\n  height: 20px;\n  float: right;\n  text-align: center;\n  line-height: 18px;\n  margin-top: 2px;\n  cursor: pointer;\n}\n\n#form-login form {\n  margin: 10px 20px;\n}\n\n#form-login label {\n  display: inline-block;\n  display: inline-block;\n  min-width: 120px;\n  text-align: right;\n  margin-right: 10px;\n  color: var(--c-one);\n}\n\n#form-login input {\n  min-width: 200px;\n}\n\n#form-login input[type='button'] {\n  position: relative;\n  margin: 0 58%;\n}\n", ""]);
+// Exports
+module.exports = exports;
+
+
+/***/ }),
+
+/***/ 269:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -284,7 +525,7 @@ const V = __importStar(__webpack_require__(266));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 const E = __importStar(__webpack_require__(208));
-__webpack_require__(267);
+__webpack_require__(270);
 const bcryptjs_1 = __importDefault(__webpack_require__(35));
 class UserForm extends react_1.Component {
     constructor(props) {
@@ -438,129 +679,11 @@ exports.default = UserForm;
 
 /***/ }),
 
-/***/ 266:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const E = __importStar(__webpack_require__(208));
-function hasData(data, type = 'string') {
-    if (data === undefined || data === null) {
-        return false;
-    }
-    switch (type) {
-        case 'number':
-            return typeof data === 'number' || !isNaN(data);
-        case 'boolean':
-            return typeof data === 'boolean';
-        default:
-            return data !== '';
-    }
-}
-exports.hasData = hasData;
-function hasOneOf(data, check) {
-    if (hasData(data)) {
-        return check.includes(data);
-    }
-    return false;
-}
-exports.hasOneOf = hasOneOf;
-function isSame(original, copy) {
-    return original === copy;
-}
-exports.isSame = isSame;
-function isLikeValid(_id) {
-    return hasData(_id) ? true : ['_id'];
-}
-exports.isLikeValid = isLikeValid;
-function isUserValid(user) {
-    const bugs = [];
-    if (!hasData(user.name)) {
-        bugs.push('name');
-    }
-    if (!hasData(user.surname)) {
-        bugs.push('surname');
-    }
-    if (!hasData(user.login)) {
-        bugs.push('login');
-    }
-    if (!hasData(user.password)) {
-        bugs.push('password');
-    }
-    if (!(user.role && E.USER_ROLE[user.role])) {
-        bugs.push('role');
-    }
-    return bugs.length ? bugs : true;
-}
-exports.isUserValid = isUserValid;
-function isPasswordValid(user) {
-    const bugs = [];
-    if (!hasData(user.password)) {
-        bugs.push('password');
-    }
-    if (!hasData(user.passwordRepeat)) {
-        bugs.push('paswordRepeat');
-    }
-    if (!isSame(user.password, user.passwordRepeat)) {
-        bugs.push('paswordRepeat');
-    }
-    return bugs.length ? bugs : true;
-}
-exports.isPasswordValid = isPasswordValid;
-function isCardValid(card, event) {
-    const bugs = [];
-    if (!(event && String(event._id) === card.eventId && event.dateFrom < card.created && event.dateTo > card.created)) {
-        bugs.push('created');
-    }
-    if (!(card.awardedTo && card.awardedTo !== '')) {
-        bugs.push('awardedTo');
-    }
-    if (!(card.eventId && card.eventId !== '')) {
-        bugs.push('eventId');
-    }
-    if (!(card.text && card.text !== '')) {
-        bugs.push('text');
-    }
-    if (!(card.type && E.CARD_TYPE[card.type])) {
-        bugs.push('type');
-    }
-    return bugs.length ? bugs : true;
-}
-exports.isCardValid = isCardValid;
-function isEventValid(event) {
-    const bugs = [];
-    if (!hasData(event.dateFrom, 'number')) {
-        bugs.push('dateFrom');
-    }
-    if (!hasData(event.dateTo, 'number')) {
-        bugs.push('dateTo');
-    }
-    if (!hasData(event.name)) {
-        bugs.push('name');
-    }
-    if (!(event.state && E.EVENT_STATE[event.state])) {
-        bugs.push('state');
-    }
-    return bugs.length ? bugs : true;
-}
-exports.isEventValid = isEventValid;
-
-
-/***/ }),
-
-/***/ 267:
+/***/ 270:
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(195);
-            var content = __webpack_require__(268);
+            var content = __webpack_require__(271);
 
             content = content.__esModule ? content.default : content;
 
@@ -583,7 +706,7 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 268:
+/***/ 271:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -597,7 +720,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 269:
+/***/ 272:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

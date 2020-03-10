@@ -43,8 +43,8 @@ export function soundTurnedOn() {
   return false;
 }
 
-export function encodePassword(pass: I.UserForm['password']): string {
-  const salt = bcrypt.genSaltSync(10);
+export function encodePassword(pass: I.UserForm['password'], salt?: string): string {
+  const mySalt = salt || bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(pass, salt);
   return hash;
 }

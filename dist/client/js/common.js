@@ -41,6 +41,7 @@ var USER_ROLE;
 (function (USER_ROLE) {
     USER_ROLE["admin"] = "admin";
     USER_ROLE["user"] = "user";
+    USER_ROLE["none"] = "none";
 })(USER_ROLE = exports.USER_ROLE || (exports.USER_ROLE = {}));
 var FORM_MODE;
 (function (FORM_MODE) {
@@ -84,6 +85,12 @@ function select(api, id) {
     return new Promise((resolved, rejected) => {
         fetch(url, {
             method: 'GET'
+        })
+            .then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response;
         })
             .then((response) => resolved(response.json()))
             .catch((err) => rejected(err));
@@ -162,6 +169,21 @@ function like(_id) {
     });
 }
 exports.like = like;
+/**
+ * POST login & pass and get authentication result
+ */
+function auth(api, data) {
+    return new Promise((resolved, rejected) => {
+        fetch(api, {
+            body: JSON.stringify(data),
+            headers,
+            method: 'POST'
+        })
+            .then((response) => resolved(response.json()))
+            .catch((err) => rejected(err));
+    });
+}
+exports.auth = auth;
 
 
 /***/ }),
@@ -208,8 +230,8 @@ function soundTurnedOn() {
     return false;
 }
 exports.soundTurnedOn = soundTurnedOn;
-function encodePassword(pass) {
-    const salt = bcryptjs_1.default.genSaltSync(10);
+function encodePassword(pass, salt) {
+    const mySalt = salt || bcryptjs_1.default.genSaltSync(10);
     const hash = bcryptjs_1.default.hashSync(pass, salt);
     return hash;
 }

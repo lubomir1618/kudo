@@ -38,18 +38,16 @@ function isLikeValid(_id) {
 }
 exports.isLikeValid = isLikeValid;
 function isUserValid(user) {
-    const bugs = [];
+    let bugs = [];
+    const authValid = isAuthValid(user);
+    if (authValid !== true) {
+        bugs = authValid;
+    }
     if (!hasData(user.name)) {
         bugs.push('name');
     }
     if (!hasData(user.surname)) {
         bugs.push('surname');
-    }
-    if (!hasData(user.login)) {
-        bugs.push('login');
-    }
-    if (!hasData(user.password)) {
-        bugs.push('password');
     }
     if (!(user.role && E.USER_ROLE[user.role])) {
         bugs.push('role');
@@ -57,6 +55,17 @@ function isUserValid(user) {
     return bugs.length ? bugs : true;
 }
 exports.isUserValid = isUserValid;
+function isAuthValid(user) {
+    const bugs = [];
+    if (!hasData(user.login)) {
+        bugs.push('login');
+    }
+    if (!hasData(user.password)) {
+        bugs.push('password');
+    }
+    return bugs.length ? bugs : true;
+}
+exports.isAuthValid = isAuthValid;
 function isPasswordValid(user) {
     const bugs = [];
     if (!hasData(user.password)) {

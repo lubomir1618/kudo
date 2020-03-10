@@ -31,22 +31,33 @@ export function isLikeValid(_id: string) {
 }
 
 export function isUserValid(user: I.User) {
-  const bugs: string[] = [];
+  let bugs: string[] = [];
+  const authValid = isAuthValid(user);
 
+  if (authValid !== true) {
+    bugs = authValid;
+  }
   if (!hasData(user.name)) {
     bugs.push('name');
   }
   if (!hasData(user.surname)) {
     bugs.push('surname');
   }
+  if (!(user.role && E.USER_ROLE[user.role])) {
+    bugs.push('role');
+  }
+
+  return bugs.length ? bugs : true;
+}
+
+export function isAuthValid(user: Partial<I.User>) {
+  const bugs: string[] = [];
+
   if (!hasData(user.login)) {
     bugs.push('login');
   }
   if (!hasData(user.password)) {
     bugs.push('password');
-  }
-  if (!(user.role && E.USER_ROLE[user.role])) {
-    bugs.push('role');
   }
 
   return bugs.length ? bugs : true;

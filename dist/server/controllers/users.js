@@ -24,7 +24,7 @@ class Users {
         utils.serverLog('/users => list', req);
         this.users
             .find()
-            .then((data) => res.json(data))
+            .then((data) => res.json(this.stripPass(data)))
             .catch((err) => utils.errorHandler(res, err.message));
     }
     show(req, res) {
@@ -40,7 +40,7 @@ class Users {
         }
         this.users
             .findOne(where)
-            .then((data) => res.json(data))
+            .then((data) => res.json(this.stripPass(data || [])))
             .catch((err) => utils.errorHandler(res, err.message));
     }
     create(req, res) {
@@ -60,11 +60,18 @@ class Users {
                 .insert(user)
                 .then((data) => res.json(data))
                 .catch((err) => utils.errorHandler(res, err.message));
-            console.log('user', user);
         }
         else {
             utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
         }
+    }
+    stripPass(data) {
+        const myData = Array.isArray(data) ? data : [data];
+        const out = myData.map((user) => {
+            const password = '👮‍♂️';
+            return Object.assign(Object.assign({}, user), { password });
+        });
+        return Array.isArray(data) ? out : out[0];
     }
 }
 const users = new Users();

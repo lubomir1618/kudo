@@ -32,3 +32,8 @@ export interface User extends Table {
 export interface UserForm extends User {
   passwordRepeat: string;
 }
+
+export interface Auth {
+  authenticated: boolean;
+  role: T.USER_ROLE;
+}
