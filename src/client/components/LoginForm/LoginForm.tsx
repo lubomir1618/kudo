@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as V from '../../../common/validate';
+import * as E from '../../../common/constants';
 import { auth, select } from '../../utils/api';
 import { encodePassword } from '../../utils/client';
 import './LoginForm.css';
@@ -17,7 +18,7 @@ export default class LoginForm extends Component<any, any> {
     const login = formData.get('login') as string;
     const plainPassword = formData.get('password') as string;
 
-    const okAuth = V.isAuthValid({ login, password: plainPassword });
+    const okAuth = V.isAuthValid({ login, password: plainPassword }, E.FORM_MODE.insert);
     if (okAuth === true) {
       select<{ salt: string }>('/api/auth', login)
         .then((data) => {

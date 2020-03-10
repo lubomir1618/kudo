@@ -39,7 +39,7 @@ class Auth {
     }
     create(req, res) {
         utils.serverLog('/auth => create', req);
-        const valid = validate_1.isAuthValid(req.body);
+        const valid = validate_1.isAuthValid(req.body, E.FORM_MODE.insert);
         if (valid === true) {
             const where = { login: req.body.login, password: req.body.password };
             this.users

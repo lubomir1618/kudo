@@ -37,9 +37,9 @@ function isLikeValid(_id) {
     return hasData(_id) ? true : ['_id'];
 }
 exports.isLikeValid = isLikeValid;
-function isUserValid(user) {
+function isUserValid(user, mode) {
     let bugs = [];
-    const authValid = isAuthValid(user);
+    const authValid = isAuthValid(user, mode);
     if (authValid !== true) {
         bugs = authValid;
     }
@@ -55,13 +55,15 @@ function isUserValid(user) {
     return bugs.length ? bugs : true;
 }
 exports.isUserValid = isUserValid;
-function isAuthValid(user) {
+function isAuthValid(user, mode) {
     const bugs = [];
     if (!hasData(user.login)) {
         bugs.push('login');
     }
-    if (!hasData(user.password)) {
-        bugs.push('password');
+    if (mode === E.FORM_MODE.insert) {
+        if (!hasData(user.password)) {
+            bugs.push('password');
+        }
     }
     return bugs.length ? bugs : true;
 }

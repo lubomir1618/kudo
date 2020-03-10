@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import * as I from '../../../common/interfaces';
+import * as E from '../../../common/constants';
 import * as V from '../../../common/validate';
 import { insert, select, update } from '../../utils/api';
 import { encodePassword } from '../../utils/client';
-import * as I from '../../../common/interfaces';
-import * as E from '../../../common/constants';
 import './UserForm.css';
 
 interface IUserFormState {
@@ -124,7 +124,7 @@ export default class UserForm extends Component<any, IUserFormState> {
     }
 
     // validate form
-    const okUser = V.isUserValid(data);
+    const okUser = V.isUserValid(data, this.state.mode);
     if (okUser !== true) {
       info.innerText = `Error: ${okUser.join(', ')}`;
       return;

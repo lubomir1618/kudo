@@ -345,6 +345,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const V = __importStar(__webpack_require__(267));
+const E = __importStar(__webpack_require__(208));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 __webpack_require__(268);
@@ -358,7 +359,7 @@ class LoginForm extends react_1.Component {
         const formData = new FormData(form);
         const login = formData.get('login');
         const plainPassword = formData.get('password');
-        const okAuth = V.isAuthValid({ login, password: plainPassword });
+        const okAuth = V.isAuthValid({ login, password: plainPassword }, E.FORM_MODE.insert);
         if (okAuth === true) {
             api_1.select('/api/auth', login)
                 .then((data) => {
@@ -444,9 +445,9 @@ function isLikeValid(_id) {
     return hasData(_id) ? true : ['_id'];
 }
 exports.isLikeValid = isLikeValid;
-function isUserValid(user) {
+function isUserValid(user, mode) {
     let bugs = [];
-    const authValid = isAuthValid(user);
+    const authValid = isAuthValid(user, mode);
     if (authValid !== true) {
         bugs = authValid;
     }
@@ -462,13 +463,15 @@ function isUserValid(user) {
     return bugs.length ? bugs : true;
 }
 exports.isUserValid = isUserValid;
-function isAuthValid(user) {
+function isAuthValid(user, mode) {
     const bugs = [];
     if (!hasData(user.login)) {
         bugs.push('login');
     }
-    if (!hasData(user.password)) {
-        bugs.push('password');
+    if (mode === E.FORM_MODE.insert) {
+        if (!hasData(user.password)) {
+            bugs.push('password');
+        }
     }
     return bugs.length ? bugs : true;
 }
@@ -583,10 +586,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
+const E = __importStar(__webpack_require__(208));
 const V = __importStar(__webpack_require__(267));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
-const E = __importStar(__webpack_require__(208));
 __webpack_require__(271);
 class UserForm extends react_1.Component {
     constructor(props) {
@@ -678,7 +681,7 @@ class UserForm extends react_1.Component {
             data = Object.assign({}, rawData);
         }
         // validate form
-        const okUser = V.isUserValid(data);
+        const okUser = V.isUserValid(data, this.state.mode);
         if (okUser !== true) {
             info.innerText = `Error: ${okUser.join(', ')}`;
             return;

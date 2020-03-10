@@ -50,7 +50,7 @@ class Users {
       return;
     }
 
-    const valid = isUserValid(req.body);
+    const valid = isUserValid(req.body, E.FORM_MODE.insert);
     if (valid === true) {
       const user: I.User = {
         created: new Date().getTime(),
@@ -63,6 +63,30 @@ class Users {
       // save to db
       this.users
         .insert(user)
+        .then((data) => res.json(data))
+        .catch((err) => utils.errorHandler(res, err.message));
+    } else {
+      utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
+    }
+  }
+
+  public update(req: Request, res: Response) {
+    utils.serverLog('/users/:id => update', req);
+    if (!utils.isAuthenticated(req, res, E.USER_ROLE.admin)) {
+      return;
+    }
+
+    const valid = isUserValid(req.body, E.FORM_MODE.update);
+    if (valid === true) {
+      const user = {
+        login: req.body.login,
+        name: req.body.name,
+        role: req.body.role,
+        surname: req.body.surname
+      };
+      // update db
+      this.users
+        .update({ _id: req.params.id }, { $set: { ...user } })
         .then((data) => res.json(data))
         .catch((err) => utils.errorHandler(res, err.message));
     } else {
@@ -85,5 +109,6 @@ const users = new Users();
 export const cUsers = {
   create: users.create.bind(users),
   list: users.list.bind(users),
-  show: users.show.bind(users)
+  show: users.show.bind(users),
+  update: users.update.bind(users)
 };

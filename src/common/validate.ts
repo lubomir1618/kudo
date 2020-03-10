@@ -30,9 +30,9 @@ export function isLikeValid(_id: string) {
   return hasData(_id) ? true : ['_id'];
 }
 
-export function isUserValid(user: I.User) {
+export function isUserValid(user: I.User, mode: E.FORM_MODE) {
   let bugs: string[] = [];
-  const authValid = isAuthValid(user);
+  const authValid = isAuthValid(user, mode);
 
   if (authValid !== true) {
     bugs = authValid;
@@ -50,14 +50,16 @@ export function isUserValid(user: I.User) {
   return bugs.length ? bugs : true;
 }
 
-export function isAuthValid(user: Partial<I.User>) {
+export function isAuthValid(user: Partial<I.User>, mode: E.FORM_MODE) {
   const bugs: string[] = [];
 
   if (!hasData(user.login)) {
     bugs.push('login');
   }
-  if (!hasData(user.password)) {
-    bugs.push('password');
+  if (mode === E.FORM_MODE.insert) {
+    if (!hasData(user.password)) {
+      bugs.push('password');
+    }
   }
 
   return bugs.length ? bugs : true;
