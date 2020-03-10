@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const monk_1 = __importDefault(require("monk"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const utils = __importStar(require("../utils"));
+const E = __importStar(require("../../common/constants"));
 const validate_1 = require("../../common/validate");
 dotenv_1.default.config();
 const db = monk_1.default(process.env.MONGODB_URL || '');
@@ -22,20 +23,25 @@ class Users {
     }
     list(req, res) {
         utils.serverLog('/users => list', req);
+        if (!utils.isAuthenticated(req, res, E.USER_ROLE.admin)) {
+            return;
+        }
         this.users
             .find()
             .then((data) => res.json(this.stripPass(data)))
             .catch((err) => utils.errorHandler(res, err.message));
     }
     show(req, res) {
+        utils.serverLog(req.params.id === 'where' ? '/users/where?:key=:val => show' : '/users => create', req);
+        if (!utils.isAuthenticated(req, res, E.USER_ROLE.admin)) {
+            return;
+        }
         let where = {};
         if (req.params.id === 'where') {
-            utils.serverLog('/users/where?:key=:val => show', req);
             const [key, val] = Object.entries(req.query)[0];
             where = { [key]: val };
         }
         else {
-            utils.serverLog('/users/:id => show', req);
             where = { _id: req.params.id };
         }
         this.users
@@ -45,6 +51,9 @@ class Users {
     }
     create(req, res) {
         utils.serverLog('/users => create', req);
+        if (!utils.isAuthenticated(req, res, E.USER_ROLE.admin)) {
+            return;
+        }
         const valid = validate_1.isUserValid(req.body);
         if (valid === true) {
             const user = {

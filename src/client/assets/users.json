@@ -12,7 +12,7 @@
     "name": "Dalibor",
     "surname": "Schon",
     "login": "user",
-    "password": "some-hash",
+    "password": "$2a$10$zH4BoWu6MHvkPnd3547hEOfbs3ynWQUCTaRLlP/wyYbFVxszQsUJG",
     "role": "user"
   }
 ]

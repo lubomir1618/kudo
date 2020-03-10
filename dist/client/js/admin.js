@@ -42,6 +42,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(208));
+const client_1 = __webpack_require__(34);
 const EventForm_1 = __importDefault(__webpack_require__(262));
 const EventList_1 = __importDefault(__webpack_require__(265));
 const LoginForm_1 = __importDefault(__webpack_require__(266));
@@ -50,11 +51,12 @@ const UserList_1 = __importDefault(__webpack_require__(273));
 class Admin extends react_1.Component {
     constructor(props) {
         super(props);
-        // @TODO check session
-        this.state = {
-            authenticated: false,
-            role: E.USER_ROLE.none
-        };
+        this.sessionCheckIntervalID = 0;
+        const cookie = client_1.getCookie('connect.role');
+        this.state =
+            cookie === false
+                ? { authenticated: false, role: E.USER_ROLE.none }
+                : { authenticated: true, role: cookie };
     }
     componentDidMount() {
         document.addEventListener('kudoz::authenticated', ((e) => {
@@ -62,6 +64,7 @@ class Admin extends react_1.Component {
                 authenticated: true,
                 role: e.detail.role
             });
+            this.sessionCheck();
         }));
     }
     render() {
@@ -81,6 +84,15 @@ class Admin extends react_1.Component {
             jsx.push(react_1.default.createElement(EventList_1.default, { key: "eventList" }));
         }
         return jsx;
+    }
+    sessionCheck() {
+        this.sessionCheckIntervalID = window.setInterval(() => {
+            const cookie = client_1.getCookie('connect.sid');
+            if (cookie === false) {
+                this.setState({ authenticated: false, role: E.USER_ROLE.none });
+                window.clearInterval(this.sessionCheckIntervalID);
+            }
+        }, E.COOKIE_MAX_AGE + 1000);
     }
 }
 exports.default = Admin;

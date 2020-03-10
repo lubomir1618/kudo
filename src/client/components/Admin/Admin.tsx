@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import * as E from '../../../common/constants';
+import { getCookie } from '../../utils/client';
+
 import EventForm from '../EventForm/EventForm';
 import EventList from '../EventList/EventList';
 import LoginForm from '../LoginForm/LoginForm';
@@ -12,13 +14,16 @@ interface IAdminState {
 }
 
 export default class Admin extends Component<any, IAdminState> {
+  private sessionCheckIntervalID: number = 0;
+
   constructor(props: any) {
     super(props);
-    // @TODO check session
-    this.state = {
-      authenticated: false,
-      role: E.USER_ROLE.none
-    };
+    const cookie = getCookie('connect.role');
+
+    this.state =
+      cookie === false
+        ? { authenticated: false, role: E.USER_ROLE.none }
+        : { authenticated: true, role: cookie as E.USER_ROLE };
   }
 
   public componentDidMount() {
@@ -27,6 +32,7 @@ export default class Admin extends Component<any, IAdminState> {
         authenticated: true,
         role: e.detail.role
       });
+      this.sessionCheck();
     }) as EventListener);
   }
 
@@ -55,5 +61,15 @@ export default class Admin extends Component<any, IAdminState> {
     }
 
     return jsx;
+  }
+
+  private sessionCheck(): void {
+    this.sessionCheckIntervalID = window.setInterval(() => {
+      const cookie = getCookie('connect.sid');
+      if (cookie === false) {
+        this.setState({ authenticated: false, role: E.USER_ROLE.none });
+        window.clearInterval(this.sessionCheckIntervalID);
+      }
+    }, E.COOKIE_MAX_AGE + 1000);
   }
 }

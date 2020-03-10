@@ -56,6 +56,12 @@ export function insert<T>(api: string, data: T): Promise<T> {
       headers,
       method: 'POST'
     })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
       .then((response) => resolved(response.json()))
       .catch((err: Error) => rejected(err));
   });
@@ -75,6 +81,12 @@ export function update<T>(api: string, id: string, data: T): Promise<T> {
       headers,
       method: 'PATCH'
     })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
       .then((response) => resolved(response.json()))
       .catch((err: Error) => rejected(err));
   });
@@ -124,6 +136,12 @@ export function auth(api: string, data: { login: string; password: string }): Pr
       headers,
       method: 'POST'
     })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
       .then((response) => resolved(response.json()))
       .catch((err: Error) => rejected(err));
   });

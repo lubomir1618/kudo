@@ -1,15 +1,17 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
+import session from 'express-session';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import restfulRouter from 'restful-router';
+import path from 'path';
 
+import { COOKIE_MAX_AGE } from './server/utils';
 import { cAuth } from './server/controllers/auth';
 import { cCards } from './server/controllers/cards';
 import { cEvents } from './server/controllers/events';
 import { cLike } from './server/controllers/like';
 import { cUsers } from './server/controllers/users';
 
-const path = require('path');
 const app = express();
 const port = process.env.PORT || 8080;
 
@@ -21,16 +23,25 @@ app.use(express.static('dist/client'));
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
+// use sessions for admin
+app.use(
+  session({
+    cookie: {
+      httpOnly: false,
+      maxAge: COOKIE_MAX_AGE
+    },
+    resave: false,
+    rolling: true,
+    saveUninitialized: false,
+    secret: 'Kudoz$ecret'
+  })
+);
 
 /* REST
  ** 🚨🚨🚨 IMPORTANT 🚨🚨🚨
  ** - define api routes at top, then, all other routes will be handled via index.html - react router
  ** ****************** */
 
-/* app.post('/api/like', (req: Request, res: Response) => {ow 
-  console.log('moo');
-  res.end('yes');
-});*/
 app.post('/api/like', cLike);
 restfulRouter({ app, name: 'api/auth', controller: cAuth });
 restfulRouter({ app, name: 'api/users', controller: cUsers });

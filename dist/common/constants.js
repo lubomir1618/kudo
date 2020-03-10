@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 60000;
 var CARD_TYPE;
 (function (CARD_TYPE) {
     CARD_TYPE["great_job"] = "great_job";

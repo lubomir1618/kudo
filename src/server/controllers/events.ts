@@ -38,6 +38,10 @@ class Events {
 
   public create(req: Request, res: Response) {
     utils.serverLog('/events => create', req);
+    if (!utils.isAuthenticated(req, res)) {
+      return;
+    }
+
     const valid = isEventValid(req.body);
     if (valid === true) {
       const event: I.Event = {
@@ -59,6 +63,10 @@ class Events {
 
   public update(req: Request, res: Response) {
     utils.serverLog('/events/:id => update', req);
+    if (!utils.isAuthenticated(req, res)) {
+      return;
+    }
+
     const valid = isEventValid(req.body);
     if (valid === true) {
       const card = {

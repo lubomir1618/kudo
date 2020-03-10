@@ -18,8 +18,9 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
+/* WEBPACK VAR INJECTION */(function(process) {
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 60000;
 var CARD_TYPE;
 (function (CARD_TYPE) {
     CARD_TYPE["great_job"] = "great_job";
@@ -50,6 +51,7 @@ var FORM_MODE;
     FORM_MODE["update"] = "update";
 })(FORM_MODE = exports.FORM_MODE || (exports.FORM_MODE = {}));
 
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(37)))
 
 /***/ }),
 
@@ -111,6 +113,12 @@ function insert(api, data) {
             headers,
             method: 'POST'
         })
+            .then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response;
+        })
             .then((response) => resolved(response.json()))
             .catch((err) => rejected(err));
     });
@@ -129,6 +137,12 @@ function update(api, id, data) {
             body: JSON.stringify(data),
             headers,
             method: 'PATCH'
+        })
+            .then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response;
         })
             .then((response) => resolved(response.json()))
             .catch((err) => rejected(err));
@@ -178,6 +192,12 @@ function auth(api, data) {
             body: JSON.stringify(data),
             headers,
             method: 'POST'
+        })
+            .then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response;
         })
             .then((response) => resolved(response.json()))
             .catch((err) => rejected(err));
@@ -232,10 +252,27 @@ function soundTurnedOn() {
 exports.soundTurnedOn = soundTurnedOn;
 function encodePassword(pass, salt) {
     const mySalt = salt || bcryptjs_1.default.genSaltSync(10);
-    const hash = bcryptjs_1.default.hashSync(pass, salt);
+    const hash = bcryptjs_1.default.hashSync(pass, mySalt);
     return hash;
 }
 exports.encodePassword = encodePassword;
+function getCookie(cname) {
+    const name = `${cname}=`;
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    // tslint:disable:prefer-for-of
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return false;
+}
+exports.getCookie = getCookie;
 
 
 /***/ }),

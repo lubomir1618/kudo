@@ -38,17 +38,19 @@ class Auth {
       this.users
         .findOne(where)
         .then((data) => {
-          // @todo create session
           let out: I.Auth;
           if (!data || !data.login) {
+            utils.setAuthCookie(req, res, false, E.USER_ROLE.none);
             out = { authenticated: false, role: E.USER_ROLE.none };
           } else {
+            utils.setAuthCookie(req, res, true, data.role);
             out = { authenticated: true, role: data.role };
           }
           return res.json(out);
         })
         .catch((err) => utils.errorHandler(res, err.message));
     } else {
+      utils.setAuthCookie(req, res, false, E.USER_ROLE.none);
       utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
     }
   }

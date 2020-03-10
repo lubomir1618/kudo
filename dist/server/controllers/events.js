@@ -45,6 +45,9 @@ class Events {
     }
     create(req, res) {
         utils.serverLog('/events => create', req);
+        if (!utils.isAuthenticated(req, res)) {
+            return;
+        }
         const valid = validate_1.isEventValid(req.body);
         if (valid === true) {
             const event = {
@@ -66,6 +69,9 @@ class Events {
     }
     update(req, res) {
         utils.serverLog('/events/:id => update', req);
+        if (!utils.isAuthenticated(req, res)) {
+            return;
+        }
         const valid = validate_1.isEventValid(req.body);
         if (valid === true) {
             const card = {

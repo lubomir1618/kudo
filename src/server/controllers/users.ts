@@ -2,6 +2,7 @@ import monk from 'monk';
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import * as utils from '../utils';
+import * as E from '../../common/constants';
 import * as I from '../../common/interfaces';
 import { isUserValid } from '../../common/validate';
 
@@ -14,6 +15,10 @@ class Users {
 
   public list(req: Request, res: Response) {
     utils.serverLog('/users => list', req);
+    if (!utils.isAuthenticated(req, res, E.USER_ROLE.admin)) {
+      return;
+    }
+
     this.users
       .find()
       .then((data) => res.json(this.stripPass(data)))
@@ -21,13 +26,16 @@ class Users {
   }
 
   public show(req: Request, res: Response) {
+    utils.serverLog(req.params.id === 'where' ? '/users/where?:key=:val => show' : '/users => create', req);
+    if (!utils.isAuthenticated(req, res, E.USER_ROLE.admin)) {
+      return;
+    }
+
     let where = {};
     if (req.params.id === 'where') {
-      utils.serverLog('/users/where?:key=:val => show', req);
       const [key, val] = Object.entries(req.query)[0];
       where = { [key]: val };
     } else {
-      utils.serverLog('/users/:id => show', req);
       where = { _id: req.params.id };
     }
     this.users
@@ -38,6 +46,10 @@ class Users {
 
   public create(req: Request, res: Response) {
     utils.serverLog('/users => create', req);
+    if (!utils.isAuthenticated(req, res, E.USER_ROLE.admin)) {
+      return;
+    }
+
     const valid = isUserValid(req.body);
     if (valid === true) {
       const user: I.User = {
