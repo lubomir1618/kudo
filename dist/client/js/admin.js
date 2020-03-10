@@ -18,19 +18,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
-const EventForm_1 = __importDefault(__webpack_require__(261));
-const EventList_1 = __importDefault(__webpack_require__(264));
-const LoginForm_1 = __importDefault(__webpack_require__(265));
-const UserForm_1 = __importDefault(__webpack_require__(269));
-const UserList_1 = __importDefault(__webpack_require__(272));
-ReactDOM.render(React.createElement("div", { className: "eventAdmin" },
-    React.createElement("header", null,
-        React.createElement("h1", null, "Event admin")),
-    React.createElement(LoginForm_1.default, null),
-    React.createElement(EventForm_1.default, null),
-    React.createElement(UserForm_1.default, null),
-    React.createElement(EventList_1.default, null),
-    React.createElement(UserList_1.default, null)), document.getElementById('admin'));
+const Admin_1 = __importDefault(__webpack_require__(261));
+ReactDOM.render(React.createElement(Admin_1.default, null), document.getElementById('admin'));
 
 
 /***/ }),
@@ -47,11 +36,75 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(1));
+const E = __importStar(__webpack_require__(208));
+const EventForm_1 = __importDefault(__webpack_require__(262));
+const EventList_1 = __importDefault(__webpack_require__(265));
+const LoginForm_1 = __importDefault(__webpack_require__(266));
+const UserForm_1 = __importDefault(__webpack_require__(270));
+const UserList_1 = __importDefault(__webpack_require__(273));
+class Admin extends react_1.Component {
+    constructor(props) {
+        super(props);
+        // @TODO check session
+        this.state = {
+            authenticated: false,
+            role: E.USER_ROLE.none
+        };
+    }
+    componentDidMount() {
+        document.addEventListener('kudoz::authenticated', ((e) => {
+            this.setState({
+                authenticated: true,
+                role: e.detail.role
+            });
+        }));
+    }
+    render() {
+        return (react_1.default.createElement("div", { className: "admin", key: "admin" },
+            react_1.default.createElement("header", null,
+                react_1.default.createElement("h1", null, "Admin")),
+            this.state.authenticated ? this.renderAdmin() : react_1.default.createElement(LoginForm_1.default, null)));
+    }
+    renderAdmin() {
+        const jsx = [];
+        if (this.state.role === E.USER_ROLE.admin) {
+            jsx.push(react_1.default.createElement(UserForm_1.default, { key: "userForm" }));
+            jsx.push(react_1.default.createElement(UserList_1.default, { key: "userList" }));
+        }
+        if (this.state.role === E.USER_ROLE.admin || this.state.role === E.USER_ROLE.user) {
+            jsx.push(react_1.default.createElement(EventForm_1.default, { key: "eventForm" }));
+            jsx.push(react_1.default.createElement(EventList_1.default, { key: "eventList" }));
+        }
+        return jsx;
+    }
+}
+exports.default = Admin;
+
+
+/***/ }),
+
+/***/ 262:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const api_1 = __webpack_require__(33);
 const E = __importStar(__webpack_require__(208));
-__webpack_require__(262);
+__webpack_require__(263);
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -144,11 +197,11 @@ exports.default = EventForm;
 
 /***/ }),
 
-/***/ 262:
+/***/ 263:
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(195);
-            var content = __webpack_require__(263);
+            var content = __webpack_require__(264);
 
             content = content.__esModule ? content.default : content;
 
@@ -171,7 +224,7 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 263:
+/***/ 264:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -185,7 +238,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 264:
+/***/ 265:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -265,7 +318,7 @@ exports.default = EventList;
 
 /***/ }),
 
-/***/ 265:
+/***/ 266:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -279,10 +332,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const V = __importStar(__webpack_require__(266));
+const V = __importStar(__webpack_require__(267));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
-__webpack_require__(267);
+__webpack_require__(268);
 class LoginForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -336,7 +389,7 @@ exports.default = LoginForm;
 
 /***/ }),
 
-/***/ 266:
+/***/ 267:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -463,11 +516,11 @@ exports.isEventValid = isEventValid;
 
 /***/ }),
 
-/***/ 267:
+/***/ 268:
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(195);
-            var content = __webpack_require__(268);
+            var content = __webpack_require__(269);
 
             content = content.__esModule ? content.default : content;
 
@@ -490,7 +543,7 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 268:
+/***/ 269:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -504,7 +557,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 269:
+/***/ 270:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -516,21 +569,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const V = __importStar(__webpack_require__(266));
+const V = __importStar(__webpack_require__(267));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 const E = __importStar(__webpack_require__(208));
-__webpack_require__(270);
-const bcryptjs_1 = __importDefault(__webpack_require__(35));
+__webpack_require__(271);
 class UserForm extends react_1.Component {
     constructor(props) {
         super(props);
-        window.bcrypt = bcryptjs_1.default;
         this.newUser = {
             login: '',
             name: '',
@@ -544,18 +592,53 @@ class UserForm extends react_1.Component {
             user: this.newUser
         };
     }
-    test() {
-        const pass = 'qwerty1';
-        const hash = '$2a$10$10puYBADjAlfjHFeo3gbCe3aIzKN2R2G6.ZNuK.NjNs81wyUdXaji';
-        const info = document.getElementById('form-user-info');
-        bcryptjs_1.default
-            .compare(pass, hash)
-            .then((res) => {
-            info.innerText = res ? 'Pass ok' : 'Pass bad';
-        })
-            .catch((err) => {
-            info.innerText = 'Pass check error';
-        });
+    componentDidMount() {
+        document.addEventListener('kudoz::userFormRefresh', ((e) => {
+            const info = document.getElementById('form-user-info');
+            info.innerText = '';
+            this.getData(e.detail._id);
+        }));
+    }
+    render() {
+        const { name, surname, login, password, role } = this.state.user;
+        const button = `${this.state.mode === E.FORM_MODE.insert ? 'Create' : 'Update'} user 🙍‍♂️`;
+        const classHidden = this.state.mode === E.FORM_MODE.hidden ? 'hidden' : '';
+        return (react_1.default.createElement("div", { id: "form-user", key: "userForm", className: classHidden },
+            react_1.default.createElement("div", { className: "formUser_header" },
+                react_1.default.createElement("span", { className: "formUser_header-text" }, "User"),
+                react_1.default.createElement("span", { className: "formUser_header-close", onClick: this.close.bind(this) }, "x")),
+            react_1.default.createElement("form", { id: "form-user-form", autoComplete: "off" },
+                react_1.default.createElement("label", { htmlFor: "name" }, "Name:"),
+                react_1.default.createElement("input", { type: "text", id: "user-name", name: "name", defaultValue: name }),
+                react_1.default.createElement("br", null),
+                react_1.default.createElement("label", { htmlFor: "surname" }, "Surname:"),
+                react_1.default.createElement("input", { type: "text", id: "user-surname", name: "surname", defaultValue: surname }),
+                react_1.default.createElement("br", null),
+                react_1.default.createElement("label", { htmlFor: "role" }, "Role: "),
+                react_1.default.createElement("select", { id: "user-role", name: "role", defaultValue: role },
+                    react_1.default.createElement("option", { value: "admin" }, "admin"),
+                    react_1.default.createElement("option", { value: "user" }, "user")),
+                "*",
+                react_1.default.createElement("br", null),
+                react_1.default.createElement("label", { htmlFor: "login" }, "Login: "),
+                react_1.default.createElement("input", { type: "text", id: "user-login", name: "login", defaultValue: login }),
+                " *",
+                react_1.default.createElement("br", null),
+                this.state.mode === E.FORM_MODE.insert ? this.passRows() : '',
+                react_1.default.createElement("input", { type: "button", className: "button-primary", onClick: this.onClickHandler.bind(this), value: button }),
+                react_1.default.createElement("div", { id: "form-user-info" }))));
+    }
+    passRows() {
+        return (react_1.default.createElement("div", null,
+            react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
+            react_1.default.createElement("input", { type: "password", id: "user-password", autoComplete: "new-password", name: "password", placeholder: "enter password" }),
+            ' ',
+            "*",
+            react_1.default.createElement("br", null),
+            react_1.default.createElement("label", { htmlFor: "passwordRepeat" }, "Password repeat: "),
+            react_1.default.createElement("input", { type: "password", id: "user-password-repeat", name: "passwordRepeat", placeholder: "repeat password" }),
+            " *",
+            react_1.default.createElement("br", null)));
     }
     onClickHandler() {
         const rawData = this.newUser;
@@ -590,12 +673,8 @@ class UserForm extends react_1.Component {
         }
         this.setData(data);
     }
-    componentDidMount() {
-        document.addEventListener('kudoz::userFormRefresh', ((e) => {
-            const info = document.getElementById('form-user-info');
-            info.innerText = '';
-            this.getData(e.detail._id);
-        }));
+    close() {
+        this.setState({ mode: E.FORM_MODE.hidden });
     }
     getData(_id) {
         if (_id) {
@@ -604,51 +683,6 @@ class UserForm extends react_1.Component {
         else {
             this.setState({ user: this.newUser, mode: E.FORM_MODE.insert });
         }
-    }
-    close() {
-        this.setState({ mode: E.FORM_MODE.hidden });
-    }
-    render() {
-        const { name, surname, login, password, role } = this.state.user;
-        const button = `${this.state.mode === E.FORM_MODE.insert ? 'Create' : 'Update'} user 🙍‍♂️`;
-        const classHidden = this.state.mode === E.FORM_MODE.hidden ? 'hidden' : '';
-        return (react_1.default.createElement("div", { id: "form-user", key: "userForm", className: classHidden },
-            react_1.default.createElement("div", { className: "formUser_header" },
-                react_1.default.createElement("span", { className: "formUser_header-text" }, "User"),
-                react_1.default.createElement("span", { className: "formUser_header-close", onClick: this.close.bind(this) }, "x")),
-            react_1.default.createElement("form", { id: "form-user-form", autoComplete: "off" },
-                react_1.default.createElement("label", { htmlFor: "name" }, "Name:"),
-                react_1.default.createElement("input", { type: "text", id: "user-name", name: "name", defaultValue: name }),
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "surname" }, "Surname:"),
-                react_1.default.createElement("input", { type: "text", id: "user-surname", name: "surname", defaultValue: surname }),
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "role" }, "Role: "),
-                react_1.default.createElement("select", { id: "user-role", name: "role", defaultValue: role },
-                    react_1.default.createElement("option", { value: "admin" }, "admin"),
-                    react_1.default.createElement("option", { value: "user" }, "user")),
-                "*",
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "login" }, "Login: "),
-                react_1.default.createElement("input", { type: "text", id: "user-login", name: "login", defaultValue: login }),
-                " *",
-                react_1.default.createElement("br", null),
-                this.state.mode === E.FORM_MODE.insert ? (this.passRows()) : (react_1.default.createElement("input", { type: "hidden", id: "user-password", name: "password", defaultValue: password })),
-                react_1.default.createElement("input", { type: "button", className: "button-primary", onClick: this.onClickHandler.bind(this), value: button }),
-                react_1.default.createElement("input", { type: "button", onClick: this.test.bind(this), value: "Test" }),
-                react_1.default.createElement("div", { id: "form-user-info" }))));
-    }
-    passRows() {
-        return (react_1.default.createElement("div", null,
-            react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
-            react_1.default.createElement("input", { type: "password", id: "user-password", autoComplete: "new-password", name: "password", placeholder: "enter password" }),
-            ' ',
-            "*",
-            react_1.default.createElement("br", null),
-            react_1.default.createElement("label", { htmlFor: "passwordRepeat" }, "Password repeat: "),
-            react_1.default.createElement("input", { type: "password", id: "user-password-repeat", name: "passwordRepeat", placeholder: "repeat password" }),
-            " *",
-            react_1.default.createElement("br", null)));
     }
     setData(data) {
         const info = document.getElementById('form-user-info');
@@ -679,11 +713,11 @@ exports.default = UserForm;
 
 /***/ }),
 
-/***/ 270:
+/***/ 271:
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(195);
-            var content = __webpack_require__(271);
+            var content = __webpack_require__(272);
 
             content = content.__esModule ? content.default : content;
 
@@ -706,7 +740,7 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 271:
+/***/ 272:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -720,7 +754,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 272:
+/***/ 273:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
