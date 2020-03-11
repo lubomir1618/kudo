@@ -31,7 +31,7 @@ app.use(
       maxAge: COOKIE_MAX_AGE
     },
     resave: false,
-    rolling: true,
+    // rolling: true,
     saveUninitialized: false,
     secret: 'Kudoz$ecret'
   })

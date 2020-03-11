@@ -28,16 +28,23 @@ export function select<T>(api: string, id?: string | KeyVal): Promise<T> {
   }
 
   return new Promise<T>((resolved, rejected) => {
+    let wasError = false;
     fetch(url, {
       method: 'GET'
     })
       .then((response) => {
         if (!response.ok) {
-          throw Error(response.statusText);
+          wasError = true;
         }
-        return response;
+        return response.json();
       })
-      .then((response) => resolved(response.json()))
+      .then((response) => {
+        if (wasError) {
+          rejected(response);
+        } else {
+          resolved(response);
+        }
+      })
       .catch((err: Error) => rejected(err));
   });
 }
@@ -51,6 +58,7 @@ export function select<T>(api: string, id?: string | KeyVal): Promise<T> {
  */
 export function insert<T>(api: string, data: T): Promise<T> {
   return new Promise<T>((resolved, rejected) => {
+    let wasError = false;
     fetch(api, {
       body: JSON.stringify(data),
       headers,
@@ -58,11 +66,17 @@ export function insert<T>(api: string, data: T): Promise<T> {
     })
       .then((response) => {
         if (!response.ok) {
-          throw Error(response.statusText);
+          wasError = true;
         }
-        return response;
+        return response.json();
       })
-      .then((response) => resolved(response.json()))
+      .then((response) => {
+        if (wasError) {
+          rejected(response);
+        } else {
+          resolved(response);
+        }
+      })
       .catch((err: Error) => rejected(err));
   });
 }
@@ -76,6 +90,7 @@ export function insert<T>(api: string, data: T): Promise<T> {
  */
 export function update<T>(api: string, id: string, data: T): Promise<T> {
   return new Promise<T>((resolved, rejected) => {
+    let wasError = false;
     fetch(`${api}/${id}`, {
       body: JSON.stringify(data),
       headers,
@@ -83,11 +98,17 @@ export function update<T>(api: string, id: string, data: T): Promise<T> {
     })
       .then((response) => {
         if (!response.ok) {
-          throw Error(response.statusText);
+          wasError = true;
         }
-        return response;
+        return response.json();
       })
-      .then((response) => resolved(response.json()))
+      .then((response) => {
+        if (wasError) {
+          rejected(response);
+        } else {
+          resolved(response);
+        }
+      })
       .catch((err: Error) => rejected(err));
   });
 }
@@ -129,9 +150,9 @@ export function like(_id: string): Promise<number> {
 /**
  * POST login & pass and get authentication result
  */
-export function auth(api: string, data: { login: string; password: string }): Promise<I.Auth> {
+export function auth(data: { login: string; password: string }): Promise<I.Auth> {
   return new Promise<I.Auth>((resolved, rejected) => {
-    fetch(api, {
+    fetch('/api/auth', {
       body: JSON.stringify(data),
       headers,
       method: 'POST'
@@ -143,6 +164,20 @@ export function auth(api: string, data: { login: string; password: string }): Pr
         return response;
       })
       .then((response) => resolved(response.json()))
+      .catch((err: Error) => rejected(err));
+  });
+}
+
+/**
+ * Logout active session
+ */
+export function logout(): Promise<boolean> {
+  return new Promise<boolean>((resolved, rejected) => {
+    fetch('/api/auth/logout', {
+      headers,
+      method: 'DELETE'
+    })
+      .then(() => resolved(true))
       .catch((err: Error) => rejected(err));
   });
 }

@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
 import { select } from '../../utils/api';
+import * as E from '../../../common/constants';
 import * as I from '../../../common/interfaces';
 
-interface IEventListState {
+interface IEventListProps {
+  role: E.USER_ROLE;
+  userId: string;
+}
+
+interface IEventListState extends IEventListProps {
   data: I.Event[];
   loading: boolean;
 }
 
-export default class EventList extends Component<any, IEventListState> {
-  constructor(props: any) {
+export default class EventList extends Component<IEventListProps, IEventListState> {
+  constructor(props: IEventListProps) {
     super(props);
     this.state = {
       data: [],
-      loading: true
+      loading: true,
+      role: props.role,
+      userId: props.userId
     };
   }
 
@@ -25,7 +33,9 @@ export default class EventList extends Component<any, IEventListState> {
   }
 
   public getData() {
-    select<I.Event[]>('/api/events').then((data) => this.setState({ data, loading: false }));
+    const where = this.state.role === E.USER_ROLE.admin ? undefined : { userId: this.state.userId };
+
+    select<I.Event[]>('/api/events', where).then((data) => this.setState({ data, loading: false }));
   }
 
   public onClickHandler(e: React.MouseEvent<HTMLInputElement>) {

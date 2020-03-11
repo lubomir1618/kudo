@@ -124,12 +124,17 @@ export default class KudoEvent extends React.Component<{}, IState> {
       this.setState({ cards: data });
     });
 
-    select<I.Event>('/api/events', { _id: this.eventId }).then((data) => {
-      this.setState({
-        event: data,
-        is_active: data.dateFrom < now && now < data.dateTo
+    select<I.Event>('/api/events', { _id: this.eventId })
+      .then((data) => {
+        this.setState({
+          event: data,
+          is_active: data.dateFrom < now && now < data.dateTo
+        });
+      })
+      .catch((err: Error) => {
+        console.log(err.message);
+        window.clearInterval(this.interval);
       });
-    });
   }
 
   private getEvent(): JSX.Element {

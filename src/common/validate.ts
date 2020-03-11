@@ -65,6 +65,31 @@ export function isAuthValid(user: Partial<I.User>, mode: E.FORM_MODE) {
   return bugs.length ? bugs : true;
 }
 
+export function isPassChangeValid(user: I.PasswordForm, mode = E.FORM_MODE.insert, isAdmin = false) {
+  let bugs: string[] = [];
+
+  if (mode === E.FORM_MODE.insert) {
+    const passValid = isPasswordValid(user as any);
+    if (passValid !== true) {
+      bugs = passValid;
+    }
+  } else {
+    if (!hasData(user.password)) {
+      bugs.push('password');
+    }
+  }
+  if (!hasData(user.login)) {
+    bugs.push('login');
+  }
+  if (isAdmin === false) {
+    if (!hasData(user.passwordOld)) {
+      bugs.push('passwordOld');
+    }
+  }
+
+  return bugs.length ? bugs : true;
+}
+
 export function isPasswordValid(user: I.UserForm) {
   const bugs: string[] = [];
 
@@ -74,7 +99,7 @@ export function isPasswordValid(user: I.UserForm) {
   if (!hasData(user.passwordRepeat)) {
     bugs.push('paswordRepeat');
   }
-  if (!isSame(user.password, user.passwordRepeat)) {
+  if (!isSame(user.password as string, user.passwordRepeat as string)) {
     bugs.push('paswordRepeat');
   }
 
@@ -117,6 +142,9 @@ export function isEventValid(event: I.Event) {
   }
   if (!(event.state && E.EVENT_STATE[event.state])) {
     bugs.push('state');
+  }
+  if (!hasData(event.userId)) {
+    bugs.push('userId');
   }
 
   return bugs.length ? bugs : true;

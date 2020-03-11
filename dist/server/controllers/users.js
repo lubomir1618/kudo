@@ -47,7 +47,7 @@ class Users {
         this.users
             .findOne(where)
             .then((data) => res.json(this.stripPass(data || [])))
-            .catch((err) => utils.errorHandler(res, err.message));
+            .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.not_found));
     }
     create(req, res) {
         utils.serverLog('/users => create', req);
@@ -56,22 +56,21 @@ class Users {
         }
         const valid = validate_1.isUserValid(req.body, E.FORM_MODE.insert);
         if (valid === true) {
-            const user = {
-                created: new Date().getTime(),
-                login: req.body.login,
-                name: req.body.name,
-                password: req.body.password,
-                role: req.body.role,
-                surname: req.body.surname
-            };
-            // save to db
+            // login duplicity check
             this.users
-                .insert(user)
-                .then((data) => res.json(data))
+                .findOne({ login: req.body.login })
+                .then((existingUser) => {
+                if ((existingUser === null || existingUser === void 0 ? void 0 : existingUser.login) === undefined) {
+                    this.setUser(req, res);
+                }
+                else {
+                    utils.errorHandler(res, 'Duplicate user', E.REST_ERROR.bad_request);
+                }
+            })
                 .catch((err) => utils.errorHandler(res, err.message));
         }
         else {
-            utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
+            utils.errorHandler(res, `Error in: ${valid.join(', ')}`, E.REST_ERROR.bad_request);
         }
     }
     update(req, res) {
@@ -91,11 +90,26 @@ class Users {
             this.users
                 .update({ _id: req.params.id }, { $set: Object.assign({}, user) })
                 .then((data) => res.json(data))
-                .catch((err) => utils.errorHandler(res, err.message));
+                .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.not_found));
         }
         else {
-            utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
+            utils.errorHandler(res, `Error in: ${valid.join(', ')}`, E.REST_ERROR.bad_request);
         }
+    }
+    setUser(req, res) {
+        const user = {
+            created: new Date().getTime(),
+            login: req.body.login,
+            name: req.body.name,
+            password: req.body.password,
+            role: req.body.role,
+            surname: req.body.surname
+        };
+        // save to db
+        this.users
+            .insert(user)
+            .then((data) => res.json(data))
+            .catch((err) => utils.errorHandler(res, err.message));
     }
     stripPass(data) {
         const myData = Array.isArray(data) ? data : [data];

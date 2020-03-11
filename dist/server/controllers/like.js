@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const monk_1 = __importDefault(require("monk"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const utils = __importStar(require("../utils"));
+const E = __importStar(require("../../common/constants"));
 const validate_1 = require("../../common/validate");
 dotenv_1.default.config();
 const DB = monk_1.default(process.env.MONGODB_URL || '');
@@ -21,7 +22,7 @@ function cLike(req, res) {
     const _id = req.body._id;
     const valid = validate_1.isLikeValid(_id);
     if (valid !== true) {
-        return utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
+        return utils.errorHandler(res, `Error in: ${valid.join(', ')}`, E.REST_ERROR.bad_request);
     }
     const events = DB.get('events');
     const cards = DB.get('cards');
@@ -67,7 +68,7 @@ function cLike(req, res) {
             throw new Error('Could not incerase likes.');
         }
     })
-        .catch((err) => utils.errorHandler(res, err.message));
+        .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.not_found));
 }
 exports.cLike = cLike;
 //# sourceMappingURL=like.js.map

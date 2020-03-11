@@ -4,22 +4,33 @@ import * as I from '../../../common/interfaces';
 import * as E from '../../../common/constants';
 import './EventForm.css';
 
-interface IEventFormState {
+interface IEventFormProps {
+  userId: string;
+}
+
+interface IEventFormState extends IEventFormProps {
   event: I.Event;
   mode: 'hidden' | 'insert' | 'update';
 }
 
-export default class EventForm extends Component<any, IEventFormState> {
+export default class EventForm extends Component<IEventFormProps, IEventFormState> {
   private newEvent: I.Event;
 
-  constructor(props: any) {
+  constructor(props: IEventFormProps) {
     super(props);
 
     const now = new Date().getTime();
-    this.newEvent = { dateFrom: now, dateTo: now + 1209600000, name: '', state: E.EVENT_STATE.future };
+    this.newEvent = {
+      dateFrom: now,
+      dateTo: now + 1209600000,
+      name: '',
+      state: E.EVENT_STATE.future,
+      userId: props.userId
+    };
     this.state = {
       event: this.newEvent,
-      mode: 'hidden'
+      mode: 'hidden',
+      userId: props.userId
     };
   }
 
@@ -72,7 +83,7 @@ export default class EventForm extends Component<any, IEventFormState> {
   }
 
   public render() {
-    const { dateFrom, dateTo, name, state } = this.state.event;
+    const { dateFrom, dateTo, name, state, userId } = this.state.event;
     const button = `${this.state.mode === 'insert' ? 'Create' : 'Update'} event 📅`;
     const classHidden = this.state.mode === 'hidden' ? 'hidden' : '';
 
@@ -85,6 +96,7 @@ export default class EventForm extends Component<any, IEventFormState> {
           </span>
         </div>
         <form id="form-event-form" autoComplete="off">
+          <input type="hidden" id="event-userId" name="userId" defaultValue={userId} /> *
           <label htmlFor="dateFrom">Date from: </label>
           <input type="text" id="event-dateFrom" name="dateFrom" defaultValue={dateFrom} /> *
           <br />

@@ -68,6 +68,30 @@ function isAuthValid(user, mode) {
     return bugs.length ? bugs : true;
 }
 exports.isAuthValid = isAuthValid;
+function isPassChangeValid(user, mode = E.FORM_MODE.insert, isAdmin = false) {
+    let bugs = [];
+    if (mode === E.FORM_MODE.insert) {
+        const passValid = isPasswordValid(user);
+        if (passValid !== true) {
+            bugs = passValid;
+        }
+    }
+    else {
+        if (!hasData(user.password)) {
+            bugs.push('password');
+        }
+    }
+    if (!hasData(user.login)) {
+        bugs.push('login');
+    }
+    if (isAdmin === false) {
+        if (!hasData(user.passwordOld)) {
+            bugs.push('passwordOld');
+        }
+    }
+    return bugs.length ? bugs : true;
+}
+exports.isPassChangeValid = isPassChangeValid;
 function isPasswordValid(user) {
     const bugs = [];
     if (!hasData(user.password)) {
@@ -115,6 +139,9 @@ function isEventValid(event) {
     }
     if (!(event.state && E.EVENT_STATE[event.state])) {
         bugs.push('state');
+    }
+    if (!hasData(event.userId)) {
+        bugs.push('userId');
     }
     return bugs.length ? bugs : true;
 }

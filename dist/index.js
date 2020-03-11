@@ -32,7 +32,7 @@ app.use(express_session_1.default({
         maxAge: utils_1.COOKIE_MAX_AGE
     },
     resave: false,
-    rolling: true,
+    // rolling: true,
     saveUninitialized: false,
     secret: 'Kudoz$ecret'
 }));

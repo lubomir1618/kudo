@@ -10,6 +10,7 @@ export interface Event extends Table {
   dateTo: number;
   name: string;
   state: T.EVENT_STATE;
+  userId: string;
 }
 
 export interface Card extends Table {
@@ -33,7 +34,15 @@ export interface UserForm extends User {
   passwordRepeat: string;
 }
 
+export interface PasswordForm {
+  login: string;
+  password: string;
+  passwordOld: string;
+  passwordRepeat: string;
+}
+
 export interface Auth {
   authenticated: boolean;
   role: T.USER_ROLE;
+  userId: string | undefined;
 }

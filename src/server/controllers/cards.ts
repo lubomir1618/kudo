@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import * as utils from '../utils';
 import * as I from '../../common/interfaces';
+import * as E from '../../common/constants';
 import { isCardValid } from '../../common/validate';
 
 dotenv.config();
@@ -32,7 +33,7 @@ class Cards {
     this.cards
       .find(where)
       .then((data) => res.json(data))
-      .catch((err) => utils.errorHandler(res, err.message));
+      .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.not_found));
   }
 
   public create(req: Request, res: Response) {
@@ -58,12 +59,12 @@ class Cards {
           this.cards
             .insert(card)
             .then((data) => res.json(data))
-            .catch((err) => utils.errorHandler(res, err.message));
+            .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.bad_request));
         } else {
-          utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
+          utils.errorHandler(res, `Error in: ${valid.join(', ')}`, E.REST_ERROR.bad_request);
         }
       })
-      .catch((err) => utils.errorHandler(res, `Error: Kudo Event doesn't exist.`));
+      .catch((err) => utils.errorHandler(res, `Kudo Event doesn't exist.`, E.REST_ERROR.not_found));
   }
 }
 

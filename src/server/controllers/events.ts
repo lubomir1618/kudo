@@ -2,6 +2,7 @@ import monk from 'monk';
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import * as utils from '../utils';
+import * as E from '../../common/constants';
 import * as I from '../../common/interfaces';
 import { isEventValid } from '../../common/validate';
 
@@ -30,10 +31,14 @@ class Events {
       utils.serverLog('/events/:id => show', req);
       where = { _id: req.params.id };
     }
-    this.events
-      .findOne(where)
-      .then((data) => res.json(data))
-      .catch((err) => utils.errorHandler(res, err.message));
+    try {
+      this.events
+        .find(where)
+        .then((data) => res.json(data))
+        .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.not_found));
+    } catch (e) {
+      utils.errorHandler(res, 'No such event', E.REST_ERROR.not_found);
+    }
   }
 
   public create(req: Request, res: Response) {
@@ -49,15 +54,16 @@ class Events {
         dateFrom: Number(req.body.dateFrom),
         dateTo: Number(req.body.dateTo),
         name: req.body.name,
-        state: req.body.state
+        state: req.body.state,
+        userId: req.body.userId
       };
       // save to db
       this.events
         .insert(event)
         .then((data) => res.json(data))
-        .catch((err) => utils.errorHandler(res, err.message));
+        .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.bad_request));
     } else {
-      utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
+      utils.errorHandler(res, `Error in: ${valid.join(', ')}`, E.REST_ERROR.bad_request);
     }
   }
 
@@ -79,9 +85,9 @@ class Events {
       this.events
         .update({ _id: req.params.id }, { $set: { ...card } })
         .then((data) => res.json(data))
-        .catch((err) => utils.errorHandler(res, err.message));
+        .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.not_found));
     } else {
-      utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
+      utils.errorHandler(res, `Error in: ${valid.join(', ')}`, E.REST_ERROR.bad_request);
     }
   }
 }

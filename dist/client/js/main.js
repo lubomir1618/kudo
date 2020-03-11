@@ -1289,11 +1289,16 @@ class KudoEvent extends react_1.default.Component {
             data.sort((a, b) => b.likes - a.likes);
             this.setState({ cards: data });
         });
-        api_1.select('/api/events', { _id: this.eventId }).then((data) => {
+        api_1.select('/api/events', { _id: this.eventId })
+            .then((data) => {
             this.setState({
                 event: data,
                 is_active: data.dateFrom < now && now < data.dateTo
             });
+        })
+            .catch((err) => {
+            console.log(err.message);
+            window.clearInterval(this.interval);
         });
     }
     getEvent() {

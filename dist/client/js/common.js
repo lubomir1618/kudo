@@ -20,7 +20,7 @@
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 60000;
+exports.COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 180000;
 var CARD_TYPE;
 (function (CARD_TYPE) {
     CARD_TYPE["great_job"] = "great_job";
@@ -50,6 +50,14 @@ var FORM_MODE;
     FORM_MODE["insert"] = "insert";
     FORM_MODE["update"] = "update";
 })(FORM_MODE = exports.FORM_MODE || (exports.FORM_MODE = {}));
+var REST_ERROR;
+(function (REST_ERROR) {
+    REST_ERROR[REST_ERROR["bad_request"] = 400] = "bad_request";
+    REST_ERROR[REST_ERROR["unauthorized"] = 401] = "unauthorized";
+    REST_ERROR[REST_ERROR["forbidden"] = 403] = "forbidden";
+    REST_ERROR[REST_ERROR["not_found"] = 404] = "not_found";
+    REST_ERROR[REST_ERROR["unprocessable"] = 422] = "unprocessable";
+})(REST_ERROR = exports.REST_ERROR || (exports.REST_ERROR = {}));
 
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(37)))
 
@@ -85,16 +93,24 @@ function select(api, id) {
         }
     }
     return new Promise((resolved, rejected) => {
+        let wasError = false;
         fetch(url, {
             method: 'GET'
         })
             .then((response) => {
             if (!response.ok) {
-                throw Error(response.statusText);
+                wasError = true;
             }
-            return response;
+            return response.json();
         })
-            .then((response) => resolved(response.json()))
+            .then((response) => {
+            if (wasError) {
+                rejected(response);
+            }
+            else {
+                resolved(response);
+            }
+        })
             .catch((err) => rejected(err));
     });
 }
@@ -108,6 +124,7 @@ exports.select = select;
  */
 function insert(api, data) {
     return new Promise((resolved, rejected) => {
+        let wasError = false;
         fetch(api, {
             body: JSON.stringify(data),
             headers,
@@ -115,11 +132,18 @@ function insert(api, data) {
         })
             .then((response) => {
             if (!response.ok) {
-                throw Error(response.statusText);
+                wasError = true;
             }
-            return response;
+            return response.json();
         })
-            .then((response) => resolved(response.json()))
+            .then((response) => {
+            if (wasError) {
+                rejected(response);
+            }
+            else {
+                resolved(response);
+            }
+        })
             .catch((err) => rejected(err));
     });
 }
@@ -133,6 +157,7 @@ exports.insert = insert;
  */
 function update(api, id, data) {
     return new Promise((resolved, rejected) => {
+        let wasError = false;
         fetch(`${api}/${id}`, {
             body: JSON.stringify(data),
             headers,
@@ -140,11 +165,18 @@ function update(api, id, data) {
         })
             .then((response) => {
             if (!response.ok) {
-                throw Error(response.statusText);
+                wasError = true;
             }
-            return response;
+            return response.json();
         })
-            .then((response) => resolved(response.json()))
+            .then((response) => {
+            if (wasError) {
+                rejected(response);
+            }
+            else {
+                resolved(response);
+            }
+        })
             .catch((err) => rejected(err));
     });
 }
@@ -186,9 +218,9 @@ exports.like = like;
 /**
  * POST login & pass and get authentication result
  */
-function auth(api, data) {
+function auth(data) {
     return new Promise((resolved, rejected) => {
-        fetch(api, {
+        fetch('/api/auth', {
             body: JSON.stringify(data),
             headers,
             method: 'POST'
@@ -204,6 +236,20 @@ function auth(api, data) {
     });
 }
 exports.auth = auth;
+/**
+ * Logout active session
+ */
+function logout() {
+    return new Promise((resolved, rejected) => {
+        fetch('/api/auth/logout', {
+            headers,
+            method: 'DELETE'
+        })
+            .then(() => resolved(true))
+            .catch((err) => rejected(err));
+    });
+}
+exports.logout = logout;
 
 
 /***/ }),

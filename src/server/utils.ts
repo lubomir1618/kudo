@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import * as E from '../common/constants';
+import * as I from '../common/interfaces';
 
-export const COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 60000;
+export const COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 180000;
 
 export function serverLog(text: string, req: Request) {
   console.log(
@@ -12,9 +13,9 @@ export function serverLog(text: string, req: Request) {
   );
 }
 
-export function errorHandler(res: Response, message: string) {
-  console.log(`💥 Error: ${message}`);
-  res.status(422);
+export function errorHandler(res: Response, message: string, code: E.REST_ERROR = E.REST_ERROR.unprocessable) {
+  console.log(`💥 ${code} Error: ${message}`);
+  res.status(code);
   res.json({ message });
   res.end();
 }
@@ -25,16 +26,21 @@ export function setSession(req: Request, key: string, val: any) {
   }
 }
 
-export function setAuthCookie(req: Request, res: Response, authenticated: boolean, role: E.USER_ROLE): void {
-  setSession(req, 'authenticated', authenticated);
-  setSession(req, 'role', role);
-  if (authenticated) {
-    res.cookie('connect.role', role, {
+export function setAuthCookie(req: Request, res: Response, data: I.Auth): void {
+  setSession(req, 'authenticated', data.authenticated);
+  setSession(req, 'role', data.role);
+  if (data.authenticated) {
+    res.cookie('connect.role', data.role, {
+      httpOnly: false,
+      maxAge: COOKIE_MAX_AGE
+    });
+    res.cookie('connect.userId', data.userId, {
       httpOnly: false,
       maxAge: COOKIE_MAX_AGE
     });
   } else {
     res.clearCookie('connect.role');
+    res.clearCookie('connect.userId');
   }
 }
 
@@ -47,7 +53,7 @@ export function isAuthenticated(req: Request, res: Response, role?: E.USER_ROLE)
     }
   }
   if (!ok) {
-    errorHandler(res, `Error: not authenticated`);
+    errorHandler(res, `Not authenticated`, E.REST_ERROR.forbidden);
   }
   return ok;
 }

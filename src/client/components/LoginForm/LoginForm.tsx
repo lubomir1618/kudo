@@ -23,13 +23,11 @@ export default class LoginForm extends Component<any, any> {
       select<{ salt: string }>('/api/auth', login)
         .then((data) => {
           const password = encodePassword(plainPassword, data.salt);
-          return auth('/api/auth', { login, password });
+          return auth({ login, password });
         })
         .then((data) => {
           if (data.authenticated) {
-            document.dispatchEvent(
-              new CustomEvent('kudoz::authenticated', { detail: { role: data.role, session: '@todo' } })
-            );
+            document.dispatchEvent(new CustomEvent('kudoz::authenticated', { detail: data }));
           } else {
             info.innerText = 'Error: authentication failed';
           }
