@@ -28,7 +28,7 @@ export default class UserList extends Component<any, IUserListState> {
     select<I.User[]>('/api/users').then((data) => this.setState({ data, loading: false }));
   }
 
-  public onClickHandler(e: React.MouseEvent<HTMLInputElement>) {
+  public onClickHandler(e: React.MouseEvent<HTMLButtonElement>) {
     const _id = e.currentTarget.dataset.id ?? undefined;
     document.dispatchEvent(new CustomEvent('kudoz::userFormRefresh', { detail: { _id } }));
   }
@@ -36,10 +36,16 @@ export default class UserList extends Component<any, IUserListState> {
   public render() {
     const { data, loading } = this.state;
     return (
-      <div key="userList">
-        <input type="button" data-id="" value="new" onClick={this.onClickHandler.bind(this)} />
-        <table>
-          <caption>Users</caption>
+      <section id="users_list" className="pane" key="userList">
+        <h4>
+          Users
+          <span className="button">
+            <button className="gen_button" data-id="" onClick={this.onClickHandler.bind(this)}>
+              <span className="icon-plus" /> New user
+            </button>
+          </span>
+        </h4>
+        <table className="admin-table">
           <thead>
             <tr>
               <th>id</th>
@@ -52,7 +58,7 @@ export default class UserList extends Component<any, IUserListState> {
           </thead>
           <tbody>{loading ? this.loading() : this.userRows(data)}</tbody>
         </table>
-      </div>
+      </section>
     );
   }
 
@@ -65,7 +71,9 @@ export default class UserList extends Component<any, IUserListState> {
     jsx.push(<td key="role">{user.role}</td>);
     jsx.push(
       <td key="edit">
-        <input type="button" data-id={user._id} value="edit" onClick={this.onClickHandler.bind(this)} />
+        <button className="gen_button" data-id={user._id} onClick={this.onClickHandler.bind(this)}>
+          <span className="icon-pencil"/>Edit
+        </button>
       </td>
     );
     return jsx;

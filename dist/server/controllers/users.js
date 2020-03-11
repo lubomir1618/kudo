@@ -45,7 +45,7 @@ class Users {
             where = { _id: req.params.id };
         }
         this.users
-            .findOne(where)
+            .find(where)
             .then((data) => res.json(this.stripPass(data || [])))
             .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.not_found));
     }

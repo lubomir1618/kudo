@@ -4,7 +4,6 @@ import * as E from '../../../common/constants';
 import * as V from '../../../common/validate';
 import { insert, select, update } from '../../utils/api';
 import { encodePassword } from '../../utils/client';
-import './UserForm.css';
 
 interface IUserFormState {
   user: I.User;
@@ -34,45 +33,51 @@ export default class UserForm extends Component<any, IUserFormState> {
   public componentDidMount(): void {
     document.addEventListener('kudoz::userFormRefresh', ((e: CustomEvent) => {
       const info = document.getElementById('form-user-info') as HTMLDivElement;
-      info.innerText = '';
+      info.innerText = ' ';
       this.getData(e.detail._id);
     }) as EventListener);
   }
 
   public render(): JSX.Element {
-    const { name, surname, login, password, role } = this.state.user;
-    const button = `${this.state.mode === E.FORM_MODE.insert ? 'Create' : 'Update'} user 🙍‍♂️`;
-    const classHidden = this.state.mode === E.FORM_MODE.hidden ? 'hidden' : '';
+    const { name, surname, login, role } = this.state.user;
+    const button = `${this.state.mode === E.FORM_MODE.insert ? 'Create' : 'Update'} user`;
+    const classHidden = this.state.mode === E.FORM_MODE.hidden ? ' hidden' : '';
 
     return (
-      <div id="form-user" key="userForm" className={classHidden}>
-        <div className="formUser_header">
-          <span className="formUser_header-text">User</span>
-          <span className="formUser_header-close" onClick={this.close.bind(this)}>
-            x
-          </span>
+      <div id="form-user" key="userForm" className={`form-window${classHidden}`}>
+        <div className="form-window_header">
+          <span className="form-window_header-text">User</span>
+          <span className="form-window_header-close icon-remove-sign" onClick={this.close.bind(this)} />
         </div>
-        <form id="form-user-form" autoComplete="off">
-          <label htmlFor="name">Name:</label>
-          <input type="text" id="user-name" name="name" defaultValue={name} />
-          <br />
-          <label htmlFor="surname">Surname:</label>
-          <input type="text" id="user-surname" name="surname" defaultValue={surname} />
-          <br />
-          <label htmlFor="role">Role: </label>
-          <select id="user-role" name="role" defaultValue={role}>
-            <option value="admin">admin</option>
-            <option value="user">user</option>
-          </select>
-          *
-          <br />
-          <label htmlFor="login">Login: </label>
-          <input type="text" id="user-login" name="login" defaultValue={login} /> *
-          <br />
+        <form id="form-user-form" className="pane_form" autoComplete="off" onSubmit={this.onClickHandler.bind(this)}>
+          <div className="form_row">
+            <label htmlFor="name">Name:</label>
+            <input type="text"name="name" defaultValue={name} />
+          </div>
+          <div className="form_row">
+            <label htmlFor="surname">Surname:</label>
+            <input type="text" name="surname" defaultValue={surname} />
+          </div>
+          <div className="form_row">
+            <label htmlFor="role">Role: </label>
+            <select name="role" defaultValue={role}>
+              <option value="admin">admin</option>
+              <option value="user">user</option>
+            </select>
+            *
+          </div>
+          <div className="form_row">
+            <label htmlFor="login">Login: </label>
+            <input type="text" name="login" defaultValue={login} /> *
+          </div>
           {this.state.mode === E.FORM_MODE.insert ? this.passRows() : ''}
-          <input type="button" className="button-primary" onClick={this.onClickHandler.bind(this)} value={button} />
-          <div id="form-user-info" />
+          <div className="form_row -right">
+            <button className="gen_button" onClick={this.onClickHandler.bind(this)}>
+              <span className="icon-user" /> {button}
+            </button>
+          </div>
         </form>
+        <div id="form-user-info" className="form-window_footer">&nbsp;</div>
       </div>
     );
   }
@@ -80,24 +85,21 @@ export default class UserForm extends Component<any, IUserFormState> {
   private passRows(): JSX.Element {
     return (
       <div>
-        <label htmlFor="password">Password: </label>
-        <input
-          type="password"
-          id="user-password"
-          autoComplete="new-password"
-          name="password"
-          placeholder="enter password"
-        />{' '}
-        *
-        <br />
-        <label htmlFor="passwordRepeat">Password repeat: </label>
-        <input type="password" id="user-password-repeat" name="passwordRepeat" placeholder="repeat password" /> *
-        <br />
+        <div className="form_row">
+          <label htmlFor="password">Password: </label>
+          <input type="password" autoComplete="new-password" name="password" placeholder="enter password" /> *
+        </div>
+        <div className="form_row">
+          <label htmlFor="passwordRepeat">Password repeat: </label>
+          <input type="password" name="passwordRepeat" placeholder="repeat password" /> *
+        </div>
       </div>
     );
   }
 
-  private onClickHandler(): void {
+  private onClickHandler(e: React.FormEvent): void {
+    e.preventDefault();
+
     const rawData: I.UserForm = this.newUser;
     const info = document.getElementById('form-user-info') as HTMLDivElement;
     const form = document.getElementById('form-user-form') as HTMLFormElement;
@@ -139,7 +141,10 @@ export default class UserForm extends Component<any, IUserFormState> {
 
   private getData(_id?: string): void {
     if (_id) {
-      select<I.User>('/api/users', _id).then((user) => this.setState({ user, mode: E.FORM_MODE.update }));
+      select<I.User[]>('/api/users', _id).then((data) => {
+        const user = data[0];
+        this.setState({ user, mode: E.FORM_MODE.update })
+      });
     } else {
       this.setState({ user: this.newUser, mode: E.FORM_MODE.insert });
     }

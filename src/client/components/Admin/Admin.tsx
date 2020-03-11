@@ -41,12 +41,17 @@ export default class Admin extends Component<any, IAdminState> {
     }) as EventListener);
   }
 
+  public componentDidUpdate() {
+    const pane = document.getElementById('events_list');
+    if (pane) {
+      pane.style.display = 'block';
+      // pane.style.visibility = 'visible';
+    }
+  }
+
   public render() {
     return (
       <div className="admin" key="admin">
-        <header>
-          <h1>Admin</h1>
-        </header>
         {this.state.authenticated ? this.renderAdmin() : <LoginForm />}
       </div>
     );
@@ -54,28 +59,57 @@ export default class Admin extends Component<any, IAdminState> {
 
   private renderAdmin(): JSX.Element[] {
     const jsx: JSX.Element[] = [];
+    const isUser = this.state.role === E.USER_ROLE.user || this.state.role === E.USER_ROLE.admin;
+    const isAdmin = this.state.role === E.USER_ROLE.admin;
 
     jsx.push(
-      <button id="admin-logout" key="logoutButton" onClick={this.onLogoutHandler.bind(this)}>
-        Logout
-      </button>
+      <div className="admin_buttons" key="adminButtons">
+        <button id="admin-logout" className="gen_button" key="logoutButton" onClick={this.onLogoutHandler.bind(this)}>
+          <span className="icon-power-off" /> Sign out
+        </button>
+        <button
+          id="admin-password"
+          className="gen_button"
+          key="passwordButton"
+          onClick={this.onPasswordHandler.bind(this)}>
+            <span className="icon-key" /> Change pass
+        </button>
+      </div>
     );
+
     jsx.push(
-      <button id="admin-password" key="passwordButton" onClick={this.onPasswordHandler.bind(this)}>
-        Change pass
-      </button>
+      <section className="admin_forms" key="adminForms">
+        <PasswordForm key="passwordForm" role={this.state.role} />
+        {isUser && <EventForm key="eventForm" userId={this.state.userId} />}
+        {isAdmin && <UserForm key="userForm" />}
+      </section>
     );
-    jsx.push(<PasswordForm key="passwordForm" role={this.state.role} />);
 
-    if (this.state.role === E.USER_ROLE.admin) {
-      jsx.push(<UserForm key="userForm" />);
-      jsx.push(<UserList key="userList" />);
-    }
-
-    if (this.state.role === E.USER_ROLE.admin || this.state.role === E.USER_ROLE.user) {
-      jsx.push(<EventForm key="eventForm" userId={this.state.userId} />);
-      jsx.push(<EventList key="eventList" userId={this.state.userId} role={this.state.role} />);
-    }
+    jsx.push(
+      <main key="adminMain">
+        <header>
+          <h2>Admin</h2>
+          <nav>
+            <ul id="tabs" className="tabrow">
+              {isUser && (
+                <li className="selected" data-pane="events_list" onClick={this.onTabsHandler.bind(this)}>
+                  <span className="icon-calendar"></span> Events
+                </li>
+              )}
+              {isAdmin && (
+                <li data-pane="users_list" onClick={this.onTabsHandler.bind(this)}>
+                  <span className="icon-group"></span> Users
+                </li>
+              )}
+            </ul>
+          </nav>
+        </header>
+        <article>
+          {isUser && <EventList key="eventsList" userId={this.state.userId} role={this.state.role} />}
+          {isAdmin && <UserList key="usersList" />}
+        </article>
+      </main>
+    );
 
     return jsx;
   }
@@ -98,6 +132,23 @@ export default class Admin extends Component<any, IAdminState> {
         userId: ''
       });
     });
+  }
+
+  private onTabsHandler(e: React.MouseEvent<HTMLLIElement>) {
+    const tabEl = e.currentTarget;
+    const pane = document.getElementById(tabEl.dataset.pane as string);
+    if (pane) {
+      for (const el of document.querySelectorAll<HTMLElement>('.pane')) {
+        el.style.display = 'none';
+        // el.style.visibility = 'hidden';
+      }
+      pane.style.display = 'block';
+      // pane.style.visibility = 'visible';
+      for (const el of document.querySelectorAll<HTMLLIElement>('li')) {
+        el.classList.remove('selected');
+      }
+      tabEl.classList.add('selected');
+    }
   }
 
   private onPasswordHandler() {

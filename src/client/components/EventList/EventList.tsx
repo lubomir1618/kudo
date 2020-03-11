@@ -38,7 +38,7 @@ export default class EventList extends Component<IEventListProps, IEventListStat
     select<I.Event[]>('/api/events', where).then((data) => this.setState({ data, loading: false }));
   }
 
-  public onClickHandler(e: React.MouseEvent<HTMLInputElement>) {
+  public onClickHandler(e: React.MouseEvent<HTMLButtonElement>) {
     const _id = e.currentTarget.dataset.id ?? undefined;
     document.dispatchEvent(new CustomEvent('kudoz::eventFormRefresh', { detail: { _id } }));
   }
@@ -46,12 +46,19 @@ export default class EventList extends Component<IEventListProps, IEventListStat
   public render() {
     const { data, loading } = this.state;
     return (
-      <div key="eventList">
-        <input type="button" data-id="" value="new" onClick={this.onClickHandler.bind(this)} />
-        <table>
-          <caption>Events</caption>
+      <section id="events_list" className="pane" key="eventList">
+        <h4>
+          Events
+          <span className="button">
+            <button className="gen_button" data-id="" onClick={this.onClickHandler.bind(this)}>
+              <span className="icon-plus" /> New event
+            </button>
+          </span>
+        </h4>
+        <table className="admin-table">
           <thead>
             <tr>
+              <th>id</th>
               <th>name</th>
               <th>dateFrom</th>
               <th>dateTo</th>
@@ -61,12 +68,13 @@ export default class EventList extends Component<IEventListProps, IEventListStat
           </thead>
           <tbody>{loading ? this.loading() : this.eventRows(data)}</tbody>
         </table>
-      </div>
+      </section>
     );
   }
 
   private eventCols(event: I.Event): JSX.Element[] {
     const jsx: JSX.Element[] = [];
+    jsx.push(<td key="_id">{event._id}</td>);
     jsx.push(
       <td key="name">
         <a href={`${window.origin}/event/${event._id}`} target="_blank" title="link to event">
@@ -79,7 +87,9 @@ export default class EventList extends Component<IEventListProps, IEventListStat
     jsx.push(<td key="state">{event.state}</td>);
     jsx.push(
       <td key="edit">
-        <input type="button" data-id={event._id} value="edit" onClick={this.onClickHandler.bind(this)} />
+        <button className="gen_button" data-id={event._id} onClick={this.onClickHandler.bind(this)}>
+          <span className="icon-pencil"/> Edit
+        </button>
       </td>
     );
     return jsx;

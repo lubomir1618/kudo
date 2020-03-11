@@ -45,11 +45,11 @@ const E = __importStar(__webpack_require__(208));
 const client_1 = __webpack_require__(34);
 const api_1 = __webpack_require__(33);
 const EventForm_1 = __importDefault(__webpack_require__(262));
-const EventList_1 = __importDefault(__webpack_require__(265));
-const LoginForm_1 = __importDefault(__webpack_require__(266));
-const PasswordForm_1 = __importDefault(__webpack_require__(270));
-const UserForm_1 = __importDefault(__webpack_require__(273));
-const UserList_1 = __importDefault(__webpack_require__(276));
+const EventList_1 = __importDefault(__webpack_require__(263));
+const LoginForm_1 = __importDefault(__webpack_require__(264));
+const PasswordForm_1 = __importDefault(__webpack_require__(266));
+const UserForm_1 = __importDefault(__webpack_require__(267));
+const UserList_1 = __importDefault(__webpack_require__(268));
 class Admin extends react_1.Component {
     constructor(props) {
         super(props);
@@ -71,25 +71,45 @@ class Admin extends react_1.Component {
             this.sessionCheck();
         }));
     }
+    componentDidUpdate() {
+        const pane = document.getElementById('events_list');
+        if (pane) {
+            pane.style.display = 'block';
+            // pane.style.visibility = 'visible';
+        }
+    }
     render() {
-        return (react_1.default.createElement("div", { className: "admin", key: "admin" },
-            react_1.default.createElement("header", null,
-                react_1.default.createElement("h1", null, "Admin")),
-            this.state.authenticated ? this.renderAdmin() : react_1.default.createElement(LoginForm_1.default, null)));
+        return (react_1.default.createElement("div", { className: "admin", key: "admin" }, this.state.authenticated ? this.renderAdmin() : react_1.default.createElement(LoginForm_1.default, null)));
     }
     renderAdmin() {
         const jsx = [];
-        jsx.push(react_1.default.createElement("button", { id: "admin-logout", key: "logoutButton", onClick: this.onLogoutHandler.bind(this) }, "Logout"));
-        jsx.push(react_1.default.createElement("button", { id: "admin-password", key: "passwordButton", onClick: this.onPasswordHandler.bind(this) }, "Change pass"));
-        jsx.push(react_1.default.createElement(PasswordForm_1.default, { key: "passwordForm", role: this.state.role }));
-        if (this.state.role === E.USER_ROLE.admin) {
-            jsx.push(react_1.default.createElement(UserForm_1.default, { key: "userForm" }));
-            jsx.push(react_1.default.createElement(UserList_1.default, { key: "userList" }));
-        }
-        if (this.state.role === E.USER_ROLE.admin || this.state.role === E.USER_ROLE.user) {
-            jsx.push(react_1.default.createElement(EventForm_1.default, { key: "eventForm", userId: this.state.userId }));
-            jsx.push(react_1.default.createElement(EventList_1.default, { key: "eventList", userId: this.state.userId, role: this.state.role }));
-        }
+        const isUser = this.state.role === E.USER_ROLE.user || this.state.role === E.USER_ROLE.admin;
+        const isAdmin = this.state.role === E.USER_ROLE.admin;
+        jsx.push(react_1.default.createElement("div", { className: "admin_buttons", key: "adminButtons" },
+            react_1.default.createElement("button", { id: "admin-logout", className: "gen_button", key: "logoutButton", onClick: this.onLogoutHandler.bind(this) },
+                react_1.default.createElement("span", { className: "icon-power-off" }),
+                " Sign out"),
+            react_1.default.createElement("button", { id: "admin-password", className: "gen_button", key: "passwordButton", onClick: this.onPasswordHandler.bind(this) },
+                react_1.default.createElement("span", { className: "icon-key" }),
+                " Change pass")));
+        jsx.push(react_1.default.createElement("section", { className: "admin_forms", key: "adminForms" },
+            react_1.default.createElement(PasswordForm_1.default, { key: "passwordForm", role: this.state.role }),
+            isUser && react_1.default.createElement(EventForm_1.default, { key: "eventForm", userId: this.state.userId }),
+            isAdmin && react_1.default.createElement(UserForm_1.default, { key: "userForm" })));
+        jsx.push(react_1.default.createElement("main", { key: "adminMain" },
+            react_1.default.createElement("header", null,
+                react_1.default.createElement("h2", null, "Admin"),
+                react_1.default.createElement("nav", null,
+                    react_1.default.createElement("ul", { id: "tabs", className: "tabrow" },
+                        isUser && (react_1.default.createElement("li", { className: "selected", "data-pane": "events_list", onClick: this.onTabsHandler.bind(this) },
+                            react_1.default.createElement("span", { className: "icon-calendar" }),
+                            " Events")),
+                        isAdmin && (react_1.default.createElement("li", { "data-pane": "users_list", onClick: this.onTabsHandler.bind(this) },
+                            react_1.default.createElement("span", { className: "icon-group" }),
+                            " Users"))))),
+            react_1.default.createElement("article", null,
+                isUser && react_1.default.createElement(EventList_1.default, { key: "eventsList", userId: this.state.userId, role: this.state.role }),
+                isAdmin && react_1.default.createElement(UserList_1.default, { key: "usersList" }))));
         return jsx;
     }
     sessionCheck() {
@@ -109,6 +129,22 @@ class Admin extends react_1.Component {
                 userId: ''
             });
         });
+    }
+    onTabsHandler(e) {
+        const tabEl = e.currentTarget;
+        const pane = document.getElementById(tabEl.dataset.pane);
+        if (pane) {
+            for (const el of document.querySelectorAll('.pane')) {
+                el.style.display = 'none';
+                // el.style.visibility = 'hidden';
+            }
+            pane.style.display = 'block';
+            // pane.style.visibility = 'visible';
+            for (const el of document.querySelectorAll('li')) {
+                el.classList.remove('selected');
+            }
+            tabEl.classList.add('selected');
+        }
     }
     onPasswordHandler() {
         document.dispatchEvent(new CustomEvent('kudoz::passwordFormRefresh'));
@@ -135,7 +171,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const api_1 = __webpack_require__(33);
 const E = __importStar(__webpack_require__(208));
-__webpack_require__(263);
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -153,12 +188,15 @@ class EventForm extends react_1.Component {
             userId: props.userId
         };
     }
-    onClickHandler() {
-        const data = {};
+    onClickHandler(e) {
+        e.preventDefault();
+        const data = this.newEvent;
         const info = document.getElementById('form-event-info');
         const form = document.getElementById('form-event-form');
         const formData = new FormData(form);
-        formData.forEach((item, key) => (data[key] = item));
+        formData.forEach((item, key) => {
+            data[key] = item;
+        });
         if (this.state.mode === 'insert') {
             api_1.insert('/api/events', data)
                 .then(() => {
@@ -183,13 +221,16 @@ class EventForm extends react_1.Component {
     componentDidMount() {
         document.addEventListener('kudoz::eventFormRefresh', ((e) => {
             const info = document.getElementById('form-event-info');
-            info.innerText = '';
+            info.innerText = ' ';
             this.getData(e.detail._id);
         }));
     }
     getData(_id) {
         if (_id) {
-            api_1.select('/api/events', _id).then((event) => this.setState({ event, mode: 'update' }));
+            api_1.select('/api/events', _id).then((data) => {
+                const event = data[0];
+                this.setState({ event, mode: E.FORM_MODE.update });
+            });
         }
         else {
             this.setState({ event: this.newEvent, mode: 'insert' });
@@ -200,36 +241,38 @@ class EventForm extends react_1.Component {
     }
     render() {
         const { dateFrom, dateTo, name, state, userId } = this.state.event;
-        const button = `${this.state.mode === 'insert' ? 'Create' : 'Update'} event 📅`;
-        const classHidden = this.state.mode === 'hidden' ? 'hidden' : '';
-        return (react_1.default.createElement("div", { id: "form-event", key: "eventForm", className: classHidden },
-            react_1.default.createElement("div", { className: "formEvent_header" },
-                react_1.default.createElement("span", { className: "formEvent_header-text" }, "Event"),
-                react_1.default.createElement("span", { className: "formEvent_header-close", onClick: this.close.bind(this) }, "x")),
-            react_1.default.createElement("form", { id: "form-event-form", autoComplete: "off" },
-                react_1.default.createElement("input", { type: "hidden", id: "event-userId", name: "userId", defaultValue: userId }),
-                " *",
-                react_1.default.createElement("label", { htmlFor: "dateFrom" }, "Date from: "),
-                react_1.default.createElement("input", { type: "text", id: "event-dateFrom", name: "dateFrom", defaultValue: dateFrom }),
-                " *",
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "dateTo" }, "Date to: "),
-                react_1.default.createElement("input", { type: "text", id: "event-dateTo", name: "dateTo", defaultValue: dateTo }),
-                " *",
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "name" }, "Event name: "),
-                react_1.default.createElement("input", { type: "text", id: "event-name", name: "name", placeholder: "event name", defaultValue: name }),
-                " *",
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "state" }, "State: "),
-                react_1.default.createElement("select", { id: "event-state", name: "state", defaultValue: state },
-                    react_1.default.createElement("option", { value: "past" }, "past"),
-                    react_1.default.createElement("option", { value: "active" }, "active"),
-                    react_1.default.createElement("option", { value: "future" }, "future")),
-                "*",
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("input", { type: "button", className: "button-primary", onClick: this.onClickHandler.bind(this), value: button }),
-                react_1.default.createElement("div", { id: "form-event-info" }))));
+        const button = `${this.state.mode === 'insert' ? 'Create' : 'Update'} event`;
+        const classHidden = this.state.mode === 'hidden' ? ' hidden' : '';
+        return (react_1.default.createElement("div", { id: "form-event", key: "eventForm", className: `form-window${classHidden}` },
+            react_1.default.createElement("div", { className: "form-window_header" },
+                react_1.default.createElement("span", { className: "form-window_header-text" }, "Event"),
+                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign", onClick: this.close.bind(this) })),
+            react_1.default.createElement("form", { id: "form-event-form", className: "pane_form", autoComplete: "off", onSubmit: this.onClickHandler.bind(this) },
+                react_1.default.createElement("input", { type: "hidden", name: "userId", defaultValue: userId }),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "dateFrom" }, "Date from: "),
+                    react_1.default.createElement("input", { type: "text", name: "dateFrom", defaultValue: dateFrom }),
+                    " *"),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "dateTo" }, "Date to: "),
+                    react_1.default.createElement("input", { type: "text", name: "dateTo", defaultValue: dateTo }),
+                    " *"),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "name" }, "Event name: "),
+                    react_1.default.createElement("input", { type: "text", name: "name", placeholder: "event name", defaultValue: name }),
+                    " *"),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "state" }, "State: "),
+                    react_1.default.createElement("select", { id: "event-state", name: "state", defaultValue: state },
+                        react_1.default.createElement("option", { value: "past" }, "past"),
+                        react_1.default.createElement("option", { value: "active" }, "active"),
+                        react_1.default.createElement("option", { value: "future" }, "future")),
+                    "*"),
+                react_1.default.createElement("div", { className: "form_row -right" },
+                    react_1.default.createElement("button", { className: "gen_button", onClick: this.onClickHandler.bind(this) },
+                        react_1.default.createElement("span", { className: "icon-calendar" }),
+                        button))),
+            react_1.default.createElement("div", { id: "form-event-info", className: "form-window_footer" }, "\u00A0")));
     }
 }
 exports.default = EventForm;
@@ -238,47 +281,6 @@ exports.default = EventForm;
 /***/ }),
 
 /***/ 263:
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(195);
-            var content = __webpack_require__(264);
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ 264:
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(197);
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, "html {\n  --c-one: #4d677f;\n  --c-two: white;\n  --c-three: rgba(3, 2, 2, 0.25);\n  --c-border: #dbe1e4;\n}\n\n#form-event {\n  border: 1px solid var(--c-border);\n  background-color: var(--c-two);\n  width: 500px;\n  height: 325px;\n  box-shadow: 0px 4px 10px var(--c-three);\n  font-family: 'Ubuntu_Bold';\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 10;\n}\n\n#form-event.hidden {\n  display: none;\n}\n\n#form-event .formEvent_header {\n  background-color: var(--c-one);\n  height: 26px;\n  line-height: 26px;\n}\n\n#form-event .formEvent_header .formEvent_header-text {\n  font-size: 16px;\n  margin-left: 10px;\n  color: var(--c-two);\n}\n\n#form-event .formEvent_header .formEvent_header-close {\n  display: block;\n  font-size: 16px;\n  margin-right: 4px;\n  background-color: var(--c-two);\n  color: var(--c-one);\n  border-radius: 50%;\n  width: 20px;\n  height: 20px;\n  float: right;\n  text-align: center;\n  line-height: 18px;\n  margin-top: 2px;\n  cursor: pointer;\n}\n\n#form-event form {\n  margin: 10px 20px;\n}\n\n#form-event label {\n  display: inline-block;\n  display: inline-block;\n  min-width: 120px;\n  text-align: right;\n  margin-right: 10px;\n  color: var(--c-one);\n}\n\n#form-event input,\n#form-event select {\n  min-width: 200px;\n}\n\n#form-event input[type='button'] {\n  position: relative;\n  margin: 0 58%;\n}\n", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ 265:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -322,12 +324,17 @@ class EventList extends react_1.Component {
     }
     render() {
         const { data, loading } = this.state;
-        return (react_1.default.createElement("div", { key: "eventList" },
-            react_1.default.createElement("input", { type: "button", "data-id": "", value: "new", onClick: this.onClickHandler.bind(this) }),
-            react_1.default.createElement("table", null,
-                react_1.default.createElement("caption", null, "Events"),
+        return (react_1.default.createElement("section", { id: "events_list", className: "pane", key: "eventList" },
+            react_1.default.createElement("h4", null,
+                "Events",
+                react_1.default.createElement("span", { className: "button" },
+                    react_1.default.createElement("button", { className: "gen_button", "data-id": "", onClick: this.onClickHandler.bind(this) },
+                        react_1.default.createElement("span", { className: "icon-plus" }),
+                        " New event"))),
+            react_1.default.createElement("table", { className: "admin-table" },
                 react_1.default.createElement("thead", null,
                     react_1.default.createElement("tr", null,
+                        react_1.default.createElement("th", null, "id"),
                         react_1.default.createElement("th", null, "name"),
                         react_1.default.createElement("th", null, "dateFrom"),
                         react_1.default.createElement("th", null, "dateTo"),
@@ -337,13 +344,16 @@ class EventList extends react_1.Component {
     }
     eventCols(event) {
         const jsx = [];
+        jsx.push(react_1.default.createElement("td", { key: "_id" }, event._id));
         jsx.push(react_1.default.createElement("td", { key: "name" },
             react_1.default.createElement("a", { href: `${window.origin}/event/${event._id}`, target: "_blank", title: "link to event" }, event.name)));
         jsx.push(react_1.default.createElement("td", { key: "dateFrom" }, new Date(event.dateFrom).toLocaleString()));
         jsx.push(react_1.default.createElement("td", { key: "dateTo" }, new Date(event.dateTo).toLocaleString()));
         jsx.push(react_1.default.createElement("td", { key: "state" }, event.state));
         jsx.push(react_1.default.createElement("td", { key: "edit" },
-            react_1.default.createElement("input", { type: "button", "data-id": event._id, value: "edit", onClick: this.onClickHandler.bind(this) })));
+            react_1.default.createElement("button", { className: "gen_button", "data-id": event._id, onClick: this.onClickHandler.bind(this) },
+                react_1.default.createElement("span", { className: "icon-pencil" }),
+                " Edit")));
         return jsx;
     }
     eventRows(events) {
@@ -363,7 +373,7 @@ exports.default = EventList;
 
 /***/ }),
 
-/***/ 266:
+/***/ 264:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -377,16 +387,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const V = __importStar(__webpack_require__(267));
+const V = __importStar(__webpack_require__(265));
 const E = __importStar(__webpack_require__(208));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
-__webpack_require__(268);
 class LoginForm extends react_1.Component {
     constructor(props) {
         super(props);
     }
-    onLoginHandler() {
+    onLoginHandler(e) {
+        e.preventDefault();
         const info = document.getElementById('form-login-info');
         const form = document.getElementById('form-login-form');
         const formData = new FormData(form);
@@ -417,17 +427,22 @@ class LoginForm extends react_1.Component {
         }
     }
     render() {
-        return (react_1.default.createElement("div", { id: "form-login", key: "loginForm" },
-            react_1.default.createElement("div", { className: "formLogin_header" },
-                react_1.default.createElement("span", { className: "formLogin_header-text" }, "Sign in")),
-            react_1.default.createElement("form", { id: "form-login-form", autoComplete: "off" },
-                react_1.default.createElement("label", { htmlFor: "name" }, "Login:"),
-                react_1.default.createElement("input", { type: "text", id: "login-login", name: "login", placeholder: "enter login" }),
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
-                react_1.default.createElement("input", { type: "password", id: "login-password", autoComplete: "new-password", name: "password", placeholder: "enter password" })),
-            react_1.default.createElement("input", { type: "button", className: "button-primary", onClick: this.onLoginHandler.bind(this), value: "Sign in" }),
-            react_1.default.createElement("div", { id: "form-login-info" })));
+        return (react_1.default.createElement("div", { id: "form-login", key: "loginForm", className: "form-window" },
+            react_1.default.createElement("div", { className: "form-window_header" },
+                react_1.default.createElement("span", { className: "form-window_header-text" }, "Sign in"),
+                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign" })),
+            react_1.default.createElement("form", { id: "form-login-form", className: "pane_form", autoComplete: "off", onSubmit: this.onLoginHandler.bind(this) },
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "name" }, "Login:"),
+                    react_1.default.createElement("input", { type: "text", name: "login", placeholder: "enter login" })),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
+                    react_1.default.createElement("input", { type: "password", autoComplete: "new-password", name: "password", placeholder: "enter password" })),
+                react_1.default.createElement("div", { className: "form_row -right" },
+                    react_1.default.createElement("button", { className: "gen_button", onClick: this.onLoginHandler.bind(this) },
+                        react_1.default.createElement("span", { className: "icon-circle-arrow-right" }),
+                        " Sign in"))),
+            react_1.default.createElement("div", { id: "form-login-info", className: "form-window_footer" }, "\u00A0")));
     }
 }
 exports.default = LoginForm;
@@ -435,7 +450,7 @@ exports.default = LoginForm;
 
 /***/ }),
 
-/***/ 267:
+/***/ 265:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -591,48 +606,7 @@ exports.isEventValid = isEventValid;
 
 /***/ }),
 
-/***/ 268:
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(195);
-            var content = __webpack_require__(269);
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ 269:
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(197);
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, "html {\n  --c-one: #4d677f;\n  --c-two: white;\n  --c-three: rgba(3, 2, 2, 0.25);\n  --c-border: #dbe1e4;\n}\n\n#form-login {\n  border: 1px solid var(--c-border);\n  background-color: var(--c-two);\n  width: 500px;\n  height: 325px;\n  box-shadow: 0px 4px 10px var(--c-three);\n  font-family: 'Ubuntu_Bold';\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 10;\n}\n\n#form-login.hidden {\n  display: none;\n}\n\n#form-login .formLogin_header {\n  background-color: var(--c-one);\n  height: 26px;\n  line-height: 26px;\n}\n\n#form-login .formLogin_header .formLogin_header-text {\n  font-size: 16px;\n  margin-left: 10px;\n  color: var(--c-two);\n}\n\n#form-login .formLogin_header .formLogin_header-close {\n  display: block;\n  font-size: 16px;\n  margin-right: 4px;\n  background-color: var(--c-two);\n  color: var(--c-one);\n  border-radius: 50%;\n  width: 20px;\n  height: 20px;\n  float: right;\n  text-align: center;\n  line-height: 18px;\n  margin-top: 2px;\n  cursor: pointer;\n}\n\n#form-login form {\n  margin: 10px 20px;\n}\n\n#form-login label {\n  display: inline-block;\n  display: inline-block;\n  min-width: 120px;\n  text-align: right;\n  margin-right: 10px;\n  color: var(--c-one);\n}\n\n#form-login input {\n  min-width: 200px;\n}\n\n#form-login input[type='button'] {\n  position: relative;\n  margin: 0 58%;\n}\n", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ 270:
+/***/ 266:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -647,10 +621,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(208));
-const V = __importStar(__webpack_require__(267));
+const V = __importStar(__webpack_require__(265));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
-__webpack_require__(271);
 class PasswordForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -662,38 +635,42 @@ class PasswordForm extends react_1.Component {
     componentDidMount() {
         document.addEventListener('kudoz::passwordFormRefresh', ((e) => {
             const info = document.getElementById('form-password-info');
-            info.innerText = '';
+            info.innerText = ' ';
             this.setState({ mode: E.FORM_MODE.insert });
         }));
     }
     render() {
-        const classHidden = this.state.mode === E.FORM_MODE.hidden ? 'hidden' : '';
-        return (react_1.default.createElement("div", { id: "form-password", key: "passwordForm", className: classHidden },
-            react_1.default.createElement("div", { className: "formPassword_header" },
-                react_1.default.createElement("span", { className: "formPassword_header-text" }, "User"),
-                react_1.default.createElement("span", { className: "formPassword_header-close", onClick: this.close.bind(this) }, "x")),
-            react_1.default.createElement("form", { id: "form-password-form", autoComplete: "off" },
-                react_1.default.createElement("label", { htmlFor: "login" }, "Login: "),
-                react_1.default.createElement("input", { type: "text", id: "pass-login", name: "login", placeholder: "enter your login" }),
-                " *",
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "password" }, "Old password: "),
-                react_1.default.createElement("input", { type: "password", id: "old-password", autoComplete: "old-password", name: "passwordOld", placeholder: "enter old password" }),
-                this.state.isAdmin ? ' ' : ' *',
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "password" }, "New password: "),
-                react_1.default.createElement("input", { type: "password", id: "new-password", autoComplete: "new-password", name: "password", placeholder: "enter new password" }),
-                ' ',
-                "*",
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "passwordRepeat" }, "Repeat new password: "),
-                react_1.default.createElement("input", { type: "password", id: "new-password-repeat", name: "passwordRepeat", placeholder: "repeat new password" }),
-                " *",
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("input", { type: "button", className: "button-primary", onClick: this.onClickHandler.bind(this), value: "Change password" }),
-                react_1.default.createElement("div", { id: "form-password-info" }))));
+        const classHidden = this.state.mode === E.FORM_MODE.hidden ? ' hidden' : '';
+        return (react_1.default.createElement("div", { id: "form-password", key: "passwordForm", className: `form-window${classHidden}` },
+            react_1.default.createElement("div", { className: "form-window_header" },
+                react_1.default.createElement("span", { className: "form-window_header-text" }, "Password change"),
+                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign", onClick: this.close.bind(this) })),
+            react_1.default.createElement("form", { id: "form-password-form", className: "pane_form", autoComplete: "off", onSubmit: this.onClickHandler.bind(this) },
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "login" }, "Login: "),
+                    react_1.default.createElement("input", { type: "text", name: "login", placeholder: "enter your login" }),
+                    " *"),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "password" }, "Old password: "),
+                    react_1.default.createElement("input", { type: "password", autoComplete: "old-password", name: "passwordOld", placeholder: "enter old password" }),
+                    this.state.isAdmin ? ' ' : ' *'),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "password" }, "New password: "),
+                    react_1.default.createElement("input", { type: "password", autoComplete: "new-password", name: "password", placeholder: "enter new password" }),
+                    ' ',
+                    "*"),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "passwordRepeat" }, "Repeat new password: "),
+                    react_1.default.createElement("input", { type: "password", name: "passwordRepeat", placeholder: "repeat new password" }),
+                    " *"),
+                react_1.default.createElement("div", { className: "form_row -right" },
+                    react_1.default.createElement("button", { className: "gen_button", onClick: this.onClickHandler.bind(this) },
+                        react_1.default.createElement("span", { className: "icon-key" }),
+                        " Change password"))),
+            react_1.default.createElement("div", { id: "form-password-info", className: "form-window_footer" }, "\u00A0")));
     }
-    onClickHandler() {
+    onClickHandler(e) {
+        e.preventDefault();
         const rawData = {
             login: '',
             password: '',
@@ -737,48 +714,7 @@ exports.default = PasswordForm;
 
 /***/ }),
 
-/***/ 271:
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(195);
-            var content = __webpack_require__(272);
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ 272:
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(197);
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, "html {\n  --c-one: #4d677f;\n  --c-two: white;\n  --c-three: rgba(3, 2, 2, 0.25);\n  --c-border: #dbe1e4;\n}\n\n#form-password {\n  border: 1px solid var(--c-border);\n  background-color: var(--c-two);\n  width: 500px;\n  height: 325px;\n  box-shadow: 0px 4px 10px var(--c-three);\n  font-family: 'Ubuntu_Bold';\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 10;\n}\n\n#form-password.hidden {\n  display: none;\n}\n\n#form-password .formPassword_header {\n  background-color: var(--c-one);\n  height: 26px;\n  line-height: 26px;\n}\n\n#form-password .formPassword_header .formPassword_header-text {\n  font-size: 16px;\n  margin-left: 10px;\n  color: var(--c-two);\n}\n\n#form-password .formPassword_header .formPassword_header-close {\n  display: block;\n  font-size: 16px;\n  margin-right: 4px;\n  background-color: var(--c-two);\n  color: var(--c-one);\n  border-radius: 50%;\n  width: 20px;\n  height: 20px;\n  float: right;\n  text-align: center;\n  line-height: 18px;\n  margin-top: 2px;\n  cursor: pointer;\n}\n\n#form-password form {\n  margin: 10px 20px;\n}\n\n#form-password label {\n  display: inline-block;\n  display: inline-block;\n  min-width: 120px;\n  text-align: right;\n  margin-right: 10px;\n  color: var(--c-one);\n}\n\n#form-password input {\n  min-width: 200px;\n}\n\n#form-password input[type='button'] {\n  position: relative;\n  margin: 0 58%;\n}\n", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ 273:
+/***/ 267:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -793,10 +729,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(208));
-const V = __importStar(__webpack_require__(267));
+const V = __importStar(__webpack_require__(265));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
-__webpack_require__(274);
 class UserForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -816,52 +751,56 @@ class UserForm extends react_1.Component {
     componentDidMount() {
         document.addEventListener('kudoz::userFormRefresh', ((e) => {
             const info = document.getElementById('form-user-info');
-            info.innerText = '';
+            info.innerText = ' ';
             this.getData(e.detail._id);
         }));
     }
     render() {
-        const { name, surname, login, password, role } = this.state.user;
-        const button = `${this.state.mode === E.FORM_MODE.insert ? 'Create' : 'Update'} user 🙍‍♂️`;
-        const classHidden = this.state.mode === E.FORM_MODE.hidden ? 'hidden' : '';
-        return (react_1.default.createElement("div", { id: "form-user", key: "userForm", className: classHidden },
-            react_1.default.createElement("div", { className: "formUser_header" },
-                react_1.default.createElement("span", { className: "formUser_header-text" }, "User"),
-                react_1.default.createElement("span", { className: "formUser_header-close", onClick: this.close.bind(this) }, "x")),
-            react_1.default.createElement("form", { id: "form-user-form", autoComplete: "off" },
-                react_1.default.createElement("label", { htmlFor: "name" }, "Name:"),
-                react_1.default.createElement("input", { type: "text", id: "user-name", name: "name", defaultValue: name }),
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "surname" }, "Surname:"),
-                react_1.default.createElement("input", { type: "text", id: "user-surname", name: "surname", defaultValue: surname }),
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "role" }, "Role: "),
-                react_1.default.createElement("select", { id: "user-role", name: "role", defaultValue: role },
-                    react_1.default.createElement("option", { value: "admin" }, "admin"),
-                    react_1.default.createElement("option", { value: "user" }, "user")),
-                "*",
-                react_1.default.createElement("br", null),
-                react_1.default.createElement("label", { htmlFor: "login" }, "Login: "),
-                react_1.default.createElement("input", { type: "text", id: "user-login", name: "login", defaultValue: login }),
-                " *",
-                react_1.default.createElement("br", null),
+        const { name, surname, login, role } = this.state.user;
+        const button = `${this.state.mode === E.FORM_MODE.insert ? 'Create' : 'Update'} user`;
+        const classHidden = this.state.mode === E.FORM_MODE.hidden ? ' hidden' : '';
+        return (react_1.default.createElement("div", { id: "form-user", key: "userForm", className: `form-window${classHidden}` },
+            react_1.default.createElement("div", { className: "form-window_header" },
+                react_1.default.createElement("span", { className: "form-window_header-text" }, "User"),
+                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign", onClick: this.close.bind(this) })),
+            react_1.default.createElement("form", { id: "form-user-form", className: "pane_form", autoComplete: "off", onSubmit: this.onClickHandler.bind(this) },
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "name" }, "Name:"),
+                    react_1.default.createElement("input", { type: "text", name: "name", defaultValue: name })),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "surname" }, "Surname:"),
+                    react_1.default.createElement("input", { type: "text", name: "surname", defaultValue: surname })),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "role" }, "Role: "),
+                    react_1.default.createElement("select", { name: "role", defaultValue: role },
+                        react_1.default.createElement("option", { value: "admin" }, "admin"),
+                        react_1.default.createElement("option", { value: "user" }, "user")),
+                    "*"),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "login" }, "Login: "),
+                    react_1.default.createElement("input", { type: "text", name: "login", defaultValue: login }),
+                    " *"),
                 this.state.mode === E.FORM_MODE.insert ? this.passRows() : '',
-                react_1.default.createElement("input", { type: "button", className: "button-primary", onClick: this.onClickHandler.bind(this), value: button }),
-                react_1.default.createElement("div", { id: "form-user-info" }))));
+                react_1.default.createElement("div", { className: "form_row -right" },
+                    react_1.default.createElement("button", { className: "gen_button", onClick: this.onClickHandler.bind(this) },
+                        react_1.default.createElement("span", { className: "icon-user" }),
+                        " ",
+                        button))),
+            react_1.default.createElement("div", { id: "form-user-info", className: "form-window_footer" }, "\u00A0")));
     }
     passRows() {
         return (react_1.default.createElement("div", null,
-            react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
-            react_1.default.createElement("input", { type: "password", id: "user-password", autoComplete: "new-password", name: "password", placeholder: "enter password" }),
-            ' ',
-            "*",
-            react_1.default.createElement("br", null),
-            react_1.default.createElement("label", { htmlFor: "passwordRepeat" }, "Password repeat: "),
-            react_1.default.createElement("input", { type: "password", id: "user-password-repeat", name: "passwordRepeat", placeholder: "repeat password" }),
-            " *",
-            react_1.default.createElement("br", null)));
+            react_1.default.createElement("div", { className: "form_row" },
+                react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
+                react_1.default.createElement("input", { type: "password", autoComplete: "new-password", name: "password", placeholder: "enter password" }),
+                " *"),
+            react_1.default.createElement("div", { className: "form_row" },
+                react_1.default.createElement("label", { htmlFor: "passwordRepeat" }, "Password repeat: "),
+                react_1.default.createElement("input", { type: "password", name: "passwordRepeat", placeholder: "repeat password" }),
+                " *")));
     }
-    onClickHandler() {
+    onClickHandler(e) {
+        e.preventDefault();
         const rawData = this.newUser;
         const info = document.getElementById('form-user-info');
         const form = document.getElementById('form-user-form');
@@ -899,7 +838,10 @@ class UserForm extends react_1.Component {
     }
     getData(_id) {
         if (_id) {
-            api_1.select('/api/users', _id).then((user) => this.setState({ user, mode: E.FORM_MODE.update }));
+            api_1.select('/api/users', _id).then((data) => {
+                const user = data[0];
+                this.setState({ user, mode: E.FORM_MODE.update });
+            });
         }
         else {
             this.setState({ user: this.newUser, mode: E.FORM_MODE.insert });
@@ -934,48 +876,7 @@ exports.default = UserForm;
 
 /***/ }),
 
-/***/ 274:
-/***/ (function(module, exports, __webpack_require__) {
-
-var api = __webpack_require__(195);
-            var content = __webpack_require__(275);
-
-            content = content.__esModule ? content.default : content;
-
-            if (typeof content === 'string') {
-              content = [[module.i, content, '']];
-            }
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = api(content, options);
-
-var exported = content.locals ? content.locals : {};
-
-
-
-module.exports = exported;
-
-/***/ }),
-
-/***/ 275:
-/***/ (function(module, exports, __webpack_require__) {
-
-// Imports
-var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(197);
-exports = ___CSS_LOADER_API_IMPORT___(false);
-// Module
-exports.push([module.i, "html {\n  --c-one: #4d677f;\n  --c-two: white;\n  --c-three: rgba(3, 2, 2, 0.25);\n  --c-border: #dbe1e4;\n}\n\n#form-user {\n  border: 1px solid var(--c-border);\n  background-color: var(--c-two);\n  width: 500px;\n  height: 425px;\n  box-shadow: 0px 4px 10px var(--c-three);\n  font-family: 'Ubuntu_Bold';\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  transform: translate(-50%, -50%);\n  z-index: 10;\n}\n\n#form-user.hidden {\n  display: none;\n}\n\n#form-user .formUser_header {\n  background-color: var(--c-one);\n  height: 26px;\n  line-height: 26px;\n}\n\n#form-user .formUser_header .formUser_header-text {\n  font-size: 16px;\n  margin-left: 10px;\n  color: var(--c-two);\n}\n\n#form-user .formUser_header .formUser_header-close {\n  display: block;\n  font-size: 16px;\n  margin-right: 4px;\n  background-color: var(--c-two);\n  color: var(--c-one);\n  border-radius: 50%;\n  width: 20px;\n  height: 20px;\n  float: right;\n  text-align: center;\n  line-height: 18px;\n  margin-top: 2px;\n  cursor: pointer;\n}\n\n#form-user form {\n  margin: 10px 20px;\n}\n\n#form-user label {\n  display: inline-block;\n  display: inline-block;\n  min-width: 120px;\n  text-align: right;\n  margin-right: 10px;\n  color: var(--c-one);\n}\n\n#form-user input,\n#form-user select {\n  min-width: 200px;\n}\n\n#form-user input[type='button'] {\n  position: relative;\n  margin: 0 58%;\n}\n", ""]);
-// Exports
-module.exports = exports;
-
-
-/***/ }),
-
-/***/ 276:
+/***/ 268:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1015,10 +916,14 @@ class UserList extends react_1.Component {
     }
     render() {
         const { data, loading } = this.state;
-        return (react_1.default.createElement("div", { key: "userList" },
-            react_1.default.createElement("input", { type: "button", "data-id": "", value: "new", onClick: this.onClickHandler.bind(this) }),
-            react_1.default.createElement("table", null,
-                react_1.default.createElement("caption", null, "Users"),
+        return (react_1.default.createElement("section", { id: "users_list", className: "pane", key: "userList" },
+            react_1.default.createElement("h4", null,
+                "Users",
+                react_1.default.createElement("span", { className: "button" },
+                    react_1.default.createElement("button", { className: "gen_button", "data-id": "", onClick: this.onClickHandler.bind(this) },
+                        react_1.default.createElement("span", { className: "icon-plus" }),
+                        " New user"))),
+            react_1.default.createElement("table", { className: "admin-table" },
                 react_1.default.createElement("thead", null,
                     react_1.default.createElement("tr", null,
                         react_1.default.createElement("th", null, "id"),
@@ -1037,7 +942,9 @@ class UserList extends react_1.Component {
         jsx.push(react_1.default.createElement("td", { key: "login" }, user.login));
         jsx.push(react_1.default.createElement("td", { key: "role" }, user.role));
         jsx.push(react_1.default.createElement("td", { key: "edit" },
-            react_1.default.createElement("input", { type: "button", "data-id": user._id, value: "edit", onClick: this.onClickHandler.bind(this) })));
+            react_1.default.createElement("button", { className: "gen_button", "data-id": user._id, onClick: this.onClickHandler.bind(this) },
+                react_1.default.createElement("span", { className: "icon-pencil" }),
+                "Edit")));
         return jsx;
     }
     userRows(users) {
