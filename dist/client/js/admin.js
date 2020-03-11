@@ -305,7 +305,8 @@ class EventList extends react_1.Component {
     }
     eventCols(event) {
         const jsx = [];
-        jsx.push(react_1.default.createElement("td", { key: "name" }, event.name));
+        jsx.push(react_1.default.createElement("td", { key: "name" },
+            react_1.default.createElement("a", { href: `${window.origin}/event/${event._id}`, target: "_blank", title: "link to event" }, event.name)));
         jsx.push(react_1.default.createElement("td", { key: "dateFrom" }, new Date(event.dateFrom).toLocaleString()));
         jsx.push(react_1.default.createElement("td", { key: "dateTo" }, new Date(event.dateTo).toLocaleString()));
         jsx.push(react_1.default.createElement("td", { key: "state" }, event.state));

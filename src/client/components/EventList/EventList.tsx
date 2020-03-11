@@ -57,7 +57,13 @@ export default class EventList extends Component<any, IEventListState> {
 
   private eventCols(event: I.Event): JSX.Element[] {
     const jsx: JSX.Element[] = [];
-    jsx.push(<td key="name">{event.name}</td>);
+    jsx.push(
+      <td key="name">
+        <a href={`${window.origin}/event/${event._id}`} target="_blank" title="link to event">
+          {event.name}
+        </a>
+      </td>
+    );
     jsx.push(<td key="dateFrom">{new Date(event.dateFrom).toLocaleString()}</td>);
     jsx.push(<td key="dateTo">{new Date(event.dateTo).toLocaleString()}</td>);
     jsx.push(<td key="state">{event.state}</td>);
