@@ -130,12 +130,21 @@ export function isCardValid(card: I.Card, event: I.Event | undefined) {
 
 export function isEventValid(event: I.Event) {
   const bugs: string[] = [];
+  let dates = 2;
 
   if (!hasData(event.dateFrom, 'number')) {
+    dates--;
     bugs.push('dateFrom');
   }
   if (!hasData(event.dateTo, 'number')) {
+    dates--;
     bugs.push('dateTo');
+  }
+  if (dates === 2) {
+    if (Number(event.dateFrom) >= Number(event.dateTo)) {
+      bugs.push('dateFrom');
+      bugs.push('dateTo');
+    }
   }
   if (!hasData(event.name)) {
     bugs.push('name');

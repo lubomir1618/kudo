@@ -3,6 +3,7 @@ import DatePicker from 'react-date-picker';
 import { insert, select, update } from '../../utils/api';
 import * as I from '../../../common/interfaces';
 import * as E from '../../../common/constants';
+import * as V from '../../../common/validate';
 
 interface IEventFormProps {
   userId: string;
@@ -142,24 +143,29 @@ export default class EventForm extends Component<IEventFormProps, IEventFormStat
       (data[key as keyof I.Event] as any) = item;
     });
 
-    if (this.state.mode === 'insert') {
-      insert<I.Event>('/api/events', data)
-        .then(() => {
-          info.innerText = 'Success: Event added.';
-          document.dispatchEvent(new CustomEvent('kudoz::eventListRefresh'));
-        })
-        .catch((err: Error) => {
-          info.innerText = `Error: ${err.message}`;
-        });
+    const okEvent = V.isEventValid(data);
+    if (okEvent === true) {
+      if (this.state.mode === 'insert') {
+        insert<I.Event>('/api/events', data)
+          .then(() => {
+            info.innerText = 'Success: Event added.';
+            document.dispatchEvent(new CustomEvent('kudoz::eventListRefresh'));
+          })
+          .catch((err: Error) => {
+            info.innerText = `Error: ${err.message}`;
+          });
+      } else {
+        update<I.Event>('/api/events', this.state.event._id as string, data)
+          .then(() => {
+            info.innerText = 'Success: Event updated.';
+            document.dispatchEvent(new CustomEvent('kudoz::eventListRefresh'));
+          })
+          .catch((err: Error) => {
+            info.innerText = `Error: ${err.message}`;
+          });
+      }
     } else {
-      update<I.Event>('/api/events', this.state.event._id as string, data)
-        .then(() => {
-          info.innerText = 'Success: Event updated.';
-          document.dispatchEvent(new CustomEvent('kudoz::eventListRefresh'));
-        })
-        .catch((err: Error) => {
-          info.innerText = `Error: ${err.message}`;
-        });
+      info.innerText = `Error: ${okEvent.join(', ')}`;
     }
   }
 

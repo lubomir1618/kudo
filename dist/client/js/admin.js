@@ -45,8 +45,8 @@ const E = __importStar(__webpack_require__(208));
 const client_1 = __webpack_require__(34);
 const api_1 = __webpack_require__(33);
 const EventForm_1 = __importDefault(__webpack_require__(262));
-const EventList_1 = __importDefault(__webpack_require__(316));
-const LoginForm_1 = __importDefault(__webpack_require__(317));
+const EventList_1 = __importDefault(__webpack_require__(317));
+const LoginForm_1 = __importDefault(__webpack_require__(318));
 const PasswordForm_1 = __importDefault(__webpack_require__(319));
 const UserForm_1 = __importDefault(__webpack_require__(320));
 const UserList_1 = __importDefault(__webpack_require__(321));
@@ -183,6 +183,7 @@ const react_1 = __importStar(__webpack_require__(1));
 const react_date_picker_1 = __importDefault(__webpack_require__(263));
 const api_1 = __webpack_require__(33);
 const E = __importStar(__webpack_require__(208));
+const V = __importStar(__webpack_require__(316));
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -282,25 +283,31 @@ class EventForm extends react_1.Component {
         formData.forEach((item, key) => {
             data[key] = item;
         });
-        if (this.state.mode === 'insert') {
-            api_1.insert('/api/events', data)
-                .then(() => {
-                info.innerText = 'Success: Event added.';
-                document.dispatchEvent(new CustomEvent('kudoz::eventListRefresh'));
-            })
-                .catch((err) => {
-                info.innerText = `Error: ${err.message}`;
-            });
+        const okEvent = V.isEventValid(data);
+        if (okEvent === true) {
+            if (this.state.mode === 'insert') {
+                api_1.insert('/api/events', data)
+                    .then(() => {
+                    info.innerText = 'Success: Event added.';
+                    document.dispatchEvent(new CustomEvent('kudoz::eventListRefresh'));
+                })
+                    .catch((err) => {
+                    info.innerText = `Error: ${err.message}`;
+                });
+            }
+            else {
+                api_1.update('/api/events', this.state.event._id, data)
+                    .then(() => {
+                    info.innerText = 'Success: Event updated.';
+                    document.dispatchEvent(new CustomEvent('kudoz::eventListRefresh'));
+                })
+                    .catch((err) => {
+                    info.innerText = `Error: ${err.message}`;
+                });
+            }
         }
         else {
-            api_1.update('/api/events', this.state.event._id, data)
-                .then(() => {
-                info.innerText = 'Success: Event updated.';
-                document.dispatchEvent(new CustomEvent('kudoz::eventListRefresh'));
-            })
-                .catch((err) => {
-                info.innerText = `Error: ${err.message}`;
-            });
+            info.innerText = `Error: ${okEvent.join(', ')}`;
         }
     }
     onClose() {
@@ -320,187 +327,6 @@ exports.default = EventForm;
 /***/ }),
 
 /***/ 316:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(1));
-const api_1 = __webpack_require__(33);
-const E = __importStar(__webpack_require__(208));
-class EventList extends react_1.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            data: [],
-            loading: true,
-            role: props.role,
-            userId: props.userId
-        };
-        this.bind = {
-            onClickHandler: this.onClickHandler.bind(this),
-            onListRefresh: this.onListRefresh.bind(this)
-        };
-    }
-    componentDidMount() {
-        this.getData();
-        document.addEventListener('kudoz::eventListRefresh', this.bind.onListRefresh);
-    }
-    componentWillUnmount() {
-        document.removeEventListener('kudoz::eventListRefresh', this.bind.onListRefresh);
-    }
-    render() {
-        const { data, loading } = this.state;
-        return (react_1.default.createElement("section", { id: "events_list", className: "pane", key: "eventList" },
-            react_1.default.createElement("h4", null,
-                "Events",
-                react_1.default.createElement("span", { className: "button" },
-                    react_1.default.createElement("button", { className: "gen_button", "data-id": "", onClick: this.bind.onClickHandler },
-                        react_1.default.createElement("span", { className: "icon-plus" }),
-                        " New event"))),
-            react_1.default.createElement("table", { className: "admin-table" },
-                react_1.default.createElement("thead", null,
-                    react_1.default.createElement("tr", null,
-                        react_1.default.createElement("th", null, "id"),
-                        react_1.default.createElement("th", null, "name"),
-                        react_1.default.createElement("th", null, "dateFrom"),
-                        react_1.default.createElement("th", null, "dateTo"),
-                        react_1.default.createElement("th", null, "state"),
-                        react_1.default.createElement("th", null, "action"))),
-                react_1.default.createElement("tbody", null, loading ? this.loading() : this.eventRows(data)))));
-    }
-    eventCols(event) {
-        const jsx = [];
-        jsx.push(react_1.default.createElement("td", { key: "_id" }, event._id));
-        jsx.push(react_1.default.createElement("td", { key: "name" },
-            react_1.default.createElement("a", { href: `${window.origin}/event/${event._id}`, target: "_blank", title: "link to event" }, event.name)));
-        jsx.push(react_1.default.createElement("td", { key: "dateFrom" }, new Date(event.dateFrom).toLocaleString()));
-        jsx.push(react_1.default.createElement("td", { key: "dateTo" }, new Date(event.dateTo).toLocaleString()));
-        jsx.push(react_1.default.createElement("td", { key: "state" }, event.state));
-        jsx.push(react_1.default.createElement("td", { key: "edit" },
-            react_1.default.createElement("button", { className: "gen_button", "data-id": event._id, onClick: this.bind.onClickHandler },
-                react_1.default.createElement("span", { className: "icon-pencil" }),
-                " Edit")));
-        return jsx;
-    }
-    eventRows(events) {
-        const jsx = [];
-        events.forEach((event) => {
-            jsx.push(react_1.default.createElement("tr", { key: event._id }, this.eventCols(event)));
-        });
-        return jsx;
-    }
-    loading() {
-        return (react_1.default.createElement("tr", null,
-            react_1.default.createElement("td", { colSpan: 5 }, "Loading...")));
-    }
-    getData() {
-        const where = this.state.role === E.USER_ROLE.admin ? undefined : { userId: this.state.userId };
-        api_1.select('/api/events', where).then((data) => this.setState({ data, loading: false }));
-    }
-    onClickHandler(e) {
-        var _a;
-        const _id = (_a = e.currentTarget.dataset.id) !== null && _a !== void 0 ? _a : undefined;
-        document.dispatchEvent(new CustomEvent('kudoz::eventFormRefresh', { detail: { _id } }));
-    }
-    onListRefresh() {
-        this.setState({ loading: true });
-        this.getData();
-    }
-}
-exports.default = EventList;
-
-
-/***/ }),
-
-/***/ 317:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const react_1 = __importStar(__webpack_require__(1));
-const V = __importStar(__webpack_require__(318));
-const E = __importStar(__webpack_require__(208));
-const api_1 = __webpack_require__(33);
-const client_1 = __webpack_require__(34);
-class LoginForm extends react_1.Component {
-    constructor(props) {
-        super(props);
-        this.bind = {
-            onLoginHandler: this.onLoginHandler.bind(this)
-        };
-    }
-    render() {
-        return (react_1.default.createElement("div", { id: "form-login", key: "loginForm", className: "form-window" },
-            react_1.default.createElement("div", { className: "form-window_header" },
-                react_1.default.createElement("span", { className: "form-window_header-text" }, "Sign in"),
-                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign" })),
-            react_1.default.createElement("form", { id: "form-login-form", className: "pane_form", autoComplete: "off", onSubmit: this.bind.onLoginHandler },
-                react_1.default.createElement("div", { className: "form_row" },
-                    react_1.default.createElement("label", { htmlFor: "name" }, "Login:"),
-                    react_1.default.createElement("input", { type: "text", name: "login", placeholder: "enter login" })),
-                react_1.default.createElement("div", { className: "form_row" },
-                    react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
-                    react_1.default.createElement("input", { type: "password", autoComplete: "new-password", name: "password", placeholder: "enter password" })),
-                react_1.default.createElement("div", { className: "form_row -right" },
-                    react_1.default.createElement("button", { className: "gen_button", onClick: this.bind.onLoginHandler },
-                        react_1.default.createElement("span", { className: "icon-circle-arrow-right" }),
-                        " Sign in"))),
-            react_1.default.createElement("div", { id: "form-login-info", className: "form-window_footer" }, "\u00A0")));
-    }
-    onLoginHandler(e) {
-        e.preventDefault();
-        const info = document.getElementById('form-login-info');
-        const form = document.getElementById('form-login-form');
-        const formData = new FormData(form);
-        const login = formData.get('login');
-        const plainPassword = formData.get('password');
-        const okAuth = V.isAuthValid({ login, password: plainPassword }, E.FORM_MODE.insert);
-        if (okAuth === true) {
-            api_1.select('/api/auth', login)
-                .then((data) => {
-                const password = client_1.encodePassword(plainPassword, data.salt);
-                return api_1.auth({ login, password });
-            })
-                .then((data) => {
-                if (data.authenticated) {
-                    document.dispatchEvent(new CustomEvent('kudoz::authenticated', { detail: data }));
-                }
-                else {
-                    info.innerText = 'Error: authentication failed';
-                }
-            })
-                .catch((err) => {
-                info.innerText = 'Error: authentication failed';
-            });
-        }
-        else {
-            info.innerText = `Error: ${okAuth.join(', ')}`;
-            return;
-        }
-    }
-}
-exports.default = LoginForm;
-
-
-/***/ }),
-
-/***/ 318:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -634,11 +460,20 @@ function isCardValid(card, event) {
 exports.isCardValid = isCardValid;
 function isEventValid(event) {
     const bugs = [];
+    let dates = 2;
     if (!hasData(event.dateFrom, 'number')) {
+        dates--;
         bugs.push('dateFrom');
     }
     if (!hasData(event.dateTo, 'number')) {
+        dates--;
         bugs.push('dateTo');
+    }
+    if (dates === 2) {
+        if (Number(event.dateFrom) >= Number(event.dateTo)) {
+            bugs.push('dateFrom');
+            bugs.push('dateTo');
+        }
     }
     if (!hasData(event.name)) {
         bugs.push('name');
@@ -652,6 +487,187 @@ function isEventValid(event) {
     return bugs.length ? bugs : true;
 }
 exports.isEventValid = isEventValid;
+
+
+/***/ }),
+
+/***/ 317:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(1));
+const api_1 = __webpack_require__(33);
+const E = __importStar(__webpack_require__(208));
+class EventList extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: [],
+            loading: true,
+            role: props.role,
+            userId: props.userId
+        };
+        this.bind = {
+            onClickHandler: this.onClickHandler.bind(this),
+            onListRefresh: this.onListRefresh.bind(this)
+        };
+    }
+    componentDidMount() {
+        this.getData();
+        document.addEventListener('kudoz::eventListRefresh', this.bind.onListRefresh);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('kudoz::eventListRefresh', this.bind.onListRefresh);
+    }
+    render() {
+        const { data, loading } = this.state;
+        return (react_1.default.createElement("section", { id: "events_list", className: "pane", key: "eventList" },
+            react_1.default.createElement("h4", null,
+                "Events",
+                react_1.default.createElement("span", { className: "button" },
+                    react_1.default.createElement("button", { className: "gen_button", "data-id": "", onClick: this.bind.onClickHandler },
+                        react_1.default.createElement("span", { className: "icon-plus" }),
+                        " New event"))),
+            react_1.default.createElement("table", { className: "admin-table" },
+                react_1.default.createElement("thead", null,
+                    react_1.default.createElement("tr", null,
+                        react_1.default.createElement("th", null, "id"),
+                        react_1.default.createElement("th", null, "name"),
+                        react_1.default.createElement("th", null, "dateFrom"),
+                        react_1.default.createElement("th", null, "dateTo"),
+                        react_1.default.createElement("th", null, "state"),
+                        react_1.default.createElement("th", null, "action"))),
+                react_1.default.createElement("tbody", null, loading ? this.loading() : this.eventRows(data)))));
+    }
+    eventCols(event) {
+        const jsx = [];
+        jsx.push(react_1.default.createElement("td", { key: "_id" }, event._id));
+        jsx.push(react_1.default.createElement("td", { key: "name" },
+            react_1.default.createElement("a", { href: `${window.origin}/event/${event._id}`, target: "_blank", title: "link to event" }, event.name)));
+        jsx.push(react_1.default.createElement("td", { key: "dateFrom" }, new Date(event.dateFrom).toLocaleString()));
+        jsx.push(react_1.default.createElement("td", { key: "dateTo" }, new Date(event.dateTo).toLocaleString()));
+        jsx.push(react_1.default.createElement("td", { key: "state" }, event.state));
+        jsx.push(react_1.default.createElement("td", { key: "edit" },
+            react_1.default.createElement("button", { className: "gen_button", "data-id": event._id, onClick: this.bind.onClickHandler },
+                react_1.default.createElement("span", { className: "icon-pencil" }),
+                " Edit")));
+        return jsx;
+    }
+    eventRows(events) {
+        const jsx = [];
+        events.forEach((event) => {
+            jsx.push(react_1.default.createElement("tr", { key: event._id }, this.eventCols(event)));
+        });
+        return jsx;
+    }
+    loading() {
+        return (react_1.default.createElement("tr", null,
+            react_1.default.createElement("td", { colSpan: 5 }, "Loading...")));
+    }
+    getData() {
+        const where = this.state.role === E.USER_ROLE.admin ? undefined : { userId: this.state.userId };
+        api_1.select('/api/events', where).then((data) => this.setState({ data, loading: false }));
+    }
+    onClickHandler(e) {
+        var _a;
+        const _id = (_a = e.currentTarget.dataset.id) !== null && _a !== void 0 ? _a : undefined;
+        document.dispatchEvent(new CustomEvent('kudoz::eventFormRefresh', { detail: { _id } }));
+    }
+    onListRefresh() {
+        this.setState({ loading: true });
+        this.getData();
+    }
+}
+exports.default = EventList;
+
+
+/***/ }),
+
+/***/ 318:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(1));
+const V = __importStar(__webpack_require__(316));
+const E = __importStar(__webpack_require__(208));
+const api_1 = __webpack_require__(33);
+const client_1 = __webpack_require__(34);
+class LoginForm extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.bind = {
+            onLoginHandler: this.onLoginHandler.bind(this)
+        };
+    }
+    render() {
+        return (react_1.default.createElement("div", { id: "form-login", key: "loginForm", className: "form-window" },
+            react_1.default.createElement("div", { className: "form-window_header" },
+                react_1.default.createElement("span", { className: "form-window_header-text" }, "Sign in"),
+                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign" })),
+            react_1.default.createElement("form", { id: "form-login-form", className: "pane_form", autoComplete: "off", onSubmit: this.bind.onLoginHandler },
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "name" }, "Login:"),
+                    react_1.default.createElement("input", { type: "text", name: "login", placeholder: "enter login" })),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
+                    react_1.default.createElement("input", { type: "password", autoComplete: "new-password", name: "password", placeholder: "enter password" })),
+                react_1.default.createElement("div", { className: "form_row -right" },
+                    react_1.default.createElement("button", { className: "gen_button", onClick: this.bind.onLoginHandler },
+                        react_1.default.createElement("span", { className: "icon-circle-arrow-right" }),
+                        " Sign in"))),
+            react_1.default.createElement("div", { id: "form-login-info", className: "form-window_footer" }, "\u00A0")));
+    }
+    onLoginHandler(e) {
+        e.preventDefault();
+        const info = document.getElementById('form-login-info');
+        const form = document.getElementById('form-login-form');
+        const formData = new FormData(form);
+        const login = formData.get('login');
+        const plainPassword = formData.get('password');
+        const okAuth = V.isAuthValid({ login, password: plainPassword }, E.FORM_MODE.insert);
+        if (okAuth === true) {
+            api_1.select('/api/auth', login)
+                .then((data) => {
+                const password = client_1.encodePassword(plainPassword, data.salt);
+                return api_1.auth({ login, password });
+            })
+                .then((data) => {
+                if (data.authenticated) {
+                    document.dispatchEvent(new CustomEvent('kudoz::authenticated', { detail: data }));
+                }
+                else {
+                    info.innerText = 'Error: authentication failed';
+                }
+            })
+                .catch((err) => {
+                info.innerText = 'Error: authentication failed';
+            });
+        }
+        else {
+            info.innerText = `Error: ${okAuth.join(', ')}`;
+            return;
+        }
+    }
+}
+exports.default = LoginForm;
 
 
 /***/ }),
@@ -671,7 +687,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(208));
-const V = __importStar(__webpack_require__(318));
+const V = __importStar(__webpack_require__(316));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class PasswordForm extends react_1.Component {
@@ -793,7 +809,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(208));
-const V = __importStar(__webpack_require__(318));
+const V = __importStar(__webpack_require__(316));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class UserForm extends react_1.Component {
