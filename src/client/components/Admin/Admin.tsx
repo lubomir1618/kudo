@@ -18,6 +18,12 @@ interface IAdminState {
 
 export default class Admin extends Component<any, IAdminState> {
   private sessionCheckIntervalID: number = 0;
+  private bind: {
+    onAuthenticated: EventListener;
+    onLogoutHandler: () => void;
+    onPasswordHandler: () => void;
+    onTabsHandler: (e: React.MouseEvent<HTMLLIElement>) => void;
+  };
 
   constructor(props: any) {
     super(props);
@@ -28,24 +34,27 @@ export default class Admin extends Component<any, IAdminState> {
       role === false
         ? { authenticated: false, role: E.USER_ROLE.none, userId }
         : { authenticated: true, role: role as E.USER_ROLE, userId };
+
+    this.bind = {
+      onAuthenticated: this.onAuthenticated.bind(this) as EventListener,
+      onLogoutHandler: this.onLogoutHandler.bind(this),
+      onPasswordHandler: this.onPasswordHandler.bind(this),
+      onTabsHandler: this.onTabsHandler.bind(this)
+    };
   }
 
   public componentDidMount() {
-    document.addEventListener('kudoz::authenticated', ((e: CustomEvent) => {
-      this.setState({
-        authenticated: true,
-        role: e.detail.role,
-        userId: e.detail.userId
-      });
-      this.sessionCheck();
-    }) as EventListener);
+    document.addEventListener('kudoz::authenticated', this.bind.onAuthenticated);
+  }
+
+  public componentWillUnmount() {
+    document.removeEventListener('kudoz::userFormRefresh', this.bind.onAuthenticated);
   }
 
   public componentDidUpdate() {
     const pane = document.getElementById('events_list');
     if (pane) {
       pane.style.display = 'block';
-      // pane.style.visibility = 'visible';
     }
   }
 
@@ -64,15 +73,11 @@ export default class Admin extends Component<any, IAdminState> {
 
     jsx.push(
       <div className="admin_buttons" key="adminButtons">
-        <button id="admin-logout" className="gen_button" key="logoutButton" onClick={this.onLogoutHandler.bind(this)}>
+        <button id="admin-logout" className="gen_button" key="logoutButton" onClick={this.bind.onLogoutHandler}>
           <span className="icon-power-off" /> Sign out
         </button>
-        <button
-          id="admin-password"
-          className="gen_button"
-          key="passwordButton"
-          onClick={this.onPasswordHandler.bind(this)}>
-            <span className="icon-key" /> Change pass
+        <button id="admin-password" className="gen_button" key="passwordButton" onClick={this.bind.onPasswordHandler}>
+          <span className="icon-key" /> Change pass
         </button>
       </div>
     );
@@ -92,12 +97,12 @@ export default class Admin extends Component<any, IAdminState> {
           <nav>
             <ul id="tabs" className="tabrow">
               {isUser && (
-                <li className="selected" data-pane="events_list" onClick={this.onTabsHandler.bind(this)}>
+                <li className="selected" data-pane="events_list" onClick={this.bind.onTabsHandler}>
                   <span className="icon-calendar"></span> Events
                 </li>
               )}
               {isAdmin && (
-                <li data-pane="users_list" onClick={this.onTabsHandler.bind(this)}>
+                <li data-pane="users_list" onClick={this.bind.onTabsHandler}>
                   <span className="icon-group"></span> Users
                 </li>
               )}
@@ -140,10 +145,8 @@ export default class Admin extends Component<any, IAdminState> {
     if (pane) {
       for (const el of document.querySelectorAll<HTMLElement>('.pane')) {
         el.style.display = 'none';
-        // el.style.visibility = 'hidden';
       }
       pane.style.display = 'block';
-      // pane.style.visibility = 'visible';
       for (const el of document.querySelectorAll<HTMLLIElement>('li')) {
         el.classList.remove('selected');
       }
@@ -153,5 +156,14 @@ export default class Admin extends Component<any, IAdminState> {
 
   private onPasswordHandler() {
     document.dispatchEvent(new CustomEvent('kudoz::passwordFormRefresh'));
+  }
+
+  private onAuthenticated(e: CustomEvent) {
+    this.setState({
+      authenticated: true,
+      role: e.detail.role,
+      userId: e.detail.userId
+    });
+    this.sessionCheck();
   }
 }

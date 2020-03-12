@@ -8,29 +8,30 @@ interface IUserListState {
 }
 
 export default class UserList extends Component<any, IUserListState> {
+  private bind: {
+    onClickHandler: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    onListRefresh: EventListener;
+  };
+
   constructor(props: any) {
     super(props);
     this.state = {
       data: [],
       loading: true
     };
+    this.bind = {
+      onClickHandler: this.onClickHandler.bind(this),
+      onListRefresh: this.onListRefresh.bind(this) as EventListener
+    };
   }
 
   public componentDidMount() {
     this.getData();
-    document.addEventListener('kudoz::userListRefresh', () => {
-      this.setState({ loading: true });
-      this.getData();
-    });
+    document.addEventListener('kudoz::userListRefresh', this.bind.onListRefresh);
   }
 
-  public getData() {
-    select<I.User[]>('/api/users').then((data) => this.setState({ data, loading: false }));
-  }
-
-  public onClickHandler(e: React.MouseEvent<HTMLButtonElement>) {
-    const _id = e.currentTarget.dataset.id ?? undefined;
-    document.dispatchEvent(new CustomEvent('kudoz::userFormRefresh', { detail: { _id } }));
+  public componentWillUnmount() {
+    document.removeEventListener('kudoz::userListRefresh', this.bind.onListRefresh);
   }
 
   public render() {
@@ -40,7 +41,7 @@ export default class UserList extends Component<any, IUserListState> {
         <h4>
           Users
           <span className="button">
-            <button className="gen_button" data-id="" onClick={this.onClickHandler.bind(this)}>
+            <button className="gen_button" data-id="" onClick={this.bind.onClickHandler}>
               <span className="icon-plus" /> New user
             </button>
           </span>
@@ -71,8 +72,9 @@ export default class UserList extends Component<any, IUserListState> {
     jsx.push(<td key="role">{user.role}</td>);
     jsx.push(
       <td key="edit">
-        <button className="gen_button" data-id={user._id} onClick={this.onClickHandler.bind(this)}>
-          <span className="icon-pencil"/>Edit
+        <button className="gen_button" data-id={user._id} onClick={this.bind.onClickHandler}>
+          <span className="icon-pencil" />
+          Edit
         </button>
       </td>
     );
@@ -93,5 +95,19 @@ export default class UserList extends Component<any, IUserListState> {
         <td colSpan={5}>Loading...</td>
       </tr>
     );
+  }
+
+  private getData() {
+    select<I.User[]>('/api/users').then((data) => this.setState({ data, loading: false }));
+  }
+
+  private onClickHandler(e: React.MouseEvent<HTMLButtonElement>) {
+    const _id = e.currentTarget.dataset.id ?? undefined;
+    document.dispatchEvent(new CustomEvent('kudoz::userFormRefresh', { detail: { _id } }));
+  }
+
+  private onListRefresh() {
+    this.setState({ loading: true });
+    this.getData();
   }
 }

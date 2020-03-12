@@ -5,11 +5,47 @@ import { auth, select } from '../../utils/api';
 import { encodePassword } from '../../utils/client';
 
 export default class LoginForm extends Component<any, any> {
+  private bind: {
+    onLoginHandler: (e: React.FormEvent) => void;
+  };
+
   constructor(props: any) {
     super(props);
+    this.bind = {
+      onLoginHandler: this.onLoginHandler.bind(this)
+    };
   }
 
-  public onLoginHandler(e: React.FormEvent) {
+  public render() {
+    return (
+      <div id="form-login" key="loginForm" className="form-window">
+        <div className="form-window_header">
+          <span className="form-window_header-text">Sign in</span>
+          <span className="form-window_header-close icon-remove-sign" />
+        </div>
+        <form id="form-login-form" className="pane_form" autoComplete="off" onSubmit={this.bind.onLoginHandler}>
+          <div className="form_row">
+            <label htmlFor="name">Login:</label>
+            <input type="text" name="login" placeholder="enter login" />
+          </div>
+          <div className="form_row">
+            <label htmlFor="password">Password: </label>
+            <input type="password" autoComplete="new-password" name="password" placeholder="enter password" />
+          </div>
+          <div className="form_row -right">
+            <button className="gen_button" onClick={this.bind.onLoginHandler}>
+              <span className="icon-circle-arrow-right" /> Sign in
+            </button>
+          </div>
+        </form>
+        <div id="form-login-info" className="form-window_footer">
+          &nbsp;
+        </div>
+      </div>
+    );
+  }
+
+  private onLoginHandler(e: React.FormEvent) {
     e.preventDefault();
 
     const info = document.getElementById('form-login-info') as HTMLDivElement;
@@ -40,37 +76,5 @@ export default class LoginForm extends Component<any, any> {
       info.innerText = `Error: ${okAuth.join(', ')}`;
       return;
     }
-  }
-
-  public render() {
-    return (
-      <div id="form-login" key="loginForm" className="form-window">
-        <div className="form-window_header">
-          <span className="form-window_header-text">Sign in</span>
-          <span className="form-window_header-close icon-remove-sign" />
-        </div>
-        <form id="form-login-form" className="pane_form" autoComplete="off" onSubmit={this.onLoginHandler.bind(this)}>
-          <div className="form_row">
-            <label htmlFor="name">Login:</label>
-            <input type="text" name="login" placeholder="enter login" />
-          </div>
-          <div className="form_row">
-            <label htmlFor="password">Password: </label>
-            <input
-              type="password"
-              autoComplete="new-password"
-              name="password"
-              placeholder="enter password"
-            />
-          </div>
-          <div className="form_row -right">
-            <button className="gen_button" onClick={this.onLoginHandler.bind(this)}>
-              <span className="icon-circle-arrow-right" /> Sign in
-            </button>
-          </div>
-        </form>
-        <div id="form-login-info" className="form-window_footer">&nbsp;</div>
-      </div>
-    );
   }
 }

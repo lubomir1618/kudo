@@ -11,7 +11,12 @@ interface IUserFormState {
 }
 
 export default class UserForm extends Component<any, IUserFormState> {
-  private newUser: I.UserForm;
+  private readonly newUser: I.UserForm;
+  private bind: {
+    onClickHandler: (e: React.FormEvent) => void;
+    onClose: () => void;
+    onFormRefresh: EventListener;
+  };
 
   constructor(props: any) {
     super(props);
@@ -26,16 +31,21 @@ export default class UserForm extends Component<any, IUserFormState> {
     };
     this.state = {
       mode: E.FORM_MODE.hidden,
-      user: this.newUser
+      user: { ...this.newUser }
+    };
+    this.bind = {
+      onClickHandler: this.onClickHandler.bind(this),
+      onClose: this.onClose.bind(this),
+      onFormRefresh: this.onFormRefresh.bind(this) as EventListener
     };
   }
 
   public componentDidMount(): void {
-    document.addEventListener('kudoz::userFormRefresh', ((e: CustomEvent) => {
-      const info = document.getElementById('form-user-info') as HTMLDivElement;
-      info.innerText = ' ';
-      this.getData(e.detail._id);
-    }) as EventListener);
+    document.addEventListener('kudoz::userFormRefresh', this.bind.onFormRefresh);
+  }
+
+  public componentWillUnmount() {
+    document.removeEventListener('kudoz::userFormRefresh', this.bind.onFormRefresh);
   }
 
   public render(): JSX.Element {
@@ -47,12 +57,12 @@ export default class UserForm extends Component<any, IUserFormState> {
       <div id="form-user" key="userForm" className={`form-window${classHidden}`}>
         <div className="form-window_header">
           <span className="form-window_header-text">User</span>
-          <span className="form-window_header-close icon-remove-sign" onClick={this.close.bind(this)} />
+          <span className="form-window_header-close icon-remove-sign" onClick={this.bind.onClose} />
         </div>
-        <form id="form-user-form" className="pane_form" autoComplete="off" onSubmit={this.onClickHandler.bind(this)}>
+        <form id="form-user-form" className="pane_form" autoComplete="off" onSubmit={this.bind.onClickHandler}>
           <div className="form_row">
             <label htmlFor="name">Name:</label>
-            <input type="text"name="name" defaultValue={name} />
+            <input type="text" name="name" defaultValue={name} />
           </div>
           <div className="form_row">
             <label htmlFor="surname">Surname:</label>
@@ -72,12 +82,14 @@ export default class UserForm extends Component<any, IUserFormState> {
           </div>
           {this.state.mode === E.FORM_MODE.insert ? this.passRows() : ''}
           <div className="form_row -right">
-            <button className="gen_button" onClick={this.onClickHandler.bind(this)}>
+            <button className="gen_button" onClick={this.bind.onClickHandler}>
               <span className="icon-user" /> {button}
             </button>
           </div>
         </form>
-        <div id="form-user-info" className="form-window_footer">&nbsp;</div>
+        <div id="form-user-info" className="form-window_footer">
+          &nbsp;
+        </div>
       </div>
     );
   }
@@ -100,7 +112,7 @@ export default class UserForm extends Component<any, IUserFormState> {
   private onClickHandler(e: React.FormEvent): void {
     e.preventDefault();
 
-    const rawData: I.UserForm = this.newUser;
+    const rawData: I.UserForm = { ...this.newUser };
     const info = document.getElementById('form-user-info') as HTMLDivElement;
     const form = document.getElementById('form-user-form') as HTMLFormElement;
     const formData = new FormData(form);
@@ -135,7 +147,9 @@ export default class UserForm extends Component<any, IUserFormState> {
     this.setData(data);
   }
 
-  private close(): void {
+  private onClose(): void {
+    const form = document.getElementById('form-user-form') as HTMLFormElement;
+    form.reset();
     this.setState({ mode: E.FORM_MODE.hidden });
   }
 
@@ -143,10 +157,10 @@ export default class UserForm extends Component<any, IUserFormState> {
     if (_id) {
       select<I.User[]>('/api/users', _id).then((data) => {
         const user = data[0];
-        this.setState({ user, mode: E.FORM_MODE.update })
+        this.setState({ user, mode: E.FORM_MODE.update });
       });
     } else {
-      this.setState({ user: this.newUser, mode: E.FORM_MODE.insert });
+      this.setState({ user: { ...this.newUser }, mode: E.FORM_MODE.insert });
     }
   }
 
@@ -172,5 +186,11 @@ export default class UserForm extends Component<any, IUserFormState> {
           info.innerText = `Error: ${err.message}`;
         });
     }
+  }
+
+  private onFormRefresh(e: CustomEvent) {
+    const info = document.getElementById('form-user-info') as HTMLDivElement;
+    info.innerText = ' ';
+    this.getData(e.detail._id);
   }
 }

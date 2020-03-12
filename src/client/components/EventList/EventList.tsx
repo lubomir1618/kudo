@@ -14,6 +14,11 @@ interface IEventListState extends IEventListProps {
 }
 
 export default class EventList extends Component<IEventListProps, IEventListState> {
+  private bind: {
+    onClickHandler: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    onListRefresh: EventListener;
+  };
+
   constructor(props: IEventListProps) {
     super(props);
     this.state = {
@@ -22,25 +27,19 @@ export default class EventList extends Component<IEventListProps, IEventListStat
       role: props.role,
       userId: props.userId
     };
+    this.bind = {
+      onClickHandler: this.onClickHandler.bind(this),
+      onListRefresh: this.onListRefresh.bind(this) as EventListener
+    };
   }
 
   public componentDidMount() {
     this.getData();
-    document.addEventListener('kudoz::eventListRefresh', () => {
-      this.setState({ loading: true });
-      this.getData();
-    });
+    document.addEventListener('kudoz::eventListRefresh', this.bind.onListRefresh);
   }
 
-  public getData() {
-    const where = this.state.role === E.USER_ROLE.admin ? undefined : { userId: this.state.userId };
-
-    select<I.Event[]>('/api/events', where).then((data) => this.setState({ data, loading: false }));
-  }
-
-  public onClickHandler(e: React.MouseEvent<HTMLButtonElement>) {
-    const _id = e.currentTarget.dataset.id ?? undefined;
-    document.dispatchEvent(new CustomEvent('kudoz::eventFormRefresh', { detail: { _id } }));
+  public componentWillUnmount() {
+    document.removeEventListener('kudoz::eventListRefresh', this.bind.onListRefresh);
   }
 
   public render() {
@@ -50,7 +49,7 @@ export default class EventList extends Component<IEventListProps, IEventListStat
         <h4>
           Events
           <span className="button">
-            <button className="gen_button" data-id="" onClick={this.onClickHandler.bind(this)}>
+            <button className="gen_button" data-id="" onClick={this.bind.onClickHandler}>
               <span className="icon-plus" /> New event
             </button>
           </span>
@@ -87,8 +86,8 @@ export default class EventList extends Component<IEventListProps, IEventListStat
     jsx.push(<td key="state">{event.state}</td>);
     jsx.push(
       <td key="edit">
-        <button className="gen_button" data-id={event._id} onClick={this.onClickHandler.bind(this)}>
-          <span className="icon-pencil"/> Edit
+        <button className="gen_button" data-id={event._id} onClick={this.bind.onClickHandler}>
+          <span className="icon-pencil" /> Edit
         </button>
       </td>
     );
@@ -109,5 +108,21 @@ export default class EventList extends Component<IEventListProps, IEventListStat
         <td colSpan={5}>Loading...</td>
       </tr>
     );
+  }
+
+  private getData() {
+    const where = this.state.role === E.USER_ROLE.admin ? undefined : { userId: this.state.userId };
+
+    select<I.Event[]>('/api/events', where).then((data) => this.setState({ data, loading: false }));
+  }
+
+  private onClickHandler(e: React.MouseEvent<HTMLButtonElement>) {
+    const _id = e.currentTarget.dataset.id ?? undefined;
+    document.dispatchEvent(new CustomEvent('kudoz::eventFormRefresh', { detail: { _id } }));
+  }
+
+  private onListRefresh() {
+    this.setState({ loading: true });
+    this.getData();
   }
 }

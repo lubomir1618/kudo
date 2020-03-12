@@ -45,11 +45,11 @@ const E = __importStar(__webpack_require__(208));
 const client_1 = __webpack_require__(34);
 const api_1 = __webpack_require__(33);
 const EventForm_1 = __importDefault(__webpack_require__(262));
-const EventList_1 = __importDefault(__webpack_require__(263));
-const LoginForm_1 = __importDefault(__webpack_require__(264));
-const PasswordForm_1 = __importDefault(__webpack_require__(266));
-const UserForm_1 = __importDefault(__webpack_require__(267));
-const UserList_1 = __importDefault(__webpack_require__(268));
+const EventList_1 = __importDefault(__webpack_require__(316));
+const LoginForm_1 = __importDefault(__webpack_require__(317));
+const PasswordForm_1 = __importDefault(__webpack_require__(319));
+const UserForm_1 = __importDefault(__webpack_require__(320));
+const UserList_1 = __importDefault(__webpack_require__(321));
 class Admin extends react_1.Component {
     constructor(props) {
         super(props);
@@ -60,22 +60,23 @@ class Admin extends react_1.Component {
             role === false
                 ? { authenticated: false, role: E.USER_ROLE.none, userId }
                 : { authenticated: true, role: role, userId };
+        this.bind = {
+            onAuthenticated: this.onAuthenticated.bind(this),
+            onLogoutHandler: this.onLogoutHandler.bind(this),
+            onPasswordHandler: this.onPasswordHandler.bind(this),
+            onTabsHandler: this.onTabsHandler.bind(this)
+        };
     }
     componentDidMount() {
-        document.addEventListener('kudoz::authenticated', ((e) => {
-            this.setState({
-                authenticated: true,
-                role: e.detail.role,
-                userId: e.detail.userId
-            });
-            this.sessionCheck();
-        }));
+        document.addEventListener('kudoz::authenticated', this.bind.onAuthenticated);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('kudoz::userFormRefresh', this.bind.onAuthenticated);
     }
     componentDidUpdate() {
         const pane = document.getElementById('events_list');
         if (pane) {
             pane.style.display = 'block';
-            // pane.style.visibility = 'visible';
         }
     }
     render() {
@@ -86,10 +87,10 @@ class Admin extends react_1.Component {
         const isUser = this.state.role === E.USER_ROLE.user || this.state.role === E.USER_ROLE.admin;
         const isAdmin = this.state.role === E.USER_ROLE.admin;
         jsx.push(react_1.default.createElement("div", { className: "admin_buttons", key: "adminButtons" },
-            react_1.default.createElement("button", { id: "admin-logout", className: "gen_button", key: "logoutButton", onClick: this.onLogoutHandler.bind(this) },
+            react_1.default.createElement("button", { id: "admin-logout", className: "gen_button", key: "logoutButton", onClick: this.bind.onLogoutHandler },
                 react_1.default.createElement("span", { className: "icon-power-off" }),
                 " Sign out"),
-            react_1.default.createElement("button", { id: "admin-password", className: "gen_button", key: "passwordButton", onClick: this.onPasswordHandler.bind(this) },
+            react_1.default.createElement("button", { id: "admin-password", className: "gen_button", key: "passwordButton", onClick: this.bind.onPasswordHandler },
                 react_1.default.createElement("span", { className: "icon-key" }),
                 " Change pass")));
         jsx.push(react_1.default.createElement("section", { className: "admin_forms", key: "adminForms" },
@@ -101,10 +102,10 @@ class Admin extends react_1.Component {
                 react_1.default.createElement("h2", null, "Admin"),
                 react_1.default.createElement("nav", null,
                     react_1.default.createElement("ul", { id: "tabs", className: "tabrow" },
-                        isUser && (react_1.default.createElement("li", { className: "selected", "data-pane": "events_list", onClick: this.onTabsHandler.bind(this) },
+                        isUser && (react_1.default.createElement("li", { className: "selected", "data-pane": "events_list", onClick: this.bind.onTabsHandler },
                             react_1.default.createElement("span", { className: "icon-calendar" }),
                             " Events")),
-                        isAdmin && (react_1.default.createElement("li", { "data-pane": "users_list", onClick: this.onTabsHandler.bind(this) },
+                        isAdmin && (react_1.default.createElement("li", { "data-pane": "users_list", onClick: this.bind.onTabsHandler },
                             react_1.default.createElement("span", { className: "icon-group" }),
                             " Users"))))),
             react_1.default.createElement("article", null,
@@ -136,10 +137,8 @@ class Admin extends react_1.Component {
         if (pane) {
             for (const el of document.querySelectorAll('.pane')) {
                 el.style.display = 'none';
-                // el.style.visibility = 'hidden';
             }
             pane.style.display = 'block';
-            // pane.style.visibility = 'visible';
             for (const el of document.querySelectorAll('li')) {
                 el.classList.remove('selected');
             }
@@ -148,6 +147,14 @@ class Admin extends react_1.Component {
     }
     onPasswordHandler() {
         document.dispatchEvent(new CustomEvent('kudoz::passwordFormRefresh'));
+    }
+    onAuthenticated(e) {
+        this.setState({
+            authenticated: true,
+            role: e.detail.role,
+            userId: e.detail.userId
+        });
+        this.sessionCheck();
     }
 }
 exports.default = Admin;
@@ -167,8 +174,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
+const react_date_picker_1 = __importDefault(__webpack_require__(263));
 const api_1 = __webpack_require__(33);
 const E = __importStar(__webpack_require__(208));
 class EventForm extends react_1.Component {
@@ -183,14 +194,87 @@ class EventForm extends react_1.Component {
             userId: props.userId
         };
         this.state = {
-            event: this.newEvent,
+            event: Object.assign({}, this.newEvent),
             mode: 'hidden',
             userId: props.userId
         };
+        this.bind = {
+            onClickHandler: this.onClickHandler.bind(this),
+            onClose: this.onClose.bind(this),
+            onDateFrom: this.onDateFrom.bind(this),
+            onDateTo: this.onDateTo.bind(this),
+            onFormRefresh: this.onFormRefresh.bind(this)
+        };
+    }
+    componentDidMount() {
+        document.addEventListener('kudoz::eventFormRefresh', this.bind.onFormRefresh);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('kudoz::eventFormRefresh', this.bind.onFormRefresh);
+    }
+    render() {
+        const { dateFrom, dateTo, name, state, userId } = this.state.event;
+        const button = `${this.state.mode === 'insert' ? 'Create' : 'Update'} event`;
+        const classHidden = this.state.mode === 'hidden' ? ' hidden' : '';
+        return (react_1.default.createElement("div", { id: "form-event", key: "eventForm", className: `form-window${classHidden}` },
+            react_1.default.createElement("div", { className: "form-window_header" },
+                react_1.default.createElement("span", { className: "form-window_header-text" }, "Event"),
+                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign", onClick: this.bind.onClose })),
+            react_1.default.createElement("form", { id: "form-event-form", className: "pane_form", autoComplete: "off", onSubmit: this.bind.onClickHandler },
+                react_1.default.createElement("input", { type: "hidden", name: "userId", defaultValue: userId }),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "dateFrom" }, "Date from: "),
+                    react_1.default.createElement(react_date_picker_1.default, { onChange: this.bind.onDateFrom, value: new Date(dateFrom), clearIcon: null }),
+                    react_1.default.createElement("input", { type: "hidden", name: "dateFrom", defaultValue: dateFrom }),
+                    " *"),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "dateTo" }, "Date to: "),
+                    react_1.default.createElement(react_date_picker_1.default, { onChange: this.bind.onDateTo, value: new Date(dateTo), clearIcon: null }),
+                    react_1.default.createElement("input", { type: "hidden", name: "dateTo", defaultValue: dateTo }),
+                    " *"),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "name" }, "Event name: "),
+                    react_1.default.createElement("input", { type: "text", name: "name", placeholder: "event name", defaultValue: name }),
+                    " *"),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "state" }, "State: "),
+                    react_1.default.createElement("select", { id: "event-state", name: "state", defaultValue: state },
+                        react_1.default.createElement("option", { value: "past" }, "past"),
+                        react_1.default.createElement("option", { value: "active" }, "active"),
+                        react_1.default.createElement("option", { value: "future" }, "future")),
+                    "*"),
+                react_1.default.createElement("div", { className: "form_row -right" },
+                    react_1.default.createElement("button", { className: "gen_button", onClick: this.bind.onClickHandler },
+                        react_1.default.createElement("span", { className: "icon-calendar" }),
+                        button))),
+            react_1.default.createElement("div", { id: "form-event-info", className: "form-window_footer" }, "\u00A0")));
+    }
+    getData(_id) {
+        if (_id) {
+            api_1.select('/api/events', _id).then((data) => {
+                const event = data[0];
+                this.setState({ event, mode: E.FORM_MODE.update });
+            });
+        }
+        else {
+            this.setState({ event: Object.assign({}, this.newEvent), mode: 'insert' });
+        }
+    }
+    onDateFrom(date) {
+        const myDate = Array.isArray(date) ? date[0] : date;
+        const event = this.state.event;
+        event.dateFrom = myDate.getTime();
+        this.setState({ event });
+    }
+    onDateTo(date) {
+        const myDate = Array.isArray(date) ? date[0] : date;
+        const event = this.state.event;
+        event.dateTo = myDate.getTime();
+        this.setState({ event });
     }
     onClickHandler(e) {
         e.preventDefault();
-        const data = this.newEvent;
+        const data = Object.assign({}, this.newEvent);
         const info = document.getElementById('form-event-info');
         const form = document.getElementById('form-event-form');
         const formData = new FormData(form);
@@ -218,61 +302,15 @@ class EventForm extends react_1.Component {
             });
         }
     }
-    componentDidMount() {
-        document.addEventListener('kudoz::eventFormRefresh', ((e) => {
-            const info = document.getElementById('form-event-info');
-            info.innerText = ' ';
-            this.getData(e.detail._id);
-        }));
-    }
-    getData(_id) {
-        if (_id) {
-            api_1.select('/api/events', _id).then((data) => {
-                const event = data[0];
-                this.setState({ event, mode: E.FORM_MODE.update });
-            });
-        }
-        else {
-            this.setState({ event: this.newEvent, mode: 'insert' });
-        }
-    }
-    close() {
+    onClose() {
+        const form = document.getElementById('form-event-form');
+        form.reset();
         this.setState({ mode: 'hidden' });
     }
-    render() {
-        const { dateFrom, dateTo, name, state, userId } = this.state.event;
-        const button = `${this.state.mode === 'insert' ? 'Create' : 'Update'} event`;
-        const classHidden = this.state.mode === 'hidden' ? ' hidden' : '';
-        return (react_1.default.createElement("div", { id: "form-event", key: "eventForm", className: `form-window${classHidden}` },
-            react_1.default.createElement("div", { className: "form-window_header" },
-                react_1.default.createElement("span", { className: "form-window_header-text" }, "Event"),
-                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign", onClick: this.close.bind(this) })),
-            react_1.default.createElement("form", { id: "form-event-form", className: "pane_form", autoComplete: "off", onSubmit: this.onClickHandler.bind(this) },
-                react_1.default.createElement("input", { type: "hidden", name: "userId", defaultValue: userId }),
-                react_1.default.createElement("div", { className: "form_row" },
-                    react_1.default.createElement("label", { htmlFor: "dateFrom" }, "Date from: "),
-                    react_1.default.createElement("input", { type: "text", name: "dateFrom", defaultValue: dateFrom }),
-                    " *"),
-                react_1.default.createElement("div", { className: "form_row" },
-                    react_1.default.createElement("label", { htmlFor: "dateTo" }, "Date to: "),
-                    react_1.default.createElement("input", { type: "text", name: "dateTo", defaultValue: dateTo }),
-                    " *"),
-                react_1.default.createElement("div", { className: "form_row" },
-                    react_1.default.createElement("label", { htmlFor: "name" }, "Event name: "),
-                    react_1.default.createElement("input", { type: "text", name: "name", placeholder: "event name", defaultValue: name }),
-                    " *"),
-                react_1.default.createElement("div", { className: "form_row" },
-                    react_1.default.createElement("label", { htmlFor: "state" }, "State: "),
-                    react_1.default.createElement("select", { id: "event-state", name: "state", defaultValue: state },
-                        react_1.default.createElement("option", { value: "past" }, "past"),
-                        react_1.default.createElement("option", { value: "active" }, "active"),
-                        react_1.default.createElement("option", { value: "future" }, "future")),
-                    "*"),
-                react_1.default.createElement("div", { className: "form_row -right" },
-                    react_1.default.createElement("button", { className: "gen_button", onClick: this.onClickHandler.bind(this) },
-                        react_1.default.createElement("span", { className: "icon-calendar" }),
-                        button))),
-            react_1.default.createElement("div", { id: "form-event-info", className: "form-window_footer" }, "\u00A0")));
+    onFormRefresh(e) {
+        const info = document.getElementById('form-event-info');
+        info.innerText = ' ';
+        this.getData(e.detail._id);
     }
 }
 exports.default = EventForm;
@@ -280,7 +318,7 @@ exports.default = EventForm;
 
 /***/ }),
 
-/***/ 263:
+/***/ 316:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -305,22 +343,17 @@ class EventList extends react_1.Component {
             role: props.role,
             userId: props.userId
         };
+        this.bind = {
+            onClickHandler: this.onClickHandler.bind(this),
+            onListRefresh: this.onListRefresh.bind(this)
+        };
     }
     componentDidMount() {
         this.getData();
-        document.addEventListener('kudoz::eventListRefresh', () => {
-            this.setState({ loading: true });
-            this.getData();
-        });
+        document.addEventListener('kudoz::eventListRefresh', this.bind.onListRefresh);
     }
-    getData() {
-        const where = this.state.role === E.USER_ROLE.admin ? undefined : { userId: this.state.userId };
-        api_1.select('/api/events', where).then((data) => this.setState({ data, loading: false }));
-    }
-    onClickHandler(e) {
-        var _a;
-        const _id = (_a = e.currentTarget.dataset.id) !== null && _a !== void 0 ? _a : undefined;
-        document.dispatchEvent(new CustomEvent('kudoz::eventFormRefresh', { detail: { _id } }));
+    componentWillUnmount() {
+        document.removeEventListener('kudoz::eventListRefresh', this.bind.onListRefresh);
     }
     render() {
         const { data, loading } = this.state;
@@ -328,7 +361,7 @@ class EventList extends react_1.Component {
             react_1.default.createElement("h4", null,
                 "Events",
                 react_1.default.createElement("span", { className: "button" },
-                    react_1.default.createElement("button", { className: "gen_button", "data-id": "", onClick: this.onClickHandler.bind(this) },
+                    react_1.default.createElement("button", { className: "gen_button", "data-id": "", onClick: this.bind.onClickHandler },
                         react_1.default.createElement("span", { className: "icon-plus" }),
                         " New event"))),
             react_1.default.createElement("table", { className: "admin-table" },
@@ -351,7 +384,7 @@ class EventList extends react_1.Component {
         jsx.push(react_1.default.createElement("td", { key: "dateTo" }, new Date(event.dateTo).toLocaleString()));
         jsx.push(react_1.default.createElement("td", { key: "state" }, event.state));
         jsx.push(react_1.default.createElement("td", { key: "edit" },
-            react_1.default.createElement("button", { className: "gen_button", "data-id": event._id, onClick: this.onClickHandler.bind(this) },
+            react_1.default.createElement("button", { className: "gen_button", "data-id": event._id, onClick: this.bind.onClickHandler },
                 react_1.default.createElement("span", { className: "icon-pencil" }),
                 " Edit")));
         return jsx;
@@ -367,13 +400,26 @@ class EventList extends react_1.Component {
         return (react_1.default.createElement("tr", null,
             react_1.default.createElement("td", { colSpan: 5 }, "Loading...")));
     }
+    getData() {
+        const where = this.state.role === E.USER_ROLE.admin ? undefined : { userId: this.state.userId };
+        api_1.select('/api/events', where).then((data) => this.setState({ data, loading: false }));
+    }
+    onClickHandler(e) {
+        var _a;
+        const _id = (_a = e.currentTarget.dataset.id) !== null && _a !== void 0 ? _a : undefined;
+        document.dispatchEvent(new CustomEvent('kudoz::eventFormRefresh', { detail: { _id } }));
+    }
+    onListRefresh() {
+        this.setState({ loading: true });
+        this.getData();
+    }
 }
 exports.default = EventList;
 
 
 /***/ }),
 
-/***/ 264:
+/***/ 317:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -387,13 +433,34 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const V = __importStar(__webpack_require__(265));
+const V = __importStar(__webpack_require__(318));
 const E = __importStar(__webpack_require__(208));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class LoginForm extends react_1.Component {
     constructor(props) {
         super(props);
+        this.bind = {
+            onLoginHandler: this.onLoginHandler.bind(this)
+        };
+    }
+    render() {
+        return (react_1.default.createElement("div", { id: "form-login", key: "loginForm", className: "form-window" },
+            react_1.default.createElement("div", { className: "form-window_header" },
+                react_1.default.createElement("span", { className: "form-window_header-text" }, "Sign in"),
+                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign" })),
+            react_1.default.createElement("form", { id: "form-login-form", className: "pane_form", autoComplete: "off", onSubmit: this.bind.onLoginHandler },
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "name" }, "Login:"),
+                    react_1.default.createElement("input", { type: "text", name: "login", placeholder: "enter login" })),
+                react_1.default.createElement("div", { className: "form_row" },
+                    react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
+                    react_1.default.createElement("input", { type: "password", autoComplete: "new-password", name: "password", placeholder: "enter password" })),
+                react_1.default.createElement("div", { className: "form_row -right" },
+                    react_1.default.createElement("button", { className: "gen_button", onClick: this.bind.onLoginHandler },
+                        react_1.default.createElement("span", { className: "icon-circle-arrow-right" }),
+                        " Sign in"))),
+            react_1.default.createElement("div", { id: "form-login-info", className: "form-window_footer" }, "\u00A0")));
     }
     onLoginHandler(e) {
         e.preventDefault();
@@ -426,31 +493,13 @@ class LoginForm extends react_1.Component {
             return;
         }
     }
-    render() {
-        return (react_1.default.createElement("div", { id: "form-login", key: "loginForm", className: "form-window" },
-            react_1.default.createElement("div", { className: "form-window_header" },
-                react_1.default.createElement("span", { className: "form-window_header-text" }, "Sign in"),
-                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign" })),
-            react_1.default.createElement("form", { id: "form-login-form", className: "pane_form", autoComplete: "off", onSubmit: this.onLoginHandler.bind(this) },
-                react_1.default.createElement("div", { className: "form_row" },
-                    react_1.default.createElement("label", { htmlFor: "name" }, "Login:"),
-                    react_1.default.createElement("input", { type: "text", name: "login", placeholder: "enter login" })),
-                react_1.default.createElement("div", { className: "form_row" },
-                    react_1.default.createElement("label", { htmlFor: "password" }, "Password: "),
-                    react_1.default.createElement("input", { type: "password", autoComplete: "new-password", name: "password", placeholder: "enter password" })),
-                react_1.default.createElement("div", { className: "form_row -right" },
-                    react_1.default.createElement("button", { className: "gen_button", onClick: this.onLoginHandler.bind(this) },
-                        react_1.default.createElement("span", { className: "icon-circle-arrow-right" }),
-                        " Sign in"))),
-            react_1.default.createElement("div", { id: "form-login-info", className: "form-window_footer" }, "\u00A0")));
-    }
 }
 exports.default = LoginForm;
 
 
 /***/ }),
 
-/***/ 265:
+/***/ 318:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -606,7 +655,7 @@ exports.isEventValid = isEventValid;
 
 /***/ }),
 
-/***/ 266:
+/***/ 319:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -621,62 +670,69 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(208));
-const V = __importStar(__webpack_require__(265));
+const V = __importStar(__webpack_require__(318));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class PasswordForm extends react_1.Component {
     constructor(props) {
         super(props);
+        this.newPass = {
+            login: '',
+            password: '',
+            passwordOld: '',
+            passwordRepeat: ''
+        };
         this.state = {
             isAdmin: props.role === E.USER_ROLE.admin,
             mode: E.FORM_MODE.hidden
         };
+        this.bind = {
+            onClickHandler: this.onClickHandler.bind(this),
+            onClose: this.onClose.bind(this),
+            onFormRefresh: this.onFormRefresh.bind(this)
+        };
     }
     componentDidMount() {
-        document.addEventListener('kudoz::passwordFormRefresh', ((e) => {
-            const info = document.getElementById('form-password-info');
-            info.innerText = ' ';
-            this.setState({ mode: E.FORM_MODE.insert });
-        }));
+        document.addEventListener('kudoz::passwordFormRefresh', this.bind.onFormRefresh);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('kudoz::passwordFormRefresh', this.bind.onFormRefresh);
     }
     render() {
+        const { login, password, passwordOld, passwordRepeat } = this.newPass;
         const classHidden = this.state.mode === E.FORM_MODE.hidden ? ' hidden' : '';
         return (react_1.default.createElement("div", { id: "form-password", key: "passwordForm", className: `form-window${classHidden}` },
             react_1.default.createElement("div", { className: "form-window_header" },
                 react_1.default.createElement("span", { className: "form-window_header-text" }, "Password change"),
-                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign", onClick: this.close.bind(this) })),
-            react_1.default.createElement("form", { id: "form-password-form", className: "pane_form", autoComplete: "off", onSubmit: this.onClickHandler.bind(this) },
+                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign", onClick: this.bind.onClose })),
+            react_1.default.createElement("form", { id: "form-password-form", className: "pane_form", autoComplete: "off", onSubmit: this.bind.onClickHandler },
                 react_1.default.createElement("div", { className: "form_row" },
                     react_1.default.createElement("label", { htmlFor: "login" }, "Login: "),
-                    react_1.default.createElement("input", { type: "text", name: "login", placeholder: "enter your login" }),
+                    react_1.default.createElement("input", { type: "text", name: "login", placeholder: "enter your login", defaultValue: login }),
                     " *"),
                 react_1.default.createElement("div", { className: "form_row" },
                     react_1.default.createElement("label", { htmlFor: "password" }, "Old password: "),
-                    react_1.default.createElement("input", { type: "password", autoComplete: "old-password", name: "passwordOld", placeholder: "enter old password" }),
+                    react_1.default.createElement("input", { type: "password", autoComplete: "old-password", name: "passwordOld", placeholder: "enter old password", defaultValue: passwordOld }),
                     this.state.isAdmin ? ' ' : ' *'),
                 react_1.default.createElement("div", { className: "form_row" },
                     react_1.default.createElement("label", { htmlFor: "password" }, "New password: "),
-                    react_1.default.createElement("input", { type: "password", autoComplete: "new-password", name: "password", placeholder: "enter new password" }),
+                    react_1.default.createElement("input", { type: "password", autoComplete: "new-password", name: "password", placeholder: "enter new password", defaultValue: password }),
                     ' ',
                     "*"),
                 react_1.default.createElement("div", { className: "form_row" },
                     react_1.default.createElement("label", { htmlFor: "passwordRepeat" }, "Repeat new password: "),
-                    react_1.default.createElement("input", { type: "password", name: "passwordRepeat", placeholder: "repeat new password" }),
-                    " *"),
+                    react_1.default.createElement("input", { type: "password", name: "passwordRepeat", placeholder: "repeat new password", defaultValue: passwordRepeat }),
+                    ' ',
+                    "*"),
                 react_1.default.createElement("div", { className: "form_row -right" },
-                    react_1.default.createElement("button", { className: "gen_button", onClick: this.onClickHandler.bind(this) },
+                    react_1.default.createElement("button", { className: "gen_button", onClick: this.bind.onClickHandler },
                         react_1.default.createElement("span", { className: "icon-key" }),
                         " Change password"))),
             react_1.default.createElement("div", { id: "form-password-info", className: "form-window_footer" }, "\u00A0")));
     }
     onClickHandler(e) {
         e.preventDefault();
-        const rawData = {
-            login: '',
-            password: '',
-            passwordOld: '',
-            passwordRepeat: ''
-        };
+        const rawData = Object.assign({}, this.newPass);
         const info = document.getElementById('form-password-info');
         const form = document.getElementById('form-password-form');
         const formData = new FormData(form);
@@ -705,8 +761,15 @@ class PasswordForm extends react_1.Component {
             info.innerText = 'Error: Passwords does not match.';
         }
     }
-    close() {
+    onClose() {
+        const form = document.getElementById('form-password-form');
+        form.reset();
         this.setState({ mode: E.FORM_MODE.hidden });
+    }
+    onFormRefresh() {
+        const info = document.getElementById('form-password-info');
+        info.innerText = ' ';
+        this.setState({ mode: E.FORM_MODE.insert });
     }
 }
 exports.default = PasswordForm;
@@ -714,7 +777,7 @@ exports.default = PasswordForm;
 
 /***/ }),
 
-/***/ 267:
+/***/ 320:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -729,7 +792,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(208));
-const V = __importStar(__webpack_require__(265));
+const V = __importStar(__webpack_require__(318));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class UserForm extends react_1.Component {
@@ -745,15 +808,19 @@ class UserForm extends react_1.Component {
         };
         this.state = {
             mode: E.FORM_MODE.hidden,
-            user: this.newUser
+            user: Object.assign({}, this.newUser)
+        };
+        this.bind = {
+            onClickHandler: this.onClickHandler.bind(this),
+            onClose: this.onClose.bind(this),
+            onFormRefresh: this.onFormRefresh.bind(this)
         };
     }
     componentDidMount() {
-        document.addEventListener('kudoz::userFormRefresh', ((e) => {
-            const info = document.getElementById('form-user-info');
-            info.innerText = ' ';
-            this.getData(e.detail._id);
-        }));
+        document.addEventListener('kudoz::userFormRefresh', this.bind.onFormRefresh);
+    }
+    componentWillUnmount() {
+        document.removeEventListener('kudoz::userFormRefresh', this.bind.onFormRefresh);
     }
     render() {
         const { name, surname, login, role } = this.state.user;
@@ -762,8 +829,8 @@ class UserForm extends react_1.Component {
         return (react_1.default.createElement("div", { id: "form-user", key: "userForm", className: `form-window${classHidden}` },
             react_1.default.createElement("div", { className: "form-window_header" },
                 react_1.default.createElement("span", { className: "form-window_header-text" }, "User"),
-                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign", onClick: this.close.bind(this) })),
-            react_1.default.createElement("form", { id: "form-user-form", className: "pane_form", autoComplete: "off", onSubmit: this.onClickHandler.bind(this) },
+                react_1.default.createElement("span", { className: "form-window_header-close icon-remove-sign", onClick: this.bind.onClose })),
+            react_1.default.createElement("form", { id: "form-user-form", className: "pane_form", autoComplete: "off", onSubmit: this.bind.onClickHandler },
                 react_1.default.createElement("div", { className: "form_row" },
                     react_1.default.createElement("label", { htmlFor: "name" }, "Name:"),
                     react_1.default.createElement("input", { type: "text", name: "name", defaultValue: name })),
@@ -782,7 +849,7 @@ class UserForm extends react_1.Component {
                     " *"),
                 this.state.mode === E.FORM_MODE.insert ? this.passRows() : '',
                 react_1.default.createElement("div", { className: "form_row -right" },
-                    react_1.default.createElement("button", { className: "gen_button", onClick: this.onClickHandler.bind(this) },
+                    react_1.default.createElement("button", { className: "gen_button", onClick: this.bind.onClickHandler },
                         react_1.default.createElement("span", { className: "icon-user" }),
                         " ",
                         button))),
@@ -801,7 +868,7 @@ class UserForm extends react_1.Component {
     }
     onClickHandler(e) {
         e.preventDefault();
-        const rawData = this.newUser;
+        const rawData = Object.assign({}, this.newUser);
         const info = document.getElementById('form-user-info');
         const form = document.getElementById('form-user-form');
         const formData = new FormData(form);
@@ -833,7 +900,9 @@ class UserForm extends react_1.Component {
         }
         this.setData(data);
     }
-    close() {
+    onClose() {
+        const form = document.getElementById('form-user-form');
+        form.reset();
         this.setState({ mode: E.FORM_MODE.hidden });
     }
     getData(_id) {
@@ -844,7 +913,7 @@ class UserForm extends react_1.Component {
             });
         }
         else {
-            this.setState({ user: this.newUser, mode: E.FORM_MODE.insert });
+            this.setState({ user: Object.assign({}, this.newUser), mode: E.FORM_MODE.insert });
         }
     }
     setData(data) {
@@ -870,13 +939,18 @@ class UserForm extends react_1.Component {
             });
         }
     }
+    onFormRefresh(e) {
+        const info = document.getElementById('form-user-info');
+        info.innerText = ' ';
+        this.getData(e.detail._id);
+    }
 }
 exports.default = UserForm;
 
 
 /***/ }),
 
-/***/ 268:
+/***/ 321:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -898,21 +972,17 @@ class UserList extends react_1.Component {
             data: [],
             loading: true
         };
+        this.bind = {
+            onClickHandler: this.onClickHandler.bind(this),
+            onListRefresh: this.onListRefresh.bind(this)
+        };
     }
     componentDidMount() {
         this.getData();
-        document.addEventListener('kudoz::userListRefresh', () => {
-            this.setState({ loading: true });
-            this.getData();
-        });
+        document.addEventListener('kudoz::userListRefresh', this.bind.onListRefresh);
     }
-    getData() {
-        api_1.select('/api/users').then((data) => this.setState({ data, loading: false }));
-    }
-    onClickHandler(e) {
-        var _a;
-        const _id = (_a = e.currentTarget.dataset.id) !== null && _a !== void 0 ? _a : undefined;
-        document.dispatchEvent(new CustomEvent('kudoz::userFormRefresh', { detail: { _id } }));
+    componentWillUnmount() {
+        document.removeEventListener('kudoz::userListRefresh', this.bind.onListRefresh);
     }
     render() {
         const { data, loading } = this.state;
@@ -920,7 +990,7 @@ class UserList extends react_1.Component {
             react_1.default.createElement("h4", null,
                 "Users",
                 react_1.default.createElement("span", { className: "button" },
-                    react_1.default.createElement("button", { className: "gen_button", "data-id": "", onClick: this.onClickHandler.bind(this) },
+                    react_1.default.createElement("button", { className: "gen_button", "data-id": "", onClick: this.bind.onClickHandler },
                         react_1.default.createElement("span", { className: "icon-plus" }),
                         " New user"))),
             react_1.default.createElement("table", { className: "admin-table" },
@@ -942,7 +1012,7 @@ class UserList extends react_1.Component {
         jsx.push(react_1.default.createElement("td", { key: "login" }, user.login));
         jsx.push(react_1.default.createElement("td", { key: "role" }, user.role));
         jsx.push(react_1.default.createElement("td", { key: "edit" },
-            react_1.default.createElement("button", { className: "gen_button", "data-id": user._id, onClick: this.onClickHandler.bind(this) },
+            react_1.default.createElement("button", { className: "gen_button", "data-id": user._id, onClick: this.bind.onClickHandler },
                 react_1.default.createElement("span", { className: "icon-pencil" }),
                 "Edit")));
         return jsx;
@@ -957,6 +1027,18 @@ class UserList extends react_1.Component {
     loading() {
         return (react_1.default.createElement("tr", null,
             react_1.default.createElement("td", { colSpan: 5 }, "Loading...")));
+    }
+    getData() {
+        api_1.select('/api/users').then((data) => this.setState({ data, loading: false }));
+    }
+    onClickHandler(e) {
+        var _a;
+        const _id = (_a = e.currentTarget.dataset.id) !== null && _a !== void 0 ? _a : undefined;
+        document.dispatchEvent(new CustomEvent('kudoz::userFormRefresh', { detail: { _id } }));
+    }
+    onListRefresh() {
+        this.setState({ loading: true });
+        this.getData();
     }
 }
 exports.default = UserList;
