@@ -39,24 +39,29 @@ export default class KudoEvent extends React.Component<{}, IState> {
   private eventId: string;
   private interval!: ReturnType<Window['setInterval']>;
   private timeout: any;
+  private bind: {
+    onCardListRefresh: EventListener;
+    onHideModal: () => void;
+  };
 
   constructor(props: any) {
     super(props);
     this.eventId = (this.props as any).match.params.id;
-    this.hideModal = this.hideModal.bind(this);
     this.state = {
       cards: [],
       event: undefined,
       is_active: false,
       shouldDisplayModal: false
     };
+    this.bind = {
+      onCardListRefresh: this.onCardListRefresh.bind(this) as EventListener,
+      onHideModal: this.onHideModal.bind(this)
+    };
   }
 
   public componentDidMount() {
     this.getData();
-    document.addEventListener('kudoz::cardListRefresh', () => {
-      this.getData();
-    });
+    document.addEventListener('kudoz::cardListRefresh', this.bind.onCardListRefresh);
 
     window.clearInterval(this.interval);
     this.interval = window.setInterval(() => {
@@ -80,6 +85,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
   }
 
   componentWillUnmount() {
+    document.removeEventListener('kudoz::cardListRefresh', this.bind.onCardListRefresh);
     window.clearInterval(this.interval);
     window.clearTimeout(this.timeout);
   }
@@ -100,7 +106,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
         </div>
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />
-        {this.state.shouldDisplayModal ? <CardModal newCardProps={newCard} onClick={this.hideModal} /> : null}
+        {this.state.shouldDisplayModal ? <CardModal newCardProps={newCard} onClick={this.bind.onHideModal} /> : null}
         <KudoSettings />
       </div>
     ) : (
@@ -108,8 +114,12 @@ export default class KudoEvent extends React.Component<{}, IState> {
     );
   }
 
-  public hideModal(): void {
+  private onHideModal(): void {
     this.setState({ shouldDisplayModal: false });
+  }
+
+  private onCardListRefresh(): void {
+    this.getData();
   }
 
   private getData() {
@@ -124,11 +134,12 @@ export default class KudoEvent extends React.Component<{}, IState> {
       this.setState({ cards: data });
     });
 
-    select<I.Event>('/api/events', { _id: this.eventId })
+    select<I.Event[]>('/api/events', { _id: this.eventId })
       .then((data) => {
+        const event = data[0];
         this.setState({
-          event: data,
-          is_active: data.dateFrom < now && now < data.dateTo
+          event,
+          is_active: event.dateFrom < now && now < event.dateTo
         });
       })
       .catch((err: Error) => {

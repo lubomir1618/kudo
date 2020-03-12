@@ -7,10 +7,17 @@ export interface State {
 }
 
 export default class SoundSwitch extends Component<any, State> {
+  private bind: {
+    onSoundOnOff: () => void;
+  };
+
   constructor(props: any) {
     super(props);
     this.state = {
       sound: soundTurnedOn() ? 'on' : 'off'
+    };
+    this.bind = {
+      onSoundOnOff: this.onSoundOnOff.bind(this)
     };
   }
 
@@ -19,12 +26,12 @@ export default class SoundSwitch extends Component<any, State> {
       <div
         className={`soundSwitch ${this.state.sound === 'off' ? 'soundSwitch--off' : 'soundSwitch--on'}`}
         title={`${this.state.sound === 'off' ? 'Turn sound on' : 'Turn sound off'}`}
-        onClick={this.soundOnOff.bind(this)}
+        onClick={this.bind.onSoundOnOff}
       />
     );
   }
 
-  private soundOnOff(): void {
+  private onSoundOnOff(): void {
     this.setState({ sound: soundTurnedOn() ? 'off' : 'on' });
 
     const data = localStorage.getItem('kudosSettings');

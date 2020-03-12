@@ -890,22 +890,28 @@ class CardNotification extends react_1.Component {
         this.state = {
             play: this.props.playMusic ? this.props.playMusic : false
         };
+        this.bind = {
+            onEnded: this.onEnded.bind(this),
+            onNotification: this.onNotification.bind(this)
+        };
     }
     componentDidMount() {
-        this.audio.addEventListener('ended', () => this.setState({ play: false }));
-        document.addEventListener('kudoz::newNotification', () => {
-            this.setState({ play: true });
-        });
+        this.audio.addEventListener('ended', this.bind.onEnded);
+        document.addEventListener('kudoz::newNotification', this.bind.onNotification);
     }
     componentWillUnmount() {
-        this.audio.removeEventListener('ended', () => this.setState({ play: false }));
-        document.removeEventListener('kudoz::newNotification', () => {
-            this.setState({ play: false });
-        });
+        this.audio.removeEventListener('ended', this.bind.onEnded);
+        document.removeEventListener('kudoz::newNotification', this.bind.onNotification);
     }
     render() {
         this.state.play && client_1.soundTurnedOn() ? this.audio.play() : this.audio.pause();
         return react_1.default.createElement("div", null);
+    }
+    onEnded() {
+        this.setState({ play: false });
+    }
+    onNotification() {
+        this.setState({ play: true });
     }
 }
 exports.default = CardNotification;
@@ -956,11 +962,14 @@ class SoundSwitch extends react_1.Component {
         this.state = {
             sound: client_1.soundTurnedOn() ? 'on' : 'off'
         };
+        this.bind = {
+            onSoundOnOff: this.onSoundOnOff.bind(this)
+        };
     }
     render() {
-        return (react_1.default.createElement("div", { className: `soundSwitch ${this.state.sound === 'off' ? 'soundSwitch--off' : 'soundSwitch--on'}`, title: `${this.state.sound === 'off' ? 'Turn sound on' : 'Turn sound off'}`, onClick: this.soundOnOff.bind(this) }));
+        return (react_1.default.createElement("div", { className: `soundSwitch ${this.state.sound === 'off' ? 'soundSwitch--off' : 'soundSwitch--on'}`, title: `${this.state.sound === 'off' ? 'Turn sound on' : 'Turn sound off'}`, onClick: this.bind.onSoundOnOff }));
     }
-    soundOnOff() {
+    onSoundOnOff() {
         this.setState({ sound: client_1.soundTurnedOn() ? 'off' : 'on' });
         const data = localStorage.getItem('kudosSettings');
         let settings;
@@ -1230,19 +1239,20 @@ class KudoEvent extends react_1.default.Component {
     constructor(props) {
         super(props);
         this.eventId = this.props.match.params.id;
-        this.hideModal = this.hideModal.bind(this);
         this.state = {
             cards: [],
             event: undefined,
             is_active: false,
             shouldDisplayModal: false
         };
+        this.bind = {
+            onCardListRefresh: this.onCardListRefresh.bind(this),
+            onHideModal: this.onHideModal.bind(this)
+        };
     }
     componentDidMount() {
         this.getData();
-        document.addEventListener('kudoz::cardListRefresh', () => {
-            this.getData();
-        });
+        document.addEventListener('kudoz::cardListRefresh', this.bind.onCardListRefresh);
         window.clearInterval(this.interval);
         this.interval = window.setInterval(() => {
             this.getData();
@@ -1262,6 +1272,7 @@ class KudoEvent extends react_1.default.Component {
         }
     }
     componentWillUnmount() {
+        document.removeEventListener('kudoz::cardListRefresh', this.bind.onCardListRefresh);
         window.clearInterval(this.interval);
         window.clearTimeout(this.timeout);
     }
@@ -1274,11 +1285,14 @@ class KudoEvent extends react_1.default.Component {
                 location.href.indexOf('?tv=true') > -1 ? (react_1.default.createElement(QRcode_1.default, { url: location.protocol + '//' + location.host + location.pathname })) : (react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active }))),
             react_1.default.createElement("div", { className: "event_cards" }, this.processCards()),
             react_1.default.createElement(CardNotification_1.default, null),
-            this.state.shouldDisplayModal ? react_1.default.createElement(CardModal, { newCardProps: newCard, onClick: this.hideModal }) : null,
+            this.state.shouldDisplayModal ? react_1.default.createElement(CardModal, { newCardProps: newCard, onClick: this.bind.onHideModal }) : null,
             react_1.default.createElement(KudoSettings_1.default, null))) : (react_1.default.createElement("div", null));
     }
-    hideModal() {
+    onHideModal() {
         this.setState({ shouldDisplayModal: false });
+    }
+    onCardListRefresh() {
+        this.getData();
     }
     getData() {
         const now = new Date().getTime();
@@ -1291,9 +1305,10 @@ class KudoEvent extends react_1.default.Component {
         });
         api_1.select('/api/events', { _id: this.eventId })
             .then((data) => {
+            const event = data[0];
             this.setState({
-                event: data,
-                is_active: data.dateFrom < now && now < data.dateTo
+                event,
+                is_active: event.dateFrom < now && now < event.dateTo
             });
         })
             .catch((err) => {

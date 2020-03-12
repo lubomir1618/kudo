@@ -9,8 +9,8 @@ interface KeyVal {
  * Select record(s) from table
  *
  * select<I.User[]>('/api/users');
- * select<I.User>('/api/users', '123');
- * select<I.User>('/api/events', {state: 'active'});
+ * select<I.User[]>('/api/users', '123');
+ * select<I.User[]>('/api/events', {state: 'active'});
  * is equivalent of sql
  * SELECT * FROM users;
  * SELECT * FROM users WHERE _id='123';

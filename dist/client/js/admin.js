@@ -72,6 +72,7 @@ class Admin extends react_1.Component {
     }
     componentWillUnmount() {
         document.removeEventListener('kudoz::userFormRefresh', this.bind.onAuthenticated);
+        window.clearInterval(this.sessionCheckIntervalID);
     }
     componentDidUpdate() {
         const pane = document.getElementById('events_list');
@@ -117,8 +118,8 @@ class Admin extends react_1.Component {
         this.sessionCheckIntervalID = window.setInterval(() => {
             const cookie = client_1.getCookie('connect.sid');
             if (cookie === false) {
-                this.setState({ authenticated: false, role: E.USER_ROLE.none });
                 window.clearInterval(this.sessionCheckIntervalID);
+                this.setState({ authenticated: false, role: E.USER_ROLE.none });
             }
         }, 60000);
     }

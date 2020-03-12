@@ -266,6 +266,22 @@ form.pane_form textarea:focus {
   box-shadow: 0px 0px 4px var(--c-blue-glow);
 }
 
+form.pane_form .react-date-picker__wrapper {
+  border: 1px solid var(--c-blue-4);
+  height: 2.8rem;
+}
+
+form.pane_form .react-date-picker__inputGroup__input {
+  color: var(--c-blue-5);
+}
+
+/* form.pane_form .react-date-picker__button svg { */
+form.pane_form .react-date-picker__button__icon {
+  height: 15px;
+  width: 15px;
+  stroke: var(--c-blue-5);
+}
+
 .gen_button {
   box-shadow: inset 0px 1px 0px 0px var(--c-green-1);
   background: linear-gradient(var(--c-green-2) 5%, var(--c-green-4) 100%);

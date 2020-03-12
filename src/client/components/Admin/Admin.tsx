@@ -49,6 +49,7 @@ export default class Admin extends Component<any, IAdminState> {
 
   public componentWillUnmount() {
     document.removeEventListener('kudoz::userFormRefresh', this.bind.onAuthenticated);
+    window.clearInterval(this.sessionCheckIntervalID);
   }
 
   public componentDidUpdate() {
@@ -123,8 +124,8 @@ export default class Admin extends Component<any, IAdminState> {
     this.sessionCheckIntervalID = window.setInterval(() => {
       const cookie = getCookie('connect.sid');
       if (cookie === false) {
-        this.setState({ authenticated: false, role: E.USER_ROLE.none });
         window.clearInterval(this.sessionCheckIntervalID);
+        this.setState({ authenticated: false, role: E.USER_ROLE.none });
       }
     }, 60000);
   }
