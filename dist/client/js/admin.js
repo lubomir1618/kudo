@@ -1,6 +1,6 @@
 (window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["admin"],{
 
-/***/ 260:
+/***/ 286:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18,13 +18,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
-const Admin_1 = __importDefault(__webpack_require__(261));
+const Admin_1 = __importDefault(__webpack_require__(287));
 ReactDOM.render(React.createElement(Admin_1.default, null), document.getElementById('admin'));
 
 
 /***/ }),
 
-/***/ 261:
+/***/ 287:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41,15 +41,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const E = __importStar(__webpack_require__(208));
+const E = __importStar(__webpack_require__(234));
 const client_1 = __webpack_require__(34);
 const api_1 = __webpack_require__(33);
-const EventForm_1 = __importDefault(__webpack_require__(262));
-const EventList_1 = __importDefault(__webpack_require__(317));
-const LoginForm_1 = __importDefault(__webpack_require__(318));
-const PasswordForm_1 = __importDefault(__webpack_require__(319));
-const UserForm_1 = __importDefault(__webpack_require__(320));
-const UserList_1 = __importDefault(__webpack_require__(321));
+const EventForm_1 = __importDefault(__webpack_require__(288));
+const EventList_1 = __importDefault(__webpack_require__(343));
+const LoginForm_1 = __importDefault(__webpack_require__(344));
+const PasswordForm_1 = __importDefault(__webpack_require__(345));
+const UserForm_1 = __importDefault(__webpack_require__(346));
+const UserList_1 = __importDefault(__webpack_require__(347));
 class Admin extends react_1.Component {
     constructor(props) {
         super(props);
@@ -163,7 +163,7 @@ exports.default = Admin;
 
 /***/ }),
 
-/***/ 262:
+/***/ 288:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -180,10 +180,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const react_date_picker_1 = __importDefault(__webpack_require__(263));
+const react_date_picker_1 = __importDefault(__webpack_require__(289));
 const api_1 = __webpack_require__(33);
-const E = __importStar(__webpack_require__(208));
-const V = __importStar(__webpack_require__(316));
+const E = __importStar(__webpack_require__(234));
+const V = __importStar(__webpack_require__(342));
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -326,7 +326,7 @@ exports.default = EventForm;
 
 /***/ }),
 
-/***/ 316:
+/***/ 342:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -339,7 +339,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const E = __importStar(__webpack_require__(208));
+const E = __importStar(__webpack_require__(234));
 function hasData(data, type = 'string') {
     if (data === undefined || data === null) {
         return false;
@@ -491,7 +491,7 @@ exports.isEventValid = isEventValid;
 
 /***/ }),
 
-/***/ 317:
+/***/ 343:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -506,7 +506,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const api_1 = __webpack_require__(33);
-const E = __importStar(__webpack_require__(208));
+const E = __importStar(__webpack_require__(234));
 class EventList extends react_1.Component {
     constructor(props) {
         super(props);
@@ -552,7 +552,7 @@ class EventList extends react_1.Component {
         const jsx = [];
         jsx.push(react_1.default.createElement("td", { key: "_id" }, event._id));
         jsx.push(react_1.default.createElement("td", { key: "name" },
-            react_1.default.createElement("a", { href: `${window.origin}/event/${event._id}`, target: "_blank", title: "link to event" }, event.name)));
+            react_1.default.createElement("a", { href: `${window.origin}/event/${event._id}`, target: "_blank", rel: "noopener noreferrer", title: "link to event" }, event.name)));
         jsx.push(react_1.default.createElement("td", { key: "dateFrom" }, new Date(event.dateFrom).toLocaleString()));
         jsx.push(react_1.default.createElement("td", { key: "dateTo" }, new Date(event.dateTo).toLocaleString()));
         jsx.push(react_1.default.createElement("td", { key: "state" }, event.state));
@@ -592,7 +592,7 @@ exports.default = EventList;
 
 /***/ }),
 
-/***/ 318:
+/***/ 344:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -606,8 +606,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const V = __importStar(__webpack_require__(316));
-const E = __importStar(__webpack_require__(208));
+const V = __importStar(__webpack_require__(342));
+const E = __importStar(__webpack_require__(234));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class LoginForm extends react_1.Component {
@@ -640,14 +640,16 @@ class LoginForm extends react_1.Component {
         const info = document.getElementById('form-login-info');
         const form = document.getElementById('form-login-form');
         const formData = new FormData(form);
-        const login = formData.get('login');
-        const plainPassword = formData.get('password');
-        const okAuth = V.isAuthValid({ login, password: plainPassword }, E.FORM_MODE.insert);
+        const rawData = {
+            login: formData.get('login'),
+            password: formData.get('password')
+        };
+        const okAuth = V.isAuthValid(rawData, E.FORM_MODE.insert);
         if (okAuth === true) {
-            api_1.select('/api/auth', login)
+            api_1.select('/api/auth', 'login')
                 .then((data) => {
-                const password = client_1.encodePassword(plainPassword, data.salt);
-                return api_1.auth({ login, password });
+                const credentials = client_1.encryptCredentials(rawData, data.key);
+                return api_1.auth({ credentials });
             })
                 .then((data) => {
                 if (data.authenticated) {
@@ -657,7 +659,7 @@ class LoginForm extends react_1.Component {
                     info.innerText = 'Error: authentication failed';
                 }
             })
-                .catch((err) => {
+                .catch((_e) => {
                 info.innerText = 'Error: authentication failed';
             });
         }
@@ -672,7 +674,7 @@ exports.default = LoginForm;
 
 /***/ }),
 
-/***/ 319:
+/***/ 345:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -686,8 +688,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const E = __importStar(__webpack_require__(208));
-const V = __importStar(__webpack_require__(316));
+const E = __importStar(__webpack_require__(234));
+const V = __importStar(__webpack_require__(342));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class PasswordForm extends react_1.Component {
@@ -758,14 +760,11 @@ class PasswordForm extends react_1.Component {
         });
         const okPass = V.isPassChangeValid(rawData, E.FORM_MODE.insert, this.state.isAdmin);
         if (okPass === true) {
-            api_1.select('/api/auth', rawData.login)
+            api_1.select('/api/auth', 'chpass')
                 .then((data) => {
-                const passData = {
-                    login: rawData.login,
-                    password: client_1.encodePassword(rawData.password),
-                    passwordOld: client_1.encodePassword(rawData.passwordOld, data.salt)
-                };
-                return api_1.update('/api/auth', 'change', passData);
+                delete rawData.passwordRepeat;
+                const credentials = client_1.encryptCredentials(rawData, data.key);
+                return api_1.update('/api/auth', 'change', { credentials });
             })
                 .then(() => {
                 info.innerText = 'Success: Password changed';
@@ -794,7 +793,7 @@ exports.default = PasswordForm;
 
 /***/ }),
 
-/***/ 320:
+/***/ 346:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -808,8 +807,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const E = __importStar(__webpack_require__(208));
-const V = __importStar(__webpack_require__(316));
+const E = __importStar(__webpack_require__(234));
+const V = __importStar(__webpack_require__(342));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class UserForm extends react_1.Component {
@@ -889,33 +888,31 @@ class UserForm extends react_1.Component {
         const info = document.getElementById('form-user-info');
         const form = document.getElementById('form-user-form');
         const formData = new FormData(form);
-        let data;
         formData.forEach((item, key) => {
             rawData[key] = item;
         });
         // validate passwords
         if (this.state.mode === E.FORM_MODE.insert) {
             const okPass = V.isPasswordValid(rawData);
-            if (okPass === true) {
-                const password = client_1.encodePassword(rawData.password);
-                delete rawData.passwordRepeat;
-                data = Object.assign(Object.assign({}, rawData), { password });
-            }
-            else {
+            if (okPass !== true) {
                 info.innerText = 'Error: Passwords does not match.';
                 return;
             }
         }
-        else {
-            data = Object.assign({}, rawData);
-        }
         // validate form
-        const okUser = V.isUserValid(data, this.state.mode);
+        const okUser = V.isUserValid(rawData, this.state.mode);
         if (okUser !== true) {
             info.innerText = `Error: ${okUser.join(', ')}`;
             return;
         }
-        this.setData(data);
+        if (this.state.mode === E.FORM_MODE.insert) {
+            this.setDataInsert(rawData);
+        }
+        else {
+            delete rawData.password;
+            delete rawData.passwordRepeat;
+            this.setDataUpdate(rawData);
+        }
     }
     onClose() {
         const form = document.getElementById('form-user-form');
@@ -926,35 +923,42 @@ class UserForm extends react_1.Component {
         if (_id) {
             api_1.select('/api/users', _id).then((data) => {
                 const user = data[0];
-                this.setState({ user, mode: E.FORM_MODE.update });
+                this.setState({ mode: E.FORM_MODE.update, user });
             });
         }
         else {
-            this.setState({ user: Object.assign({}, this.newUser), mode: E.FORM_MODE.insert });
+            this.setState({ mode: E.FORM_MODE.insert, user: Object.assign({}, this.newUser) });
         }
     }
-    setData(data) {
+    setDataInsert(rawData) {
         const info = document.getElementById('form-user-info');
-        if (this.state.mode === E.FORM_MODE.insert) {
-            api_1.insert('/api/users', data)
-                .then(() => {
-                info.innerText = 'Success: User added.';
-                document.dispatchEvent(new CustomEvent('kudoz::userListRefresh'));
-            })
-                .catch((err) => {
-                info.innerText = `Error: ${err.message}`;
-            });
-        }
-        else {
-            api_1.update('/api/users', this.state.user._id, data)
-                .then(() => {
-                info.innerText = 'Success: User updated.';
-                document.dispatchEvent(new CustomEvent('kudoz::userListRefresh'));
-            })
-                .catch((err) => {
-                info.innerText = `Error: ${err.message}`;
-            });
-        }
+        api_1.select('/api/auth', 'login')
+            .then((hand) => {
+            const credentials = client_1.encryptCredentials({ password: rawData.password }, hand.key);
+            delete rawData.password;
+            delete rawData.passwordRepeat;
+            const data = Object.assign(Object.assign({}, rawData), { credentials });
+            data.credentials = credentials;
+            return api_1.insert('/api/users', data);
+        })
+            .then(() => {
+            info.innerText = 'Success: User added.';
+            document.dispatchEvent(new CustomEvent('kudoz::userListRefresh'));
+        })
+            .catch((err) => {
+            info.innerText = `Error: ${err.message}`;
+        });
+    }
+    setDataUpdate(rawData) {
+        const info = document.getElementById('form-user-info');
+        api_1.update('/api/users', this.state.user._id, rawData)
+            .then(() => {
+            info.innerText = 'Success: User updated.';
+            document.dispatchEvent(new CustomEvent('kudoz::userListRefresh'));
+        })
+            .catch((err) => {
+            info.innerText = `Error: ${err.message}`;
+        });
     }
     onFormRefresh(e) {
         const info = document.getElementById('form-user-info');
@@ -967,7 +971,7 @@ exports.default = UserForm;
 
 /***/ }),
 
-/***/ 321:
+/***/ 347:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1063,5 +1067,5 @@ exports.default = UserList;
 
 /***/ })
 
-},[[260,"runtime","vendor","common"]]]);
+},[[286,"runtime","vendor","common"]]]);
 //# sourceMappingURL=admin.js.map

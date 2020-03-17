@@ -28,7 +28,9 @@ app.use(
   session({
     cookie: {
       httpOnly: false,
-      maxAge: COOKIE_MAX_AGE
+      maxAge: COOKIE_MAX_AGE,
+      path: '/',
+      sameSite: 'strict'
     },
     resave: false,
     // rolling: true,
@@ -42,14 +44,15 @@ app.use(
  ** - define api routes at top, then, all other routes will be handled via index.html - react router
  ** ****************** */
 
+app.get('/admin', (_req, res) => cAuth.list(__dirname, res));
 app.post('/api/like', cLike);
-restfulRouter({ app, name: 'api/auth', controller: cAuth });
-restfulRouter({ app, name: 'api/users', controller: cUsers });
-restfulRouter({ app, name: 'api/cards', controller: cCards });
-restfulRouter({ app, name: 'api/events', controller: cEvents });
+restfulRouter({ app, controller: cAuth, name: 'api/auth' });
+restfulRouter({ app, controller: cUsers, name: 'api/users' });
+restfulRouter({ app, controller: cCards, name: 'api/cards' });
+restfulRouter({ app, controller: cEvents, name: 'api/events' });
 
 /* Handle ALL OTHER, non-api,  requests / routes as the index.html (main application) - we use React Router fot this */
-app.get('*', (req, res) => {
+app.get('*', (_req, res) => {
   res.set('Content-Type', 'text/html');
   res.sendFile(path.resolve(__dirname, 'client', 'index.html'));
 });

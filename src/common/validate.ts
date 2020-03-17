@@ -50,7 +50,7 @@ export function isUserValid(user: I.User, mode: E.FORM_MODE) {
   return bugs.length ? bugs : true;
 }
 
-export function isAuthValid(user: Partial<I.User>, mode: E.FORM_MODE) {
+export function isAuthValid(user: I.LoginForm, mode: E.FORM_MODE) {
   const bugs: string[] = [];
 
   if (!hasData(user.login)) {
@@ -90,7 +90,7 @@ export function isPassChangeValid(user: I.PasswordForm, mode = E.FORM_MODE.inser
   return bugs.length ? bugs : true;
 }
 
-export function isPasswordValid(user: I.UserForm) {
+export function isPasswordValid(user: I.UserFormPasswords) {
   const bugs: string[] = [];
 
   if (!hasData(user.password)) {

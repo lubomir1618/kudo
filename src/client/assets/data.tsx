@@ -278,4 +278,4 @@ export default [
   {
     name: 'Durisin Martin'
   }
-]
+];

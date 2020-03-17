@@ -29,6 +29,6 @@ export const props_2 = {
 };
 
 storiesOf('Card', module)
-  .addDecorator((story) => <div style={{ maxWidth: '300px', margin: '50px' }}>{story()}</div>)
+  .addDecorator((story) => <div style={{ margin: '50px', maxWidth: '300px' }}>{story()}</div>)
   .add('default', () => <Card {...props_1} />)
   .add('highlighted', () => <Card {...props_2} />);

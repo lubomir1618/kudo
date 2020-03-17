@@ -1,6 +1,8 @@
 import monk from 'monk';
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
+import NodeRSA from 'node-rsa';
+import bcrypt from 'bcryptjs';
 import * as utils from '../utils';
 import * as E from '../../common/constants';
 import * as I from '../../common/interfaces';
@@ -12,6 +14,7 @@ const db = monk(process.env.MONGODB_URL || '');
 
 class Users {
   public users = db.get<I.User>('users');
+  private key = new NodeRSA({ b: 256 });
 
   public list(req: Request, res: Response) {
     utils.serverLog('/users => list', req);
@@ -49,15 +52,39 @@ class Users {
     if (!utils.isAuthenticated(req, res, E.USER_ROLE.admin)) {
       return;
     }
+    let credentials: I.UserFormPasswords;
 
-    const valid = isUserValid(req.body, E.FORM_MODE.insert);
+    // Check if we started handshake
+    if (req.session?.privateKey === undefined) {
+      utils.errorHandler(res, 'Error in handshake', E.REST_ERROR.forbidden);
+      return;
+    }
+
+    // decode encrypted data
+    try {
+      const body = req.body as I.FB_UserInsert;
+      this.key.importKey(req.session?.privateKey);
+      const dataBase = this.key.decrypt(body.credentials, 'base64');
+      const dataJson = Buffer.from(dataBase, 'base64').toString();
+      credentials = JSON.parse(dataJson);
+    } catch (err) {
+      const msg = (err.message as string).includes('error:04099079')
+        ? '🔐 wrong or expired key used, hack ?!'
+        : err.message;
+      console.log(msg);
+      utils.errorHandler(res, 'Error in received data.', E.REST_ERROR.bad_request);
+      return;
+    }
+
+    const rawData = { ...req.body, password: credentials.password } as I.UserFormInsert;
+    const valid = isUserValid(rawData, E.FORM_MODE.insert);
     if (valid === true) {
       // login duplicity check
       this.users
-        .findOne({ login: req.body.login })
+        .findOne({ login: rawData.login })
         .then((existingUser) => {
           if (existingUser?.login === undefined) {
-            this.setUser(req, res);
+            this.setUser(res, rawData);
           } else {
             utils.errorHandler(res, 'Duplicate user', E.REST_ERROR.bad_request);
           }
@@ -92,14 +119,16 @@ class Users {
     }
   }
 
-  private setUser(req: Request, res: Response) {
+  private setUser(res: Response, rawData: I.UserFormInsert) {
+    const newSalt = bcrypt.genSaltSync(10);
+    const password = bcrypt.hashSync(rawData.password, newSalt);
     const user: I.User = {
       created: new Date().getTime(),
-      login: req.body.login,
-      name: req.body.name,
-      password: req.body.password,
-      role: req.body.role,
-      surname: req.body.surname
+      login: rawData.login,
+      name: rawData.name,
+      password,
+      role: rawData.role,
+      surname: rawData.surname
     };
     // save to db
     this.users

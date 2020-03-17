@@ -12,6 +12,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const monk_1 = __importDefault(require("monk"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const node_rsa_1 = __importDefault(require("node-rsa"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const utils = __importStar(require("../utils"));
 const E = __importStar(require("../../common/constants"));
 const validate_1 = require("../../common/validate");
@@ -20,6 +22,7 @@ const db = monk_1.default(process.env.MONGODB_URL || '');
 class Users {
     constructor() {
         this.users = db.get('users');
+        this.key = new node_rsa_1.default({ b: 256 });
     }
     list(req, res) {
         utils.serverLog('/users => list', req);
@@ -50,18 +53,42 @@ class Users {
             .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.not_found));
     }
     create(req, res) {
+        var _a, _b;
         utils.serverLog('/users => create', req);
         if (!utils.isAuthenticated(req, res, E.USER_ROLE.admin)) {
             return;
         }
-        const valid = validate_1.isUserValid(req.body, E.FORM_MODE.insert);
+        let credentials;
+        // Check if we started handshake
+        if (((_a = req.session) === null || _a === void 0 ? void 0 : _a.privateKey) === undefined) {
+            utils.errorHandler(res, 'Error in handshake', E.REST_ERROR.forbidden);
+            return;
+        }
+        // decode encrypted data
+        try {
+            const body = req.body;
+            this.key.importKey((_b = req.session) === null || _b === void 0 ? void 0 : _b.privateKey);
+            const dataBase = this.key.decrypt(body.credentials, 'base64');
+            const dataJson = Buffer.from(dataBase, 'base64').toString();
+            credentials = JSON.parse(dataJson);
+        }
+        catch (err) {
+            const msg = err.message.includes('error:04099079')
+                ? '🔐 wrong or expired key used, hack ?!'
+                : err.message;
+            console.log(msg);
+            utils.errorHandler(res, 'Error in received data.', E.REST_ERROR.bad_request);
+            return;
+        }
+        const rawData = Object.assign(Object.assign({}, req.body), { password: credentials.password });
+        const valid = validate_1.isUserValid(rawData, E.FORM_MODE.insert);
         if (valid === true) {
             // login duplicity check
             this.users
-                .findOne({ login: req.body.login })
+                .findOne({ login: rawData.login })
                 .then((existingUser) => {
                 if ((existingUser === null || existingUser === void 0 ? void 0 : existingUser.login) === undefined) {
-                    this.setUser(req, res);
+                    this.setUser(res, rawData);
                 }
                 else {
                     utils.errorHandler(res, 'Duplicate user', E.REST_ERROR.bad_request);
@@ -96,14 +123,16 @@ class Users {
             utils.errorHandler(res, `Error in: ${valid.join(', ')}`, E.REST_ERROR.bad_request);
         }
     }
-    setUser(req, res) {
+    setUser(res, rawData) {
+        const newSalt = bcryptjs_1.default.genSaltSync(10);
+        const password = bcryptjs_1.default.hashSync(rawData.password, newSalt);
         const user = {
             created: new Date().getTime(),
-            login: req.body.login,
-            name: req.body.name,
-            password: req.body.password,
-            role: req.body.role,
-            surname: req.body.surname
+            login: rawData.login,
+            name: rawData.name,
+            password,
+            role: rawData.role,
+            surname: rawData.surname
         };
         // save to db
         this.users

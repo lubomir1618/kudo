@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './knight.css';
+import './Knight.css';
 
 export interface Props {
   mostKudos: string;

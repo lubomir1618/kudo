@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React from 'react';
 import * as I from '../../../common/interfaces';
 import { select } from '../../utils/api';
 import { getKudoKnight, getKudoNumberList } from '../../utils/client';

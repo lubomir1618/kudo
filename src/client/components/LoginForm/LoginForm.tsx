@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import * as V from '../../../common/validate';
 import * as E from '../../../common/constants';
+import * as I from '../../../common/interfaces';
 import { auth, select } from '../../utils/api';
-import { encodePassword } from '../../utils/client';
+import { encryptCredentials } from '../../utils/client';
 
 export default class LoginForm extends Component<any, any> {
   private bind: {
@@ -52,15 +53,17 @@ export default class LoginForm extends Component<any, any> {
     const form = document.getElementById('form-login-form') as HTMLFormElement;
 
     const formData = new FormData(form);
-    const login = formData.get('login') as string;
-    const plainPassword = formData.get('password') as string;
+    const rawData: I.LoginForm = {
+      login: formData.get('login') as string,
+      password: formData.get('password') as string
+    };
 
-    const okAuth = V.isAuthValid({ login, password: plainPassword }, E.FORM_MODE.insert);
+    const okAuth = V.isAuthValid(rawData, E.FORM_MODE.insert);
     if (okAuth === true) {
-      select<{ salt: string }>('/api/auth', login)
+      select<{ key: string }>('/api/auth', 'login')
         .then((data) => {
-          const password = encodePassword(plainPassword, data.salt);
-          return auth({ login, password });
+          const credentials = encryptCredentials<I.LoginForm>(rawData, data.key);
+          return auth({ credentials });
         })
         .then((data) => {
           if (data.authenticated) {
@@ -69,7 +72,7 @@ export default class LoginForm extends Component<any, any> {
             info.innerText = 'Error: authentication failed';
           }
         })
-        .catch((err: Error) => {
+        .catch((_e) => {
           info.innerText = 'Error: authentication failed';
         });
     } else {

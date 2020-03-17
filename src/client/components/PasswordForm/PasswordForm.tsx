@@ -3,7 +3,7 @@ import * as I from '../../../common/interfaces';
 import * as E from '../../../common/constants';
 import * as V from '../../../common/validate';
 import { select, update } from '../../utils/api';
-import { encodePassword } from '../../utils/client';
+import { encryptCredentials } from '../../utils/client';
 
 interface IPasswordFormProps {
   role: E.USER_ROLE;
@@ -122,14 +122,11 @@ export default class PasswordForm extends Component<IPasswordFormProps, IPasswor
 
     const okPass = V.isPassChangeValid(rawData, E.FORM_MODE.insert, this.state.isAdmin);
     if (okPass === true) {
-      select<{ salt: string }>('/api/auth', rawData.login)
+      select<{ key: string }>('/api/auth', 'chpass')
         .then((data) => {
-          const passData = {
-            login: rawData.login,
-            password: encodePassword(rawData.password),
-            passwordOld: encodePassword(rawData.passwordOld, data.salt)
-          };
-          return update('/api/auth', 'change', passData);
+          delete rawData.passwordRepeat;
+          const credentials = encryptCredentials<I.PasswordForm>(rawData, data.key);
+          return update('/api/auth', 'change', { credentials });
         })
         .then(() => {
           info.innerText = 'Success: Password changed';

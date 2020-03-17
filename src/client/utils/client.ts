@@ -1,5 +1,5 @@
-import * as I from './../../common/interfaces';
-import bcrypt from 'bcryptjs';
+import NodeRSA from 'node-rsa';
+import * as I from '../../common/interfaces';
 
 interface IkudoNum {
   name: string;
@@ -14,7 +14,7 @@ export function getKudoNumberList(cards: I.Card[]): IkudoNum[] {
     if (acc[val.awardedTo]) {
       acc[val.awardedTo].count += 1;
     } else {
-      acc[val.awardedTo] = { name: val.awardedTo, count: 1 };
+      acc[val.awardedTo] = { count: 1, name: val.awardedTo };
     }
     return acc;
   }, {});
@@ -43,9 +43,10 @@ export function soundTurnedOn() {
   return false;
 }
 
-export function encodePassword(pass: I.UserForm['password'], salt?: string): string {
-  const mySalt = salt || bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(pass, mySalt);
+export function encryptCredentials<T>(data: T, publicKey: string): string {
+  const key = new NodeRSA();
+  key.importKey(publicKey);
+  const hash = key.encrypt(JSON.stringify(data), 'base64');
   return hash;
 }
 

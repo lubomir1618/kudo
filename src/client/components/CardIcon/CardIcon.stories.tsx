@@ -13,7 +13,7 @@ const proud = { cardType: CARD_TYPE.proud };
 const thank_you = { cardType: CARD_TYPE.thank_you };
 
 storiesOf('Card Icon', module)
-  .addDecorator((story) => <div style={{ maxWidth: '280px', margin: '50px' }}>{story()}</div>)
+  .addDecorator((story) => <div style={{ margin: '50px', maxWidth: '280px' }}>{story()}</div>)
   .add('great job', () => <CardIcon {...great_job} />)
   .add('totally awesome', () => <CardIcon {...awesome} />)
   .add('well done', () => <CardIcon {...well_done} />)

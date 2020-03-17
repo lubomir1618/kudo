@@ -1,12 +1,5 @@
 (window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["common"],{
 
-/***/ 124:
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-
 /***/ 127:
 /***/ (function(module, exports) {
 
@@ -14,7 +7,14 @@
 
 /***/ }),
 
-/***/ 208:
+/***/ 130:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 234:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59,7 +59,7 @@ var REST_ERROR;
     REST_ERROR[REST_ERROR["unprocessable"] = 422] = "unprocessable";
 })(REST_ERROR = exports.REST_ERROR || (exports.REST_ERROR = {}));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(37)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(43)))
 
 /***/ }),
 
@@ -263,14 +263,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const bcryptjs_1 = __importDefault(__webpack_require__(35));
+const node_rsa_1 = __importDefault(__webpack_require__(35));
 function getKudoNumberList(cards) {
     const list = cards.reduce((acc, val) => {
         if (acc[val.awardedTo]) {
             acc[val.awardedTo].count += 1;
         }
         else {
-            acc[val.awardedTo] = { name: val.awardedTo, count: 1 };
+            acc[val.awardedTo] = { count: 1, name: val.awardedTo };
         }
         return acc;
     }, {});
@@ -296,12 +296,13 @@ function soundTurnedOn() {
     return false;
 }
 exports.soundTurnedOn = soundTurnedOn;
-function encodePassword(pass, salt) {
-    const mySalt = salt || bcryptjs_1.default.genSaltSync(10);
-    const hash = bcryptjs_1.default.hashSync(pass, mySalt);
+function encryptCredentials(data, publicKey) {
+    const key = new node_rsa_1.default();
+    key.importKey(publicKey);
+    const hash = key.encrypt(JSON.stringify(data), 'base64');
     return hash;
 }
-exports.encodePassword = encodePassword;
+exports.encryptCredentials = encryptCredentials;
 function getCookie(cname) {
     const name = `${cname}=`;
     const decodedCookie = decodeURIComponent(document.cookie);

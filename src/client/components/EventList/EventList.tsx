@@ -76,7 +76,7 @@ export default class EventList extends Component<IEventListProps, IEventListStat
     jsx.push(<td key="_id">{event._id}</td>);
     jsx.push(
       <td key="name">
-        <a href={`${window.origin}/event/${event._id}`} target="_blank" title="link to event">
+        <a href={`${window.origin}/event/${event._id}`} target="_blank" rel="noopener noreferrer" title="link to event">
           {event.name}
         </a>
       </td>

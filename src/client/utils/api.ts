@@ -150,8 +150,8 @@ export function like(_id: string): Promise<number> {
 /**
  * POST login & pass and get authentication result
  */
-export function auth(data: { login: string; password: string }): Promise<I.Auth> {
-  return new Promise<I.Auth>((resolved, rejected) => {
+export function auth(data: { credentials: string }): Promise<I.BF_Auth> {
+  return new Promise<I.BF_Auth>((resolved, rejected) => {
     fetch('/api/auth', {
       body: JSON.stringify(data),
       headers,

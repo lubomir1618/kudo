@@ -26,7 +26,7 @@ export function setSession(req: Request, key: string, val: any) {
   }
 }
 
-export function setAuthCookie(req: Request, res: Response, data: I.Auth): void {
+export function setAuthCookie(req: Request, res: Response, data: I.BF_Auth): void {
   setSession(req, 'authenticated', data.authenticated);
   setSession(req, 'role', data.role);
   if (data.authenticated) {

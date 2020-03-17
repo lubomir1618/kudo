@@ -64,7 +64,7 @@ class Cards {
           utils.errorHandler(res, `Error in: ${valid.join(', ')}`, E.REST_ERROR.bad_request);
         }
       })
-      .catch((err) => utils.errorHandler(res, `Kudo Event doesn't exist.`, E.REST_ERROR.not_found));
+      .catch(() => utils.errorHandler(res, `Kudo Event doesn't exist.`, E.REST_ERROR.not_found));
   }
 }
 

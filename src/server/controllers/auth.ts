@@ -1,6 +1,9 @@
 import monk from 'monk';
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
+import NodeRSA from 'node-rsa';
+import bcrypt from 'bcryptjs';
+import path from 'path';
 import * as utils from '../utils';
 import * as I from '../../common/interfaces';
 import * as E from '../../common/constants';
@@ -12,25 +15,22 @@ const db = monk(process.env.MONGODB_URL || '');
 
 class Auth {
   public users = db.get<I.User>('users');
+  private key = new NodeRSA({ b: 256 });
+
+  public list(rootPath: string, res: Response) {
+    res.set('Content-Type', 'text/html');
+    res.sendFile(path.resolve(rootPath, 'client', 'admin.html'));
+  }
 
   /**
-   * Retrieves salt for user password encoding
+   * Sends RSA public key to client, starts handshake.
    */
   public show(req: Request, res: Response) {
     utils.serverLog('/auth/:login => show', req);
-    const where = { login: req.params.id };
-
-    this.users
-      .findOne(where)
-      .then((data) => {
-        if (!data || !data.password) {
-          throw new Error('Authentication failed');
-        } else {
-          const salt = data.password.substr(0, 29);
-          return res.json({ salt });
-        }
-      })
-      .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.unauthorized));
+    this.key.generateKeyPair(512);
+    utils.setSession(req, 'privateKey', this.key.exportKey('pkcs8-private-pem'));
+    res.json({ key: this.key.exportKey('pkcs8-public-pem') });
+    res.end();
   }
 
   /**
@@ -38,21 +38,53 @@ class Auth {
    */
   public create(req: Request, res: Response) {
     utils.serverLog('/auth => create', req);
-    const valid = isAuthValid(req.body, E.FORM_MODE.insert);
-    const out: I.Auth = { authenticated: false, role: E.USER_ROLE.none, userId: undefined };
+    const out: I.BF_Auth = { authenticated: false, role: E.USER_ROLE.none, userId: undefined };
+    let credentials: I.LoginForm;
 
+    // Check if we started handshake
+    if (req.session?.privateKey === undefined) {
+      utils.setAuthCookie(req, res, out);
+      utils.errorHandler(res, 'Error in handshake', E.REST_ERROR.forbidden);
+      return;
+    }
+
+    // decode encrypted data
+    try {
+      const body = req.body as I.FB_Credentials;
+      this.key.importKey(req.session?.privateKey);
+      const dataBase = this.key.decrypt(body.credentials, 'base64');
+      const dataJson = Buffer.from(dataBase, 'base64').toString();
+      credentials = JSON.parse(dataJson);
+    } catch (err) {
+      const msg = (err.message as string).includes('error:04099079')
+        ? '🔐 wrong or expired key used, hack ?!'
+        : err.message;
+      console.log(msg);
+      utils.errorHandler(res, 'Authentication failed', E.REST_ERROR.forbidden);
+      return;
+    }
+
+    // proceed with authentication check
+    const valid = isAuthValid(credentials, E.FORM_MODE.insert);
     if (valid === true) {
-      const where = { login: req.body.login, password: req.body.password };
       this.users
-        .findOne(where)
+        .findOne({ login: credentials.login })
         .then((data) => {
-          if (data && data.login) {
-            out.authenticated = true;
-            out.role = data.role;
-            out.userId = data._id;
+          if (!data || !data.password) {
+            throw new Error('Authentication failed');
+          } else {
+            const salt = data.password.substr(0, 29);
+            const hash = bcrypt.hashSync(credentials.password, salt);
+
+            if (hash === data.password) {
+              out.authenticated = true;
+              out.role = data.role;
+              out.userId = data._id;
+            }
+            utils.setAuthCookie(req, res, out);
+            utils.setSession(req, 'privateKey', undefined);
+            return res.json(out);
           }
-          utils.setAuthCookie(req, res, out);
-          return res.json(out);
         })
         .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.forbidden));
     } else {
@@ -66,23 +98,53 @@ class Auth {
    */
   public update(req: Request, res: Response) {
     utils.serverLog('/auth/:id => update', req);
+    let credentials: I.PasswordForm;
+    // Check if we are authenticated
     if (!utils.isAuthenticated(req, res)) {
       return;
     }
-    const isAdmin = req.session?.role === E.USER_ROLE.admin;
-    const valid = isPassChangeValid(req.body, E.FORM_MODE.update, isAdmin);
-    if (valid === true) {
-      const login = req.body.login;
-      const where = { login, password: req.body.passwordOld };
-      // admin can change user password without knowing old password
-      if (isAdmin && login !== 'admin') {
-        delete where.password;
+
+    // Check if we started handshake
+    if (req.session?.privateKey === undefined) {
+      utils.errorHandler(res, 'Error in handshake', E.REST_ERROR.forbidden);
+      return;
+    } else {
+      try {
+        const body = req.body as I.FB_Credentials;
+        this.key.importKey(req.session?.privateKey);
+        const dataBase = this.key.decrypt(body.credentials, 'base64');
+        const dataJson = Buffer.from(dataBase, 'base64').toString();
+        credentials = JSON.parse(dataJson);
+      } catch (err) {
+        const msg = (err.message as string).includes('error:04099079')
+          ? '🔐 wrong or expired key used, hack ?!'
+          : err.message;
+        console.log(msg);
+        utils.errorHandler(res, 'Authentication failed', E.REST_ERROR.forbidden);
+        return;
       }
+    }
+
+    // proceed with password change
+    const isAdmin = req.session?.role === E.USER_ROLE.admin;
+    const valid = isPassChangeValid(credentials, E.FORM_MODE.update, isAdmin);
+    if (valid === true) {
+      const login = credentials.login;
       this.users
-        .findOne(where)
+        .findOne({ login })
         .then((data) => {
           if (data && data.login) {
-            return this.users.update({ login }, { $set: { password: req.body.password } });
+            // admin can change user password without knowing old password
+            if (!(isAdmin && login !== 'admin')) {
+              const salt = data.password.substr(0, 29);
+              const hash = bcrypt.hashSync(credentials.passwordOld, salt);
+              if (hash !== data.password) {
+                throw new Error('Authentication failed');
+              }
+            }
+            const newSalt = bcrypt.genSaltSync(10);
+            const newHash = bcrypt.hashSync(credentials.password, newSalt);
+            return this.users.update({ login }, { $set: { password: newHash } });
           } else {
             throw new Error('Authentication failed');
           }
@@ -99,7 +161,7 @@ class Auth {
    */
   public destroy(req: Request, res: Response) {
     utils.serverLog('/auth => destroy', req);
-    const out: I.Auth = { authenticated: false, role: E.USER_ROLE.none, userId: undefined };
+    const out: I.BF_Auth = { authenticated: false, role: E.USER_ROLE.none, userId: undefined };
     utils.setAuthCookie(req, res, out);
     res.end('{"result": "logged out"}');
   }
@@ -110,6 +172,7 @@ const auth = new Auth();
 export const cAuth = {
   create: auth.create.bind(auth),
   destroy: auth.destroy.bind(auth),
+  list: auth.list.bind(auth),
   show: auth.show.bind(auth),
   update: auth.update.bind(auth)
 };
