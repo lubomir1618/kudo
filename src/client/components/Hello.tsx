@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Knight } from '../components/Knight/Knight';
-import { CardIcon } from '../components/cardIcon/CardIcon';
-import Card from '../components/card/Card';
+import { CardIcon } from '../components/CardIcon/CardIcon';
+import Card from '../components/Card/Card';
 import HelloSvg from '../icons/3h.svg';
 import { CARD_TYPE } from '../../common/constants';
-import { props_1, props_2 } from './card/Card.stories';
+import { props_1, props_2 } from './Card/Card.stories';
 
 import './Hello.css';
 

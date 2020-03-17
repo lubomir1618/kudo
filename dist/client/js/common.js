@@ -1,5 +1,68 @@
 (window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["common"],{
 
+/***/ 127:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 130:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 234:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 180000;
+var CARD_TYPE;
+(function (CARD_TYPE) {
+    CARD_TYPE["great_job"] = "great_job";
+    CARD_TYPE["totally_awesome"] = "totally_awesome";
+    CARD_TYPE["well_done"] = "well_done";
+    CARD_TYPE["many_thanks"] = "many_thanks";
+    CARD_TYPE["very_happy"] = "very_happy";
+    CARD_TYPE["congrats"] = "congrats";
+    CARD_TYPE["proud"] = "proud";
+    CARD_TYPE["thank_you"] = "thank_you";
+})(CARD_TYPE = exports.CARD_TYPE || (exports.CARD_TYPE = {}));
+var EVENT_STATE;
+(function (EVENT_STATE) {
+    EVENT_STATE["past"] = "past";
+    EVENT_STATE["active"] = "active";
+    EVENT_STATE["future"] = "future";
+})(EVENT_STATE = exports.EVENT_STATE || (exports.EVENT_STATE = {}));
+var USER_ROLE;
+(function (USER_ROLE) {
+    USER_ROLE["admin"] = "admin";
+    USER_ROLE["user"] = "user";
+    USER_ROLE["none"] = "none";
+})(USER_ROLE = exports.USER_ROLE || (exports.USER_ROLE = {}));
+var FORM_MODE;
+(function (FORM_MODE) {
+    FORM_MODE["hidden"] = "hidden";
+    FORM_MODE["insert"] = "insert";
+    FORM_MODE["update"] = "update";
+})(FORM_MODE = exports.FORM_MODE || (exports.FORM_MODE = {}));
+var REST_ERROR;
+(function (REST_ERROR) {
+    REST_ERROR[REST_ERROR["bad_request"] = 400] = "bad_request";
+    REST_ERROR[REST_ERROR["unauthorized"] = 401] = "unauthorized";
+    REST_ERROR[REST_ERROR["forbidden"] = 403] = "forbidden";
+    REST_ERROR[REST_ERROR["not_found"] = 404] = "not_found";
+    REST_ERROR[REST_ERROR["unprocessable"] = 422] = "unprocessable";
+})(REST_ERROR = exports.REST_ERROR || (exports.REST_ERROR = {}));
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(43)))
+
+/***/ }),
+
 /***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11,8 +74,8 @@ const headers = { 'content-type': 'application/json' };
  * Select record(s) from table
  *
  * select<I.User[]>('/api/users');
- * select<I.User>('/api/users', '123');
- * select<I.User>('/api/events', {state: 'active'});
+ * select<I.User[]>('/api/users', '123');
+ * select<I.User[]>('/api/events', {state: 'active'});
  * is equivalent of sql
  * SELECT * FROM users;
  * SELECT * FROM users WHERE _id='123';
@@ -30,10 +93,24 @@ function select(api, id) {
         }
     }
     return new Promise((resolved, rejected) => {
+        let wasError = false;
         fetch(url, {
             method: 'GET'
         })
-            .then((response) => resolved(response.json()))
+            .then((response) => {
+            if (!response.ok) {
+                wasError = true;
+            }
+            return response.json();
+        })
+            .then((response) => {
+            if (wasError) {
+                rejected(response);
+            }
+            else {
+                resolved(response);
+            }
+        })
             .catch((err) => rejected(err));
     });
 }
@@ -47,12 +124,26 @@ exports.select = select;
  */
 function insert(api, data) {
     return new Promise((resolved, rejected) => {
+        let wasError = false;
         fetch(api, {
             body: JSON.stringify(data),
             headers,
             method: 'POST'
         })
-            .then((response) => resolved(response.json()))
+            .then((response) => {
+            if (!response.ok) {
+                wasError = true;
+            }
+            return response.json();
+        })
+            .then((response) => {
+            if (wasError) {
+                rejected(response);
+            }
+            else {
+                resolved(response);
+            }
+        })
             .catch((err) => rejected(err));
     });
 }
@@ -66,12 +157,26 @@ exports.insert = insert;
  */
 function update(api, id, data) {
     return new Promise((resolved, rejected) => {
+        let wasError = false;
         fetch(`${api}/${id}`, {
             body: JSON.stringify(data),
             headers,
             method: 'PATCH'
         })
-            .then((response) => resolved(response.json()))
+            .then((response) => {
+            if (!response.ok) {
+                wasError = true;
+            }
+            return response.json();
+        })
+            .then((response) => {
+            if (wasError) {
+                rejected(response);
+            }
+            else {
+                resolved(response);
+            }
+        })
             .catch((err) => rejected(err));
     });
 }
@@ -110,34 +215,126 @@ function like(_id) {
     });
 }
 exports.like = like;
+/**
+ * POST login & pass and get authentication result
+ */
+function auth(data) {
+    return new Promise((resolved, rejected) => {
+        fetch('/api/auth', {
+            body: JSON.stringify(data),
+            headers,
+            method: 'POST'
+        })
+            .then((response) => {
+            if (!response.ok) {
+                throw Error(response.statusText);
+            }
+            return response;
+        })
+            .then((response) => resolved(response.json()))
+            .catch((err) => rejected(err));
+    });
+}
+exports.auth = auth;
+/**
+ * Logout active session
+ */
+function logout() {
+    return new Promise((resolved, rejected) => {
+        fetch('/api/auth/logout', {
+            headers,
+            method: 'DELETE'
+        })
+            .then(() => resolved(true))
+            .catch((err) => rejected(err));
+    });
+}
+exports.logout = logout;
 
 
 /***/ }),
 
-/***/ 36:
+/***/ 34:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var CARD_TYPE;
-(function (CARD_TYPE) {
-    CARD_TYPE["great_job"] = "great_job";
-    CARD_TYPE["totally_awesome"] = "totally_awesome";
-    CARD_TYPE["well_done"] = "well_done";
-    CARD_TYPE["many_thanks"] = "many_thanks";
-    CARD_TYPE["very_happy"] = "very_happy";
-    CARD_TYPE["congrats"] = "congrats";
-    CARD_TYPE["proud"] = "proud";
-    CARD_TYPE["thank_you"] = "thank_you";
-})(CARD_TYPE = exports.CARD_TYPE || (exports.CARD_TYPE = {}));
-var EVENT_STATE;
-(function (EVENT_STATE) {
-    EVENT_STATE["past"] = "past";
-    EVENT_STATE["active"] = "active";
-    EVENT_STATE["future"] = "future";
-})(EVENT_STATE = exports.EVENT_STATE || (exports.EVENT_STATE = {}));
+const node_rsa_1 = __importDefault(__webpack_require__(35));
+function getKudoNumberList(cards) {
+    const list = cards.reduce((acc, val) => {
+        if (acc[val.awardedTo]) {
+            acc[val.awardedTo].count += 1;
+        }
+        else {
+            acc[val.awardedTo] = { count: 1, name: val.awardedTo };
+        }
+        return acc;
+    }, {});
+    return Object.values(list).sort((a, b) => (a.count > b.count ? -1 : 1));
+}
+exports.getKudoNumberList = getKudoNumberList;
+function getKudoKnight(kudoNumList) {
+    const winner = kudoNumList.shift();
+    if (winner) {
+        return winner.name;
+    }
+    return 'No knight yet';
+}
+exports.getKudoKnight = getKudoKnight;
+function soundTurnedOn() {
+    const data = localStorage.getItem('kudosSettings');
+    if (data) {
+        const soundSetting = JSON.parse(data);
+        if (soundSetting && soundSetting.sound === 'on') {
+            return true;
+        }
+    }
+    return false;
+}
+exports.soundTurnedOn = soundTurnedOn;
+function encryptCredentials(data, publicKey) {
+    const key = new node_rsa_1.default();
+    key.importKey(publicKey);
+    const hash = key.encrypt(JSON.stringify(data), 'base64');
+    return hash;
+}
+exports.encryptCredentials = encryptCredentials;
+function getCookie(cname) {
+    const name = `${cname}=`;
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const ca = decodedCookie.split(';');
+    // tslint:disable:prefer-for-of
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) === 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return false;
+}
+exports.getCookie = getCookie;
 
+
+/***/ }),
+
+/***/ 58:
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+
+/***/ 60:
+/***/ (function(module, exports) {
+
+/* (ignored) */
 
 /***/ })
 

@@ -5,9 +5,7 @@ import { Knight } from './Knight';
 const normal = { mostKudos: 'Erik Schwarz' };
 const long = { mostKudos: 'Pyotr Ilyich Tchaikovsky' };
 
-
 storiesOf('Kudo Knight', module)
-  .addDecorator((story) => <div style={{ maxWidth: '280px', margin: '50px' }}>{story()}</div>)
+  .addDecorator((story) => <div style={{ margin: '50px', maxWidth: '280px' }}>{story()}</div>)
   .add('normal name', () => <Knight {...normal} />)
-  .add('long name', () => <Knight {...long} />)
-
+  .add('long name', () => <Knight {...long} />);

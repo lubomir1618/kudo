@@ -2,6 +2,7 @@ import monk from 'monk';
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import * as utils from '../utils';
+import * as E from '../../common/constants';
 import * as I from '../../common/interfaces';
 import { isLikeValid } from '../../common/validate';
 
@@ -15,7 +16,7 @@ export function cLike(req: Request, res: Response) {
   const valid = isLikeValid(_id);
 
   if (valid !== true) {
-    return utils.errorHandler(res, `Error in: ${valid.join(', ')}`);
+    return utils.errorHandler(res, `Error in: ${valid.join(', ')}`, E.REST_ERROR.bad_request);
   }
 
   const events = DB.get<I.Event>('events');
@@ -60,5 +61,5 @@ export function cLike(req: Request, res: Response) {
         throw new Error('Could not incerase likes.');
       }
     })
-    .catch((err) => utils.errorHandler(res, err.message));
+    .catch((err) => utils.errorHandler(res, err.message, E.REST_ERROR.not_found));
 }

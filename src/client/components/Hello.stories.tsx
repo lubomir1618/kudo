@@ -2,8 +2,8 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Hello } from './Hello';
 
-const propsOne = { framework: 'React', compiler: 'TypeScript' };
-const propsTwo = { framework: 'Vue', compiler: 'CofeeScript' };
+const propsOne = { compiler: 'TypeScript', framework: 'React' };
+const propsTwo = { compiler: 'CofeeScript', framework: 'Vue' };
 
 storiesOf('Hello', module)
   .addDecorator((story) => <div style={{ padding: '3rem' }}>{story()}</div>)

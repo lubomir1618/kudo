@@ -1,4 +1,4 @@
-import React, { RefObject } from 'react';
+import React from 'react';
 import * as I from '../../../common/interfaces';
 import { select } from '../../utils/api';
 import { getKudoKnight, getKudoNumberList } from '../../utils/client';
@@ -39,24 +39,29 @@ export default class KudoEvent extends React.Component<{}, IState> {
   private eventId: string;
   private interval!: ReturnType<Window['setInterval']>;
   private timeout: any;
+  private bind: {
+    onCardListRefresh: EventListener;
+    onHideModal: () => void;
+  };
 
   constructor(props: any) {
     super(props);
     this.eventId = (this.props as any).match.params.id;
-    this.hideModal = this.hideModal.bind(this);
     this.state = {
       cards: [],
       event: undefined,
       is_active: false,
       shouldDisplayModal: false
     };
+    this.bind = {
+      onCardListRefresh: this.onCardListRefresh.bind(this) as EventListener,
+      onHideModal: this.onHideModal.bind(this)
+    };
   }
 
   public componentDidMount() {
     this.getData();
-    document.addEventListener('kudoz::cardListRefresh', () => {
-      this.getData();
-    });
+    document.addEventListener('kudoz::cardListRefresh', this.bind.onCardListRefresh);
 
     window.clearInterval(this.interval);
     this.interval = window.setInterval(() => {
@@ -80,6 +85,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
   }
 
   componentWillUnmount() {
+    document.removeEventListener('kudoz::cardListRefresh', this.bind.onCardListRefresh);
     window.clearInterval(this.interval);
     window.clearTimeout(this.timeout);
   }
@@ -92,14 +98,15 @@ export default class KudoEvent extends React.Component<{}, IState> {
         <div className="event_info">
           {this.getEvent()}
           {this.getKnight()}
-          {location.href.indexOf('?tv=true') > -1
-            ? <QRcode url={location.protocol + '//' + location.host + location.pathname}/>
-            : <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
-          }
+          {location.href.indexOf('?tv=true') > -1 ? (
+            <QRcode url={location.protocol + '//' + location.host + location.pathname} />
+          ) : (
+            <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
+          )}
         </div>
         <div className="event_cards">{this.processCards()}</div>
         <CardNotification />
-        {this.state.shouldDisplayModal ? <CardModal newCardProps={newCard} onClick={this.hideModal} /> : null}
+        {this.state.shouldDisplayModal ? <CardModal newCardProps={newCard} onClick={this.bind.onHideModal} /> : null}
         <KudoSettings />
       </div>
     ) : (
@@ -107,8 +114,12 @@ export default class KudoEvent extends React.Component<{}, IState> {
     );
   }
 
-  public hideModal(): void {
+  private onHideModal(): void {
     this.setState({ shouldDisplayModal: false });
+  }
+
+  private onCardListRefresh(): void {
+    this.getData();
   }
 
   private getData() {
@@ -123,12 +134,18 @@ export default class KudoEvent extends React.Component<{}, IState> {
       this.setState({ cards: data });
     });
 
-    select<I.Event>('/api/events', { _id: this.eventId }).then((data) => {
-      this.setState({
-        event: data,
-        is_active: data.dateFrom < now && now < data.dateTo
+    select<I.Event[]>('/api/events', { _id: this.eventId })
+      .then((data) => {
+        const event = data[0];
+        this.setState({
+          event,
+          is_active: event.dateFrom < now && now < event.dateTo
+        });
+      })
+      .catch((err: Error) => {
+        console.log(err.message);
+        window.clearInterval(this.interval);
       });
-    });
   }
 
   private getEvent(): JSX.Element {
@@ -161,7 +178,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
       cardID: card_data._id,
       cardType: card_data.type,
       eventID: card_data.eventId,
-      highlighted: this.isHighligted(card_data._id),
+      highlighted: this.isHighligted(card_data._id as string),
       isActive: this.state.is_active,
       likes: card_data.likes,
       text: card_data.text

@@ -170,7 +170,7 @@ export default class KudoForm extends React.Component<IProps, IState> {
             this.clearForm();
             document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
           })
-          .catch((err: Error) => {
+          .catch(() => {
             console.log('Error: card not inserted');
           });
       }

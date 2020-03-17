@@ -1,0 +1,18 @@
+[
+  {
+    "created": 1583753256736,
+    "name": "Super",
+    "surname": "User",
+    "login": "admin",
+    "password": "$2a$10$/qGv9yuxFryvpKvam5d83.sVjfuHr5hIIsTZZbPBatcovff8u1o66",
+    "role": "admin"
+  },
+  {
+    "created": 1583753256736,
+    "name": "Dalibor",
+    "surname": "Schon",
+    "login": "user",
+    "password": "$2a$10$zH4BoWu6MHvkPnd3547hEOfbs3ynWQUCTaRLlP/wyYbFVxszQsUJG",
+    "role": "user"
+  }
+]

@@ -1,3 +1,4 @@
+import * as I from '../../common/interfaces';
 const headers = { 'content-type': 'application/json' };
 
 interface KeyVal {
@@ -8,8 +9,8 @@ interface KeyVal {
  * Select record(s) from table
  *
  * select<I.User[]>('/api/users');
- * select<I.User>('/api/users', '123');
- * select<I.User>('/api/events', {state: 'active'});
+ * select<I.User[]>('/api/users', '123');
+ * select<I.User[]>('/api/events', {state: 'active'});
  * is equivalent of sql
  * SELECT * FROM users;
  * SELECT * FROM users WHERE _id='123';
@@ -27,10 +28,23 @@ export function select<T>(api: string, id?: string | KeyVal): Promise<T> {
   }
 
   return new Promise<T>((resolved, rejected) => {
+    let wasError = false;
     fetch(url, {
       method: 'GET'
     })
-      .then((response) => resolved(response.json()))
+      .then((response) => {
+        if (!response.ok) {
+          wasError = true;
+        }
+        return response.json();
+      })
+      .then((response) => {
+        if (wasError) {
+          rejected(response);
+        } else {
+          resolved(response);
+        }
+      })
       .catch((err: Error) => rejected(err));
   });
 }
@@ -44,12 +58,25 @@ export function select<T>(api: string, id?: string | KeyVal): Promise<T> {
  */
 export function insert<T>(api: string, data: T): Promise<T> {
   return new Promise<T>((resolved, rejected) => {
+    let wasError = false;
     fetch(api, {
       body: JSON.stringify(data),
       headers,
       method: 'POST'
     })
-      .then((response) => resolved(response.json()))
+      .then((response) => {
+        if (!response.ok) {
+          wasError = true;
+        }
+        return response.json();
+      })
+      .then((response) => {
+        if (wasError) {
+          rejected(response);
+        } else {
+          resolved(response);
+        }
+      })
       .catch((err: Error) => rejected(err));
   });
 }
@@ -63,12 +90,25 @@ export function insert<T>(api: string, data: T): Promise<T> {
  */
 export function update<T>(api: string, id: string, data: T): Promise<T> {
   return new Promise<T>((resolved, rejected) => {
+    let wasError = false;
     fetch(`${api}/${id}`, {
       body: JSON.stringify(data),
       headers,
       method: 'PATCH'
     })
-      .then((response) => resolved(response.json()))
+      .then((response) => {
+        if (!response.ok) {
+          wasError = true;
+        }
+        return response.json();
+      })
+      .then((response) => {
+        if (wasError) {
+          rejected(response);
+        } else {
+          resolved(response);
+        }
+      })
       .catch((err: Error) => rejected(err));
   });
 }
@@ -103,6 +143,41 @@ export function like(_id: string): Promise<number> {
     })
       .then((response) => response.json())
       .then((data: { likes: number }) => resolved(data.likes))
+      .catch((err: Error) => rejected(err));
+  });
+}
+
+/**
+ * POST login & pass and get authentication result
+ */
+export function auth(data: { credentials: string }): Promise<I.BF_Auth> {
+  return new Promise<I.BF_Auth>((resolved, rejected) => {
+    fetch('/api/auth', {
+      body: JSON.stringify(data),
+      headers,
+      method: 'POST'
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response;
+      })
+      .then((response) => resolved(response.json()))
+      .catch((err: Error) => rejected(err));
+  });
+}
+
+/**
+ * Logout active session
+ */
+export function logout(): Promise<boolean> {
+  return new Promise<boolean>((resolved, rejected) => {
+    fetch('/api/auth/logout', {
+      headers,
+      method: 'DELETE'
+    })
+      .then(() => resolved(true))
       .catch((err: Error) => rejected(err));
   });
 }
