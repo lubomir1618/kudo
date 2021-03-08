@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { CARD_TYPE } from '../../../common/constants';
-import { CardIcon } from '../cardIcon/CardIcon';
+import { CardIcon } from '../CardIcon/CardIcon';
 import { like } from '../../utils/api';
 import './Card.css';
 
