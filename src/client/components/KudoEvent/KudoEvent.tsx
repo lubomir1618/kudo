@@ -3,13 +3,13 @@ import * as I from '../../../common/interfaces';
 import { select } from '../../utils/api';
 import { getKudoKnight, getKudoNumberList } from '../../utils/client';
 import { Knight } from '../Knight/Knight';
-import { EventInfo } from '../eventInfo/EventInfo';
+import { EventInfo } from '../EventInfo/EventInfo';
 import KudoForm from '../KudoForm/KudoForm';
-import Card, { Props } from '../card/Card';
+import Card, { Props } from '../Card/Card';
 import CardNotification from '../CardNotification/CardNotification';
-import KudoSettings from '../kudoSettings/KudoSettings';
+import KudoSettings from '../KudoSettings/KudoSettings';
 import './KudoEvent.css';
-import QRcode from '../qrcode/QRcode';
+import QRcode from '../QRcode/QRcode';
 
 const MODAL_INTERVAL = 120 * 1000;
 const MODAL_TIME = 120 * 1000;

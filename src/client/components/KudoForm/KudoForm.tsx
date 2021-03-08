@@ -3,7 +3,7 @@ import SelectSearch from 'react-select-search';
 import * as I from '../../../common/interfaces';
 import { insert } from '../../utils/api';
 import { CARD_TYPE } from '../../../common/constants';
-import { CardIcon } from '../cardIcon/CardIcon';
+import { CardIcon } from '../CardIcon/CardIcon';
 import data from '../../assets/data';
 import './KudoForm.css';
 
