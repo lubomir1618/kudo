@@ -4,6 +4,10 @@
   "author": "Ness Ninjas Team Košice",
   "license": "(c) 2020 Ness KDC",
   "main": "dist/index.js",
+  "engines": {
+    "npm": "7.5.x",
+    "node": "15.10.x"
+  },
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon dist/index.js",
