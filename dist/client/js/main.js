@@ -401,283 +401,145 @@ module.exports = exports;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = [
     {
-        name: 'Andrejko Maros'
+        "name": "Andrejko Maros"
     },
     {
-        name: 'Angelovic Kamil'
+        "name": "Angelovic Kamil"
     },
     {
-        name: 'Babela Jan'
+        "name": "Aron Martin"
     },
     {
-        name: 'Birka Miroslav'
+        "name": "Babela Jan"
     },
     {
-        name: 'Bobikova Martina'
+        "name": "Birka†Miroslav"
     },
     {
-        name: 'Briskar Rastislav'
+        "name": "Brunacky Tomas"
     },
     {
-        name: 'Brunacky Tomas'
+        "name": "Cernak Adrian"
     },
     {
-        name: 'Daneshjo Tomas'
+        "name": "Durisin Martin"
     },
     {
-        name: 'Derner Jan'
+        "name": "Fecko Erik"
     },
     {
-        name: 'Fabianova Lucia'
+        "name": "Gromina Juraj"
     },
     {
-        name: 'Gavala Cyril'
+        "name": "Halupka Arben"
     },
     {
-        name: 'Halupka Arben'
+        "name": "Halupka Ivan"
     },
     {
-        name: 'Halupka Ivan'
+        "name": "Hanusovsky Henrich"
     },
     {
-        name: 'Haskova Veronika'
+        "name": "Istvan Miroslav"
     },
     {
-        name: 'Holubec Lukas'
+        "name": "Jassova Monika"
     },
     {
-        name: 'Igrini Tomas'
+        "name": "Kazmirsky Peter"
     },
     {
-        name: 'Istvan Miroslav'
+        "name": "Langa Adam"
     },
     {
-        name: 'Jancus Adrian'
+        "name": "Lencses Rastislav"
     },
     {
-        name: 'Jassova Monika'
+        "name": "Lichvarova Jarmila"
     },
     {
-        name: 'Kapusta Michal'
+        "name": "Malatakova Miroslava"
     },
     {
-        name: 'Kardos Michal'
+        "name": "Mezei Marek"
     },
     {
-        name: 'Kardosova Katarina'
+        "name": "Mezei Stefan"
     },
     {
-        name: 'Komives Csaba'
+        "name": "Miskovic Lubomir"
     },
     {
-        name: 'Korcekova Silvia'
+        "name": "Oscipovsky Lukas"
     },
     {
-        name: 'Kosc Ladislav'
+        "name": "Repcin Rudolf"
     },
     {
-        name: 'Kovac Andrej'
+        "name": "Ruda Iveta"
     },
     {
-        name: 'Kulcsar Matej'
+        "name": "Ruscak Michal"
     },
     {
-        name: 'Langa Adam'
+        "name": "Rzuhovska Veronika"
     },
     {
-        name: 'Lenard Lubomir'
+        "name": "Saloky Lubos"
     },
     {
-        name: 'Lencses Rastislav'
+        "name": "Sciranka Jaroslav"
     },
     {
-        name: 'Lichvar Miroslav'
+        "name": "Sipkai Zoltan"
     },
     {
-        name: 'Lichvarova Jarmila'
+        "name": "Sorad Jan"
     },
     {
-        name: 'Matija Ondrej'
+        "name": "Spisak Martin"
     },
     {
-        name: 'Mezei Stefan'
+        "name": "Sroka Jozef"
     },
     {
-        name: 'Molcan Adrian'
+        "name": "Svec Erik"
     },
     {
-        name: 'Olejar Lubos'
+        "name": "Szabova Patricia"
     },
     {
-        name: 'Orgovan Lukas'
+        "name": "Tomko Martin"
     },
     {
-        name: 'Palenik Marek'
+        "name": "Tothova Diana"
     },
     {
-        name: 'Palko Jan'
+        "name": "Ulicny Martin"
     },
     {
-        name: 'Pasternakova Petra'
+        "name": "Vargova Veronika"
     },
     {
-        name: 'Repcin Rudolf'
+        "name": "Vitkovic Martin"
     },
     {
-        name: 'Ruda Iveta'
+        "name": "Sicak Michal"
     },
     {
-        name: 'Saloky Lubos'
+        "name": "Alena Vancikova"
     },
     {
-        name: 'Satala Peter'
+        "name": "Samuel Neceda"
     },
     {
-        name: 'Schon Dalibor'
+        "name": "Bruno Kocik"
     },
     {
-        name: 'Sciranka Jaroslav'
+        "name": "Andrej Kazmirsky"
     },
     {
-        name: 'Sedlak David'
-    },
-    {
-        name: 'Sipkaiova Katarina'
-    },
-    {
-        name: 'Spontak Filip'
-    },
-    {
-        name: 'Sroka Jozef'
-    },
-    {
-        name: 'Stanekova Lenka'
-    },
-    {
-        name: 'Svec Erik'
-    },
-    {
-        name: 'Svitana Robert'
-    },
-    {
-        name: 'Szabova Patricia'
-    },
-    {
-        name: 'Tomko Martin'
-    },
-    {
-        name: 'Tothova Diana'
-    },
-    {
-        name: 'Urban Peter'
-    },
-    {
-        name: 'Valigura Miroslav'
-    },
-    {
-        name: 'Vargova Veronika'
-    },
-    {
-        name: 'Velebna Bozena'
-    },
-    {
-        name: 'Vitkovic Martin'
-    },
-    {
-        name: 'Vodicka Gabriel'
-    },
-    {
-        name: 'Vozarik Norbert'
-    },
-    {
-        name: 'Zavodska Olga'
-    },
-    {
-        name: 'Cernak Adrian'
-    },
-    {
-        name: 'Dlugos Viliam'
-    },
-    {
-        name: 'Fecko Erik'
-    },
-    {
-        name: 'Gromina Juraj'
-    },
-    {
-        name: 'Hanusovsky Henrich'
-    },
-    {
-        name: 'Hilovska Jana'
-    },
-    {
-        name: 'Jalc Tomas'
-    },
-    {
-        name: 'Jurcik Jan'
-    },
-    {
-        name: 'Kazmirsky Peter'
-    },
-    {
-        name: 'Malatakova Miroslava'
-    },
-    {
-        name: 'Mezei Marek'
-    },
-    {
-        name: 'Mihaly Tomas'
-    },
-    {
-        name: 'Miskovic Lubomir'
-    },
-    {
-        name: 'Nedoroscik Jozef'
-    },
-    {
-        name: 'Oscipovsky Lukas'
-    },
-    {
-        name: 'Pajkos Peter'
-    },
-    {
-        name: 'Ridarsky Jan'
-    },
-    {
-        name: 'Ruscak Michal'
-    },
-    {
-        name: 'Rzuhovska Veronika'
-    },
-    {
-        name: 'Schwarz Erik'
-    },
-    {
-        name: 'Sicak Michal'
-    },
-    {
-        name: 'Sipkai Zoltan'
-    },
-    {
-        name: 'Smolarik Oto'
-    },
-    {
-        name: 'Solanikova Marketa'
-    },
-    {
-        name: 'Sorad Jan'
-    },
-    {
-        name: 'Spisak Martin'
-    },
-    {
-        name: 'Ulicny Martin'
-    },
-    {
-        name: 'Vojtko Robert'
-    },
-    {
-        name: 'Durisin Martin'
+        "name": "Vojtko Robert"
     }
 ];
 
