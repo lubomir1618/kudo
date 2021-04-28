@@ -84,7 +84,9 @@ h4 span.button {
   float: right;
   margin-top: -3px;
 }
-
+.active {
+  background: var(--c-green-3) !important;
+}
 .admin_buttons {
   position: absolute;
   right: 0.5rem;

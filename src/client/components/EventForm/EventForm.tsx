@@ -84,7 +84,7 @@ export default class EventForm extends Component<IEventFormProps, IEventFormStat
             <label htmlFor="name">Event name: </label>
             <input type="text" name="name" placeholder="event name" defaultValue={name} /> *
           </div>
-          <div className="form_row">
+          <div className="form_row" style={{display: 'none'}}>
             <label htmlFor="state">State: </label>
             <select id="event-state" name="state" defaultValue={state}>
               <option value="past">past</option>

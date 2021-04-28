@@ -4,4 +4,13 @@
   right: 10px;
   width: auto;
   text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  color: #ffffff;
+}
+.tv_mode, .sound_mode {
+  margin: 0 10px;
+  display: flex;
+  align-items: center;
 }

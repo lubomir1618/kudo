@@ -1,6 +1,6 @@
 (window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["admin"],{
 
-/***/ 286:
+/***/ 288:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18,13 +18,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
-const Admin_1 = __importDefault(__webpack_require__(287));
+const Admin_1 = __importDefault(__webpack_require__(289));
 ReactDOM.render(React.createElement(Admin_1.default, null), document.getElementById('admin'));
 
 
 /***/ }),
 
-/***/ 287:
+/***/ 289:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44,12 +44,12 @@ const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(234));
 const client_1 = __webpack_require__(34);
 const api_1 = __webpack_require__(33);
-const EventForm_1 = __importDefault(__webpack_require__(288));
-const EventList_1 = __importDefault(__webpack_require__(343));
-const LoginForm_1 = __importDefault(__webpack_require__(344));
-const PasswordForm_1 = __importDefault(__webpack_require__(345));
-const UserForm_1 = __importDefault(__webpack_require__(346));
-const UserList_1 = __importDefault(__webpack_require__(347));
+const EventForm_1 = __importDefault(__webpack_require__(290));
+const EventList_1 = __importDefault(__webpack_require__(345));
+const LoginForm_1 = __importDefault(__webpack_require__(346));
+const PasswordForm_1 = __importDefault(__webpack_require__(347));
+const UserForm_1 = __importDefault(__webpack_require__(348));
+const UserList_1 = __importDefault(__webpack_require__(349));
 class Admin extends react_1.Component {
     constructor(props) {
         super(props);
@@ -163,7 +163,7 @@ exports.default = Admin;
 
 /***/ }),
 
-/***/ 288:
+/***/ 290:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -180,10 +180,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const react_date_picker_1 = __importDefault(__webpack_require__(289));
+const react_date_picker_1 = __importDefault(__webpack_require__(291));
 const api_1 = __webpack_require__(33);
 const E = __importStar(__webpack_require__(234));
-const V = __importStar(__webpack_require__(342));
+const V = __importStar(__webpack_require__(344));
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -238,7 +238,7 @@ class EventForm extends react_1.Component {
                     react_1.default.createElement("label", { htmlFor: "name" }, "Event name: "),
                     react_1.default.createElement("input", { type: "text", name: "name", placeholder: "event name", defaultValue: name }),
                     " *"),
-                react_1.default.createElement("div", { className: "form_row" },
+                react_1.default.createElement("div", { className: "form_row", style: { display: 'none' } },
                     react_1.default.createElement("label", { htmlFor: "state" }, "State: "),
                     react_1.default.createElement("select", { id: "event-state", name: "state", defaultValue: state },
                         react_1.default.createElement("option", { value: "past" }, "past"),
@@ -326,7 +326,7 @@ exports.default = EventForm;
 
 /***/ }),
 
-/***/ 342:
+/***/ 344:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -491,7 +491,7 @@ exports.isEventValid = isEventValid;
 
 /***/ }),
 
-/***/ 343:
+/***/ 345:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -550,12 +550,14 @@ class EventList extends react_1.Component {
     }
     eventCols(event) {
         const jsx = [];
-        jsx.push(react_1.default.createElement("td", { key: "_id" }, event._id));
+        jsx.push(react_1.default.createElement("td", { key: "_id" },
+            " ",
+            react_1.default.createElement("a", { href: `${window.origin}/event/${event._id}`, target: "_blank", rel: "noopener noreferrer", title: "link to event" }, event._id)));
         jsx.push(react_1.default.createElement("td", { key: "name" },
             react_1.default.createElement("a", { href: `${window.origin}/event/${event._id}`, target: "_blank", rel: "noopener noreferrer", title: "link to event" }, event.name)));
         jsx.push(react_1.default.createElement("td", { key: "dateFrom" }, new Date(event.dateFrom).toLocaleString()));
         jsx.push(react_1.default.createElement("td", { key: "dateTo" }, new Date(event.dateTo).toLocaleString()));
-        jsx.push(react_1.default.createElement("td", { key: "state" }, event.state));
+        jsx.push(react_1.default.createElement("td", { key: "state" }, this.getEventStatus(event)));
         jsx.push(react_1.default.createElement("td", { key: "edit" },
             react_1.default.createElement("button", { className: "gen_button", "data-id": event._id, onClick: this.bind.onClickHandler },
                 react_1.default.createElement("span", { className: "icon-pencil" }),
@@ -565,9 +567,16 @@ class EventList extends react_1.Component {
     eventRows(events) {
         const jsx = [];
         events.forEach((event) => {
-            jsx.push(react_1.default.createElement("tr", { key: event._id }, this.eventCols(event)));
+            jsx.push(react_1.default.createElement("tr", { key: event._id, className: this.getEventStatus(event) }, this.eventCols(event)));
         });
         return jsx;
+    }
+    getEventStatus(event) {
+        return (event.dateFrom > Date.now()
+            ? E.EVENT_STATE.future
+            : event.dateTo > Date.now()
+                ? E.EVENT_STATE.active
+                : E.EVENT_STATE.past);
     }
     loading() {
         return (react_1.default.createElement("tr", null,
@@ -575,7 +584,16 @@ class EventList extends react_1.Component {
     }
     getData() {
         const where = this.state.role === E.USER_ROLE.admin ? undefined : { userId: this.state.userId };
-        api_1.select('/api/events', where).then((data) => this.setState({ data, loading: false }));
+        api_1.select('/api/events', where).then((data) => {
+            console.log(data);
+            data.sort((a, b) => {
+                if (a === b) {
+                    return 0;
+                }
+                return a.dateFrom < b.dateFrom ? 1 : -1;
+            });
+            this.setState({ data, loading: false });
+        });
     }
     onClickHandler(e) {
         var _a;
@@ -592,7 +610,7 @@ exports.default = EventList;
 
 /***/ }),
 
-/***/ 344:
+/***/ 346:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -606,7 +624,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const V = __importStar(__webpack_require__(342));
+const V = __importStar(__webpack_require__(344));
 const E = __importStar(__webpack_require__(234));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
@@ -674,7 +692,7 @@ exports.default = LoginForm;
 
 /***/ }),
 
-/***/ 345:
+/***/ 347:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -689,7 +707,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(234));
-const V = __importStar(__webpack_require__(342));
+const V = __importStar(__webpack_require__(344));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class PasswordForm extends react_1.Component {
@@ -793,7 +811,7 @@ exports.default = PasswordForm;
 
 /***/ }),
 
-/***/ 346:
+/***/ 348:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -808,7 +826,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(234));
-const V = __importStar(__webpack_require__(342));
+const V = __importStar(__webpack_require__(344));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class UserForm extends react_1.Component {
@@ -971,7 +989,7 @@ exports.default = UserForm;
 
 /***/ }),
 
-/***/ 347:
+/***/ 349:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1067,5 +1085,5 @@ exports.default = UserList;
 
 /***/ })
 
-},[[286,"runtime","vendor","common"]]]);
+},[[288,"runtime","vendor","common"]]]);
 //# sourceMappingURL=admin.js.map
