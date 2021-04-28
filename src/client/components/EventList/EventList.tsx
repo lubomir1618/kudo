@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { select } from '../../utils/api';
 import * as E from '../../../common/constants';
 import * as I from '../../../common/interfaces';
+import KudoEvent from '../KudoEvent/KudoEvent';
 
 interface IEventListProps {
   role: E.USER_ROLE;
@@ -72,8 +73,11 @@ export default class EventList extends Component<IEventListProps, IEventListStat
   }
 
   private eventCols(event: I.Event): JSX.Element[] {
+    
     const jsx: JSX.Element[] = [];
-    jsx.push(<td key="_id">{event._id}</td>);
+    jsx.push(<td key="_id"> <a href={`${window.origin}/event/${event._id}`} target="_blank" rel="noopener noreferrer" title="link to event">
+      {event._id}
+      </a></td>);
     jsx.push(
       <td key="name">
         <a href={`${window.origin}/event/${event._id}`} target="_blank" rel="noopener noreferrer" title="link to event">
@@ -83,7 +87,7 @@ export default class EventList extends Component<IEventListProps, IEventListStat
     );
     jsx.push(<td key="dateFrom">{new Date(event.dateFrom).toLocaleString()}</td>);
     jsx.push(<td key="dateTo">{new Date(event.dateTo).toLocaleString()}</td>);
-    jsx.push(<td key="state">{event.state}</td>);
+    jsx.push(<td key="state">{this.getEventStatus(event)}</td>);
     jsx.push(
       <td key="edit">
         <button className="gen_button" data-id={event._id} onClick={this.bind.onClickHandler}>
@@ -97,11 +101,19 @@ export default class EventList extends Component<IEventListProps, IEventListStat
   private eventRows(events: I.Event[]): JSX.Element[] {
     const jsx: JSX.Element[] = [];
     events.forEach((event) => {
-      jsx.push(<tr key={event._id}>{this.eventCols(event)}</tr>);
+      jsx.push(<tr key={event._id} className={this.getEventStatus(event)}>{this.eventCols(event)}</tr>);
     });
     return jsx;
   }
 
+  private getEventStatus(event: I.Event) {
+    return (event.dateFrom > Date.now()
+    ? E.EVENT_STATE.future
+    : event.dateTo > Date.now()
+      ? E.EVENT_STATE.active
+      : E.EVENT_STATE.past
+  );
+  }
   private loading(): JSX.Element {
     return (
       <tr>
@@ -113,7 +125,15 @@ export default class EventList extends Component<IEventListProps, IEventListStat
   private getData() {
     const where = this.state.role === E.USER_ROLE.admin ? undefined : { userId: this.state.userId };
 
-    select<I.Event[]>('/api/events', where).then((data) => this.setState({ data, loading: false }));
+    select<I.Event[]>('/api/events', where).then((data) => {
+      data.sort((a, b) => {
+        if (a === b) {
+          return 0;
+        }
+        return a.dateFrom < b.dateFrom ? 1 : -1
+      })
+      this.setState({ data, loading: false })
+    });
   }
 
   private onClickHandler(e: React.MouseEvent<HTMLButtonElement>) {

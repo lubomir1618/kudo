@@ -1,12 +1,10 @@
 .soundSwitch,
 .soundSwitch--on,
 .soundSwitch--off {
-  position: absolute;
-  top: 0px;
-  right: 0px;
   width: 20px;
   height: 20px;
   cursor: pointer;
+  margin-left: 10px;
 }
 
 .soundSwitch--on {
