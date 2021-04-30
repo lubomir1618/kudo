@@ -46,10 +46,11 @@ const client_1 = __webpack_require__(34);
 const api_1 = __webpack_require__(33);
 const EventForm_1 = __importDefault(__webpack_require__(290));
 const EventList_1 = __importDefault(__webpack_require__(345));
-const LoginForm_1 = __importDefault(__webpack_require__(346));
-const PasswordForm_1 = __importDefault(__webpack_require__(347));
-const UserForm_1 = __importDefault(__webpack_require__(348));
-const UserList_1 = __importDefault(__webpack_require__(349));
+const NameList_1 = __importDefault(__webpack_require__(346));
+const LoginForm_1 = __importDefault(__webpack_require__(347));
+const PasswordForm_1 = __importDefault(__webpack_require__(348));
+const UserForm_1 = __importDefault(__webpack_require__(349));
+const UserList_1 = __importDefault(__webpack_require__(350));
 class Admin extends react_1.Component {
     constructor(props) {
         super(props);
@@ -106,11 +107,15 @@ class Admin extends react_1.Component {
                         isUser && (react_1.default.createElement("li", { className: "selected", "data-pane": "events_list", onClick: this.bind.onTabsHandler },
                             react_1.default.createElement("span", { className: "icon-calendar" }),
                             " Events")),
-                        isAdmin && (react_1.default.createElement("li", { "data-pane": "users_list", onClick: this.bind.onTabsHandler },
+                        isUser && (react_1.default.createElement("li", { "data-pane": "name_list", onClick: this.bind.onTabsHandler },
                             react_1.default.createElement("span", { className: "icon-group" }),
-                            " Users"))))),
+                            " Name List")),
+                        isAdmin && (react_1.default.createElement("li", { "data-pane": "users_list", onClick: this.bind.onTabsHandler },
+                            react_1.default.createElement("span", { className: "icon-user" }),
+                            " User Management"))))),
             react_1.default.createElement("article", null,
                 isUser && react_1.default.createElement(EventList_1.default, { key: "eventsList", userId: this.state.userId, role: this.state.role }),
+                isUser && react_1.default.createElement(NameList_1.default, { key: "nameList", userId: this.state.userId, role: this.state.role }),
                 isAdmin && react_1.default.createElement(UserList_1.default, { key: "usersList" }))));
         return jsx;
     }
@@ -121,7 +126,7 @@ class Admin extends react_1.Component {
                 window.clearInterval(this.sessionCheckIntervalID);
                 this.setState({ authenticated: false, role: E.USER_ROLE.none });
             }
-        }, 60000);
+        }, 60000); // check for validity every 1 minute (env file has max_cookie_age)
     }
     onLogoutHandler() {
         api_1.logout().then(() => {
@@ -585,7 +590,6 @@ class EventList extends react_1.Component {
     getData() {
         const where = this.state.role === E.USER_ROLE.admin ? undefined : { userId: this.state.userId };
         api_1.select('/api/events', where).then((data) => {
-            console.log(data);
             data.sort((a, b) => {
                 if (a === b) {
                     return 0;
@@ -611,6 +615,110 @@ exports.default = EventList;
 /***/ }),
 
 /***/ 346:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const react_1 = __importStar(__webpack_require__(1));
+const api_1 = __webpack_require__(33);
+class NameList extends react_1.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: [],
+            namesData: '',
+            loading: true,
+            role: props.role,
+            userId: props.userId,
+            mode: 'update'
+        };
+        this.bind = {
+            onClickHandler: this.onClickHandler.bind(this),
+            onListRefresh: this.onListRefresh.bind(this),
+            onNameListChange: this.onNameListChange.bind(this)
+        };
+    }
+    onNameListChange(e) {
+        console.log(e);
+        console.log(e.target.value);
+        this.setState({ namesData: e.target.value });
+    }
+    componentDidMount() {
+        this.getData();
+        document.addEventListener('kudoz::eventListRefresh', this.bind.onListRefresh);
+    }
+    render() {
+        const { data, loading, namesData } = this.state;
+        const disabled = !namesData.length;
+        return (react_1.default.createElement("section", { id: "name_list", className: "pane", key: "nameList" },
+            react_1.default.createElement("h4", null, "Name list"),
+            loading ? this.loading() : (react_1.default.createElement("div", { style: { margin: '0 auto', width: '80%' } },
+                react_1.default.createElement("form", { className: "pane_form", id: "form-namelist-form", onSubmit: this.bind.onClickHandler },
+                    react_1.default.createElement("textarea", { onChange: this.bind.onNameListChange, style: { width: '100%', height: '200px', display: 'block' }, defaultValue: namesData }),
+                    react_1.default.createElement("button", { className: `gen_button disabled_${disabled}`, disabled: disabled, onClick: this.bind.onClickHandler }, `${this.state.mode} Name List`)),
+                react_1.default.createElement("div", { className: "pane_form", id: "form-namelist-info" })))));
+    }
+    loading() {
+        return (react_1.default.createElement("div", null,
+            react_1.default.createElement("p", null, "Loading...")));
+    }
+    getData() {
+        const where = { userId: this.state.userId };
+        api_1.select('/api/namelist', where).then((data) => {
+            console.log('toto su init data', data);
+            const mode = !data || data.length === 0 ? 'insert' : 'update';
+            const namesData = mode === 'insert' ? '' : data[0].names;
+            this.setState({ mode, namesData, data, loading: false });
+        });
+    }
+    onClickHandler(e) {
+        e.preventDefault();
+        const info = document.getElementById('form-namelist-info');
+        const data = { names: this.state.namesData.trim(), userId: this.state.userId };
+        const count = data.names.split(',').length;
+        if (data.names.length === 0) {
+            info.innerText = 'Please fill the name list.';
+            return;
+        }
+        if (this.state.mode === 'insert') {
+            api_1.insert('/api/namelist', data)
+                .then((created) => {
+                info.innerText = `Name list created. Names counted: ${count}`;
+                this.setState({ mode: 'update', data: [created] });
+            })
+                .catch((err) => {
+                info.innerText = `Error: ${err.message}`;
+            });
+        }
+        else {
+            api_1.update('/api/namelist', this.state.data[0]._id, data)
+                .then(() => {
+                info.innerText = `Name list updated. New count of names: ${count}`;
+            })
+                .catch((err) => {
+                info.innerText = `Error: ${err.message}`;
+            });
+        }
+    }
+    onListRefresh() {
+        this.setState({ loading: true });
+        this.getData();
+    }
+}
+exports.default = NameList;
+
+
+/***/ }),
+
+/***/ 347:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -692,7 +800,7 @@ exports.default = LoginForm;
 
 /***/ }),
 
-/***/ 347:
+/***/ 348:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -811,7 +919,7 @@ exports.default = PasswordForm;
 
 /***/ }),
 
-/***/ 348:
+/***/ 349:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -989,7 +1097,7 @@ exports.default = UserForm;
 
 /***/ }),
 
-/***/ 349:
+/***/ 350:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

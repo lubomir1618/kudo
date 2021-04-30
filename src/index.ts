@@ -11,6 +11,7 @@ import { cCards } from './server/controllers/cards';
 import { cEvents } from './server/controllers/events';
 import { cLike } from './server/controllers/like';
 import { cUsers } from './server/controllers/users';
+import { cUserNameList } from './server/controllers/namelist';
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -50,6 +51,8 @@ restfulRouter({ app, controller: cAuth, name: 'api/auth' });
 restfulRouter({ app, controller: cUsers, name: 'api/users' });
 restfulRouter({ app, controller: cCards, name: 'api/cards' });
 restfulRouter({ app, controller: cEvents, name: 'api/events' });
+restfulRouter({ app, controller: cUserNameList, name: 'api/namelist' });
+
 
 /* Handle ALL OTHER, non-api,  requests / routes as the index.html (main application) - we use React Router fot this */
 app.get('*', (_req, res) => {

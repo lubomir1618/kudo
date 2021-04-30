@@ -5,6 +5,7 @@ import { logout } from '../../utils/api';
 
 import EventForm from '../EventForm/EventForm';
 import EventList from '../EventList/EventList';
+import NameList from '../NameList';
 import LoginForm from '../LoginForm/LoginForm';
 import PasswordForm from '../PasswordForm/PasswordForm';
 import UserForm from '../UserForm/UserForm';
@@ -102,9 +103,14 @@ export default class Admin extends Component<any, IAdminState> {
                   <span className="icon-calendar"></span> Events
                 </li>
               )}
+              {isUser && (
+                <li data-pane="name_list" onClick={this.bind.onTabsHandler}>
+                  <span className="icon-group"></span> Name List
+                </li>
+              )}
               {isAdmin && (
                 <li data-pane="users_list" onClick={this.bind.onTabsHandler}>
-                  <span className="icon-group"></span> Users
+                  <span className="icon-user"></span> User Management
                 </li>
               )}
             </ul>
@@ -112,6 +118,7 @@ export default class Admin extends Component<any, IAdminState> {
         </header>
         <article>
           {isUser && <EventList key="eventsList" userId={this.state.userId} role={this.state.role} />}
+          {isUser && <NameList key="nameList" userId={this.state.userId} role={this.state.role} />}
           {isAdmin && <UserList key="usersList" />}
         </article>
       </main>
@@ -127,7 +134,7 @@ export default class Admin extends Component<any, IAdminState> {
         window.clearInterval(this.sessionCheckIntervalID);
         this.setState({ authenticated: false, role: E.USER_ROLE.none });
       }
-    }, 60000);
+    }, 60000); // check for validity every 1 minute (env file has max_cookie_age)
   }
 
   private onLogoutHandler() {

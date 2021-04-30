@@ -14,6 +14,11 @@ export interface Event extends Table {
   userId: string;
 }
 
+export interface NameList extends Table {
+  names: string;
+  userId: string;
+}
+
 export interface Card extends Table {
   awardedTo: string;
   created: number;

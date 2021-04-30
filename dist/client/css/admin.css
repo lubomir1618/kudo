@@ -26,6 +26,7 @@ html {
   --c-green-4: #8cb82b;
   --c-green-5: #689324;
   --c-green-6: #144414;
+  --c-green-7: #acdc8194;
   font-size: 62.5%; /* 62.5% of 16px = 10px */
 }
 
@@ -85,7 +86,7 @@ h4 span.button {
   margin-top: -3px;
 }
 .active {
-  background: var(--c-green-3) !important;
+  background: var(--c-green-7) !important;
 }
 .admin_buttons {
   position: absolute;
@@ -282,6 +283,19 @@ form.pane_form .react-date-picker__button__icon {
   height: 15px;
   width: 15px;
   stroke: var(--c-blue-5);
+}
+
+#form-namelist-info {
+  font-family: 'Ubuntu_Medium';
+  background-color: var(--c-blue-5);
+  color: var(--c-white);
+  padding: 10px;
+  font-size: 14px;
+}
+button.disabled_true, button.disabled_true:hover {
+  border: none;
+  box-shadow: none;
+  background: var(--c-gray-5);
 }
 
 .gen_button {
