@@ -39,8 +39,6 @@ export default class NameList extends Component<IEventListProps, IEventListState
     };
   }
   public onNameListChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    console.log(e)
-    console.log(e.target.value)
     this.setState({namesData: e.target.value});
 
   }
@@ -83,7 +81,6 @@ export default class NameList extends Component<IEventListProps, IEventListState
     const where = { userId: this.state.userId };
 
     select<I.NameList[]>('/api/namelist', where).then((data: I.NameList[]) => {
-        console.log('toto su init data', data);
       const mode = !data || data.length === 0 ? 'insert' : 'update';
       const namesData = mode === 'insert' ? '' : data[0].names;
       this.setState({ mode, namesData, data, loading: false })

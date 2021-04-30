@@ -33,6 +33,8 @@ interface IState {
 interface IProps {
   eventId: string;
   isActive: boolean;
+  peopleList: I.People[];
+  isLoading: boolean;
 }
 
 export default class KudoForm extends React.Component<IProps, IState> {
@@ -57,9 +59,11 @@ export default class KudoForm extends React.Component<IProps, IState> {
       const name_options = this.formRef.current.querySelector('.name .select-search-box__options');
       const type_options = this.formRef.current.querySelector('.typePicker .select-search-box__options');
       const message_height = this.messageRef.current.parentElement!.offsetHeight;
-
-      (name_options as HTMLDivElement).style.maxHeight = `${message_height - 1}px`;
-      (type_options as HTMLDivElement).style.height = `${message_height + 55}px`;
+      
+      if (name_options && type_options) {
+        (name_options as HTMLDivElement).style.maxHeight = `${message_height - 1}px`;
+        (type_options as HTMLDivElement).style.height = `${message_height + 55}px`;
+      }
     }
   }
 
@@ -70,6 +74,10 @@ export default class KudoForm extends React.Component<IProps, IState> {
       <div className="kudoForm" ref={this.formRef}>
         <div className="typePicker">{this.typePicker()}</div>
         <div className="main">
+          { this.props.isLoading
+           ? <div>Loading...</div>
+           : ''
+          }
           <div className="name">Name {this.peoplePicker()}</div>
           <div className="message">
             <textarea ref={this.messageRef} placeholder="Message" />
@@ -123,8 +131,8 @@ export default class KudoForm extends React.Component<IProps, IState> {
 
   private peoplePicker(): JSX.Element {
     const handleClick = (valueProps: ISelectResponse) => this.onFolkSelect(valueProps);
-
-    return <SelectSearch options={PEOPLE} onChange={handleClick} placeholder="Select name" value={this.state.name} />;
+    const placeholder = this.props.peopleList.length > 0 ? 'Select name' : 'No names available';
+    return <SelectSearch options={this.props.peopleList} onChange={handleClick} placeholder="Select name" value={this.state.name} />;
   }
 
   private onTypeSelect(valueProps: ISelectResponse): void {

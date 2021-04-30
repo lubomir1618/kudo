@@ -20,6 +20,8 @@ interface IState {
   event: I.Event | undefined;
   is_active: boolean;
   shouldDisplayModal: boolean;
+  nameList: I.People[];
+  nameListLoading: boolean;
 }
 
 function CardModal({ newCardProps, onClick }: any) {
@@ -51,7 +53,9 @@ export default class KudoEvent extends React.Component<{}, IState> {
       cards: [],
       event: undefined,
       is_active: false,
-      shouldDisplayModal: false
+      shouldDisplayModal: false,
+      nameList: [],
+      nameListLoading: true
     };
     this.bind = {
       onCardListRefresh: this.onCardListRefresh.bind(this) as EventListener,
@@ -101,7 +105,7 @@ export default class KudoEvent extends React.Component<{}, IState> {
           {location.href.indexOf('?tv=true') > -1 ? (
             <QRcode url={location.protocol + '//' + location.host + location.pathname} />
           ) : (
-            <KudoForm eventId={this.eventId} isActive={this.state.is_active} />
+            <KudoForm isLoading={this.state.nameListLoading} peopleList={this.state.nameList} eventId={this.eventId} isActive={this.state.is_active} />
           )}
         </div>
         <div className="event_cards">{this.processCards()}</div>
@@ -141,11 +145,29 @@ export default class KudoEvent extends React.Component<{}, IState> {
           event,
           is_active: event.dateFrom < now && now < event.dateTo
         });
+        this.loadNameList(event.userId);
       })
       .catch((err: Error) => {
         console.log(err.message);
         window.clearInterval(this.interval);
       });
+  }
+
+  private loadNameList(userId: string) {
+     select<I.NameList[]>('/api/namelist', {userId})
+       .then((namesData) => {
+         const nameList = namesData.length === 0 ? [] : this.formatNames(namesData[0].names);
+         this.setState({nameList, nameListLoading: false})
+       })
+       .catch((err: any) => {
+          console.log('err', err)
+       });
+  }
+  private formatNames(namesData:string): I.People[] {
+    return namesData.split(',').map((name) => {
+      const normalizedName = name.trim();
+      return {name: normalizedName, value: normalizedName}
+    })
   }
 
   private getEvent(): JSX.Element {

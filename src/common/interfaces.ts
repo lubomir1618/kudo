@@ -6,6 +6,10 @@ export interface Table {
   created?: number;
 }
 
+export interface People {
+  name: string,
+  value: string
+}
 export interface Event extends Table {
   dateFrom: number;
   dateTo: number;

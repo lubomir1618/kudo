@@ -217,8 +217,10 @@ class KudoForm extends react_1.default.Component {
             const name_options = this.formRef.current.querySelector('.name .select-search-box__options');
             const type_options = this.formRef.current.querySelector('.typePicker .select-search-box__options');
             const message_height = this.messageRef.current.parentElement.offsetHeight;
-            name_options.style.maxHeight = `${message_height - 1}px`;
-            type_options.style.height = `${message_height + 55}px`;
+            if (name_options && type_options) {
+                name_options.style.maxHeight = `${message_height - 1}px`;
+                type_options.style.height = `${message_height + 55}px`;
+            }
         }
     }
     render() {
@@ -226,6 +228,9 @@ class KudoForm extends react_1.default.Component {
         return (react_1.default.createElement("div", { className: "kudoForm", ref: this.formRef },
             react_1.default.createElement("div", { className: "typePicker" }, this.typePicker()),
             react_1.default.createElement("div", { className: "main" },
+                this.props.isLoading
+                    ? react_1.default.createElement("div", null, "Loading...")
+                    : '',
                 react_1.default.createElement("div", { className: "name" },
                     "Name ",
                     this.peoplePicker()),
@@ -255,7 +260,8 @@ class KudoForm extends react_1.default.Component {
     }
     peoplePicker() {
         const handleClick = (valueProps) => this.onFolkSelect(valueProps);
-        return react_1.default.createElement(react_select_search_1.default, { options: PEOPLE, onChange: handleClick, placeholder: "Select name", value: this.state.name });
+        const placeholder = this.props.peopleList.length > 0 ? 'Select name' : 'No names available';
+        return react_1.default.createElement(react_select_search_1.default, { options: this.props.peopleList, onChange: handleClick, placeholder: "Select name", value: this.state.name });
     }
     onTypeSelect(valueProps) {
         this.setState({ type: valueProps.value });
@@ -1135,7 +1141,9 @@ class KudoEvent extends react_1.default.Component {
             cards: [],
             event: undefined,
             is_active: false,
-            shouldDisplayModal: false
+            shouldDisplayModal: false,
+            nameList: [],
+            nameListLoading: true
         };
         this.bind = {
             onCardListRefresh: this.onCardListRefresh.bind(this),
@@ -1174,7 +1182,7 @@ class KudoEvent extends react_1.default.Component {
             react_1.default.createElement("div", { className: "event_info" },
                 this.getEvent(),
                 this.getKnight(),
-                location.href.indexOf('?tv=true') > -1 ? (react_1.default.createElement(QRcode_1.default, { url: location.protocol + '//' + location.host + location.pathname })) : (react_1.default.createElement(KudoForm_1.default, { eventId: this.eventId, isActive: this.state.is_active }))),
+                location.href.indexOf('?tv=true') > -1 ? (react_1.default.createElement(QRcode_1.default, { url: location.protocol + '//' + location.host + location.pathname })) : (react_1.default.createElement(KudoForm_1.default, { isLoading: this.state.nameListLoading, peopleList: this.state.nameList, eventId: this.eventId, isActive: this.state.is_active }))),
             react_1.default.createElement("div", { className: "event_cards" }, this.processCards()),
             react_1.default.createElement(CardNotification_1.default, null),
             this.state.shouldDisplayModal ? react_1.default.createElement(CardModal, { newCardProps: newCard, onClick: this.bind.onHideModal }) : null,
@@ -1202,10 +1210,28 @@ class KudoEvent extends react_1.default.Component {
                 event,
                 is_active: event.dateFrom < now && now < event.dateTo
             });
+            this.loadNameList(event.userId);
         })
             .catch((err) => {
             console.log(err.message);
             window.clearInterval(this.interval);
+        });
+    }
+    loadNameList(userId) {
+        api_1.select('/api/namelist', { userId })
+            .then((namesData) => {
+            const nameList = namesData.length === 0 ? [] : this.formatNames(namesData[0].names);
+            this.setState({ nameList, nameListLoading: false });
+            console.log('mame', nameList);
+        })
+            .catch((err) => {
+            console.log('err', err);
+        });
+    }
+    formatNames(namesData) {
+        return namesData.split(',').map((name) => {
+            const normalizedName = name.trim();
+            return { name: normalizedName, value: normalizedName };
         });
     }
     getEvent() {
