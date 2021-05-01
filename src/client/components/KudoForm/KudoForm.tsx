@@ -125,7 +125,7 @@ export default class KudoForm extends React.Component<IProps, IState> {
   private peoplePicker(): JSX.Element {
     const handleClick = (valueProps: ISelectResponse) => this.onFolkSelect(valueProps);
     const placeholder = this.props.peopleList.length > 0 ? 'Select name' : 'No names available';
-    return <SelectSearch options={this.props.peopleList} onChange={handleClick} placeholder="Select name" value={this.state.name} />;
+    return <SelectSearch options={this.props.peopleList} onChange={handleClick} placeholder={placeholder} value={this.state.name} />;
   }
 
   private onTypeSelect(valueProps: ISelectResponse): void {
