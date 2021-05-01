@@ -411,3 +411,16 @@ button.disabled_true, button.disabled_true:hover {
   line-height: 2rem;
   font-size: 1.3rem;
 }
+.namelist_highlight {
+  color: var(--c-black);
+  background: var(--c-blue-3);
+  display: inline-block;
+  padding: 4px;
+  margin: 0 5px;
+  border-radius: 4px;
+}
+.namelist_basicInfo {
+  margin: 10px;
+  font-size: 13px;
+  padding: 10px;
+}

@@ -1,6 +1,6 @@
 (window["webpackJsonpKudoz"] = window["webpackJsonpKudoz"] || []).push([["admin"],{
 
-/***/ 288:
+/***/ 287:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18,13 +18,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
-const Admin_1 = __importDefault(__webpack_require__(289));
+const Admin_1 = __importDefault(__webpack_require__(288));
 ReactDOM.render(React.createElement(Admin_1.default, null), document.getElementById('admin'));
 
 
 /***/ }),
 
-/***/ 289:
+/***/ 288:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44,13 +44,13 @@ const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(234));
 const client_1 = __webpack_require__(34);
 const api_1 = __webpack_require__(33);
-const EventForm_1 = __importDefault(__webpack_require__(290));
-const EventList_1 = __importDefault(__webpack_require__(345));
-const NameList_1 = __importDefault(__webpack_require__(346));
-const LoginForm_1 = __importDefault(__webpack_require__(347));
-const PasswordForm_1 = __importDefault(__webpack_require__(348));
-const UserForm_1 = __importDefault(__webpack_require__(349));
-const UserList_1 = __importDefault(__webpack_require__(350));
+const EventForm_1 = __importDefault(__webpack_require__(289));
+const EventList_1 = __importDefault(__webpack_require__(344));
+const NameList_1 = __importDefault(__webpack_require__(345));
+const LoginForm_1 = __importDefault(__webpack_require__(346));
+const PasswordForm_1 = __importDefault(__webpack_require__(347));
+const UserForm_1 = __importDefault(__webpack_require__(348));
+const UserList_1 = __importDefault(__webpack_require__(349));
 class Admin extends react_1.Component {
     constructor(props) {
         super(props);
@@ -168,7 +168,7 @@ exports.default = Admin;
 
 /***/ }),
 
-/***/ 290:
+/***/ 289:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -185,10 +185,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const react_date_picker_1 = __importDefault(__webpack_require__(291));
+const react_date_picker_1 = __importDefault(__webpack_require__(290));
 const api_1 = __webpack_require__(33);
 const E = __importStar(__webpack_require__(234));
-const V = __importStar(__webpack_require__(344));
+const V = __importStar(__webpack_require__(343));
 class EventForm extends react_1.Component {
     constructor(props) {
         super(props);
@@ -331,7 +331,7 @@ exports.default = EventForm;
 
 /***/ }),
 
-/***/ 344:
+/***/ 343:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -496,7 +496,7 @@ exports.isEventValid = isEventValid;
 
 /***/ }),
 
-/***/ 345:
+/***/ 344:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -614,7 +614,7 @@ exports.default = EventList;
 
 /***/ }),
 
-/***/ 346:
+/***/ 345:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -647,8 +647,6 @@ class NameList extends react_1.Component {
         };
     }
     onNameListChange(e) {
-        console.log(e);
-        console.log(e.target.value);
         this.setState({ namesData: e.target.value });
     }
     componentDidMount() {
@@ -660,6 +658,15 @@ class NameList extends react_1.Component {
         const disabled = !namesData.length;
         return (react_1.default.createElement("section", { id: "name_list", className: "pane", key: "nameList" },
             react_1.default.createElement("h4", null, "Name list"),
+            react_1.default.createElement("div", { className: "namelist_basicInfo" },
+                react_1.default.createElement("p", null, "This is name list of people users can choose to give \"card\", which appears in each of yours events. Updates to this name list applies to all your past, active and future events. - one namelist to rule them all :D "),
+                react_1.default.createElement("p", null,
+                    " Each Name you provide needs to be separated by a comma character ",
+                    react_1.default.createElement("span", { className: "namelist_highlight" }, ","),
+                    "Make sure this list is not empty."),
+                react_1.default.createElement("p", null,
+                    "Example: ",
+                    react_1.default.createElement("span", { className: "namelist_highlight" }, "Herkules, Janko Hra\u0161ko, L\u00ED\u0161ka Eli\u0161ka, Pinnochio"))),
             loading ? this.loading() : (react_1.default.createElement("div", { style: { margin: '0 auto', width: '80%' } },
                 react_1.default.createElement("form", { className: "pane_form", id: "form-namelist-form", onSubmit: this.bind.onClickHandler },
                     react_1.default.createElement("textarea", { onChange: this.bind.onNameListChange, style: { width: '100%', height: '200px', display: 'block' }, defaultValue: namesData }),
@@ -673,7 +680,6 @@ class NameList extends react_1.Component {
     getData() {
         const where = { userId: this.state.userId };
         api_1.select('/api/namelist', where).then((data) => {
-            console.log('toto su init data', data);
             const mode = !data || data.length === 0 ? 'insert' : 'update';
             const namesData = mode === 'insert' ? '' : data[0].names;
             this.setState({ mode, namesData, data, loading: false });
@@ -682,7 +688,7 @@ class NameList extends react_1.Component {
     onClickHandler(e) {
         e.preventDefault();
         const info = document.getElementById('form-namelist-info');
-        const data = { names: this.state.namesData.trim(), userId: this.state.userId };
+        const data = { names: this.state.namesData.trim().replace(/,$/, ""), userId: this.state.userId };
         const count = data.names.split(',').length;
         if (data.names.length === 0) {
             info.innerText = 'Please fill the name list.';
@@ -718,7 +724,7 @@ exports.default = NameList;
 
 /***/ }),
 
-/***/ 347:
+/***/ 346:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -732,7 +738,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const V = __importStar(__webpack_require__(344));
+const V = __importStar(__webpack_require__(343));
 const E = __importStar(__webpack_require__(234));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
@@ -800,7 +806,7 @@ exports.default = LoginForm;
 
 /***/ }),
 
-/***/ 348:
+/***/ 347:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -815,7 +821,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(234));
-const V = __importStar(__webpack_require__(344));
+const V = __importStar(__webpack_require__(343));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class PasswordForm extends react_1.Component {
@@ -919,7 +925,7 @@ exports.default = PasswordForm;
 
 /***/ }),
 
-/***/ 349:
+/***/ 348:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -934,7 +940,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const E = __importStar(__webpack_require__(234));
-const V = __importStar(__webpack_require__(344));
+const V = __importStar(__webpack_require__(343));
 const api_1 = __webpack_require__(33);
 const client_1 = __webpack_require__(34);
 class UserForm extends react_1.Component {
@@ -1097,7 +1103,7 @@ exports.default = UserForm;
 
 /***/ }),
 
-/***/ 350:
+/***/ 349:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1193,5 +1199,5 @@ exports.default = UserList;
 
 /***/ })
 
-},[[288,"runtime","vendor","common"]]]);
+},[[287,"runtime","vendor","common"]]]);
 //# sourceMappingURL=admin.js.map

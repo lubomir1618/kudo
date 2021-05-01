@@ -1,4 +1,4 @@
-export const COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 180000;
+export const COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 600000;
 
 export enum CARD_TYPE {
   great_job = 'great_job',

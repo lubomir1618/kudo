@@ -20,7 +20,7 @@ const React = __importStar(__webpack_require__(1));
 const ReactDOM = __importStar(__webpack_require__(6));
 const react_router_dom_1 = __webpack_require__(12);
 const KudoEvent_1 = __importDefault(__webpack_require__(32));
-__webpack_require__(285);
+__webpack_require__(284);
 function App() {
     return (React.createElement(react_router_dom_1.BrowserRouter, null,
         React.createElement(react_router_dom_1.Switch, null,
@@ -194,13 +194,8 @@ const react_select_search_1 = __importDefault(__webpack_require__(228));
 const api_1 = __webpack_require__(33);
 const constants_1 = __webpack_require__(234);
 const CardIcon_1 = __webpack_require__(235);
-const data_1 = __importDefault(__webpack_require__(238));
-__webpack_require__(239);
+__webpack_require__(238);
 const CARD_TYPES = Object.values(constants_1.CARD_TYPE);
-const PEOPLE = [...data_1.default];
-PEOPLE.map((folk) => {
-    folk.value = folk.name;
-});
 class KudoForm extends react_1.default.Component {
     constructor(props) {
         super(props);
@@ -402,161 +397,8 @@ module.exports = exports;
 /***/ 238:
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = [
-    {
-        "name": "Andrejko Maros"
-    },
-    {
-        "name": "Angelovic Kamil"
-    },
-    {
-        "name": "Aron Martin"
-    },
-    {
-        "name": "Babela Jan"
-    },
-    {
-        "name": "Birka Miroslav"
-    },
-    {
-        "name": "Brunacky Tomas"
-    },
-    {
-        "name": "Cernak Adrian"
-    },
-    {
-        "name": "Durisin Martin"
-    },
-    {
-        "name": "Fecko Erik"
-    },
-    {
-        "name": "Gromina Juraj"
-    },
-    {
-        "name": "Halupka Arben"
-    },
-    {
-        "name": "Halupka Ivan"
-    },
-    {
-        "name": "Hanusovsky Henrich"
-    },
-    {
-        "name": "Istvan Miroslav"
-    },
-    {
-        "name": "Jassova Monika"
-    },
-    {
-        "name": "Kazmirsky Peter"
-    },
-    {
-        "name": "Langa Adam"
-    },
-    {
-        "name": "Lencses Rastislav"
-    },
-    {
-        "name": "Lichvarova Jarmila"
-    },
-    {
-        "name": "Malatakova Miroslava"
-    },
-    {
-        "name": "Mezei Marek"
-    },
-    {
-        "name": "Mezei Stefan"
-    },
-    {
-        "name": "Miskovic Lubomir"
-    },
-    {
-        "name": "Oscipovsky Lukas"
-    },
-    {
-        "name": "Repcin Rudolf"
-    },
-    {
-        "name": "Ruda Iveta"
-    },
-    {
-        "name": "Ruscak Michal"
-    },
-    {
-        "name": "Rzuhovska Veronika"
-    },
-    {
-        "name": "Saloky Lubos"
-    },
-    {
-        "name": "Sciranka Jaroslav"
-    },
-    {
-        "name": "Sipkai Zoltan"
-    },
-    {
-        "name": "Sorad Jan"
-    },
-    {
-        "name": "Spisak Martin"
-    },
-    {
-        "name": "Sroka Jozef"
-    },
-    {
-        "name": "Svec Erik"
-    },
-    {
-        "name": "Szabova Patricia"
-    },
-    {
-        "name": "Tomko Martin"
-    },
-    {
-        "name": "Tothova Diana"
-    },
-    {
-        "name": "Ulicny Martin"
-    },
-    {
-        "name": "Vargova Veronika"
-    },
-    {
-        "name": "Vitkovic Martin"
-    },
-    {
-        "name": "Sicak Michal"
-    },
-    {
-        "name": "Vancikova Alena"
-    },
-    {
-        "name": "Neceda Samuel"
-    },
-    {
-        "name": "Kocik Bruno"
-    },
-    {
-        "name": "Kazmirsky Andrej"
-    },
-    {
-        "name": "Vojtko Robert"
-    }
-];
-
-
-/***/ }),
-
-/***/ 239:
-/***/ (function(module, exports, __webpack_require__) {
-
 var api = __webpack_require__(221);
-            var content = __webpack_require__(240);
+            var content = __webpack_require__(239);
 
             content = content.__esModule ? content.default : content;
 
@@ -579,7 +421,7 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 240:
+/***/ 239:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -593,7 +435,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 241:
+/***/ 240:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -609,7 +451,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const CardIcon_1 = __webpack_require__(235);
 const api_1 = __webpack_require__(33);
-__webpack_require__(242);
+__webpack_require__(241);
 class Card extends react_1.Component {
     constructor(props) {
         super(props);
@@ -693,11 +535,11 @@ exports.default = Card;
 
 /***/ }),
 
-/***/ 242:
+/***/ 241:
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(221);
-            var content = __webpack_require__(243);
+            var content = __webpack_require__(242);
 
             content = content.__esModule ? content.default : content;
 
@@ -720,7 +562,7 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 243:
+/***/ 242:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -734,7 +576,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 244:
+/***/ 243:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -785,7 +627,7 @@ exports.default = CardNotification;
 
 /***/ }),
 
-/***/ 245:
+/***/ 244:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -802,9 +644,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const SoundSwitch_1 = __importDefault(__webpack_require__(246));
-__webpack_require__(249);
-const react_switch_1 = __importDefault(__webpack_require__(251));
+const SoundSwitch_1 = __importDefault(__webpack_require__(245));
+__webpack_require__(248);
+const react_switch_1 = __importDefault(__webpack_require__(250));
 class KudoSettings extends react_1.Component {
     constructor(props) {
         super(props);
@@ -838,7 +680,7 @@ exports.default = KudoSettings;
 
 /***/ }),
 
-/***/ 246:
+/***/ 245:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -853,7 +695,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
 const client_1 = __webpack_require__(34);
-__webpack_require__(247);
+__webpack_require__(246);
 class SoundSwitch extends react_1.Component {
     constructor(props) {
         super(props);
@@ -891,11 +733,11 @@ exports.default = SoundSwitch;
 
 /***/ }),
 
-/***/ 247:
+/***/ 246:
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(221);
-            var content = __webpack_require__(248);
+            var content = __webpack_require__(247);
 
             content = content.__esModule ? content.default : content;
 
@@ -918,7 +760,7 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 248:
+/***/ 247:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -932,11 +774,11 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 249:
+/***/ 248:
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(221);
-            var content = __webpack_require__(250);
+            var content = __webpack_require__(249);
 
             content = content.__esModule ? content.default : content;
 
@@ -959,7 +801,7 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 250:
+/***/ 249:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -973,11 +815,11 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 253:
+/***/ 252:
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(221);
-            var content = __webpack_require__(254);
+            var content = __webpack_require__(253);
 
             content = content.__esModule ? content.default : content;
 
@@ -1000,7 +842,7 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 254:
+/***/ 253:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -1014,7 +856,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 255:
+/***/ 254:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1031,7 +873,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_1 = __importStar(__webpack_require__(1));
-const qrcode_1 = __importDefault(__webpack_require__(256));
+const qrcode_1 = __importDefault(__webpack_require__(255));
 class QRcode extends react_1.Component {
     componentDidMount() {
         const canvas = document.getElementById('canvas');
@@ -1046,11 +888,11 @@ exports.default = QRcode;
 
 /***/ }),
 
-/***/ 285:
+/***/ 284:
 /***/ (function(module, exports, __webpack_require__) {
 
 var api = __webpack_require__(221);
-            var content = __webpack_require__(286);
+            var content = __webpack_require__(285);
 
             content = content.__esModule ? content.default : content;
 
@@ -1073,12 +915,12 @@ module.exports = exported;
 
 /***/ }),
 
-/***/ 286:
+/***/ 285:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
 var ___CSS_LOADER_API_IMPORT___ = __webpack_require__(223);
-var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(287);
+var ___CSS_LOADER_AT_RULE_IMPORT_0___ = __webpack_require__(286);
 exports = ___CSS_LOADER_API_IMPORT___(false);
 exports.i(___CSS_LOADER_AT_RULE_IMPORT_0___);
 // Module
@@ -1089,7 +931,7 @@ module.exports = exports;
 
 /***/ }),
 
-/***/ 287:
+/***/ 286:
 /***/ (function(module, exports, __webpack_require__) {
 
 // Imports
@@ -1118,11 +960,11 @@ const client_1 = __webpack_require__(34);
 const Knight_1 = __webpack_require__(219);
 const EventInfo_1 = __webpack_require__(224);
 const KudoForm_1 = __importDefault(__webpack_require__(227));
-const Card_1 = __importDefault(__webpack_require__(241));
-const CardNotification_1 = __importDefault(__webpack_require__(244));
-const KudoSettings_1 = __importDefault(__webpack_require__(245));
-__webpack_require__(253);
-const QRcode_1 = __importDefault(__webpack_require__(255));
+const Card_1 = __importDefault(__webpack_require__(240));
+const CardNotification_1 = __importDefault(__webpack_require__(243));
+const KudoSettings_1 = __importDefault(__webpack_require__(244));
+__webpack_require__(252);
+const QRcode_1 = __importDefault(__webpack_require__(254));
 const MODAL_INTERVAL = 120 * 1000;
 const MODAL_TIME = 120 * 1000;
 const REFRESH = 15 * 1000; // 60 seconds
@@ -1222,7 +1064,6 @@ class KudoEvent extends react_1.default.Component {
             .then((namesData) => {
             const nameList = namesData.length === 0 ? [] : this.formatNames(namesData[0].names);
             this.setState({ nameList, nameListLoading: false });
-            console.log('mame', nameList);
         })
             .catch((err) => {
             console.log('err', err);

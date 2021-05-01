@@ -8,7 +8,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const E = __importStar(require("../common/constants"));
-exports.COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 180000;
+exports.COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 600000;
 function serverLog(text, req) {
     console.log(`${req.method} ${text}, ` +
         `query: ${JSON.stringify(req.query)}, ` +

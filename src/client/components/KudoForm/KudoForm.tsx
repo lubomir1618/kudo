@@ -4,7 +4,6 @@ import * as I from '../../../common/interfaces';
 import { insert } from '../../utils/api';
 import { CARD_TYPE } from '../../../common/constants';
 import { CardIcon } from '../CardIcon/CardIcon';
-import data from '../../assets/data';
 import './KudoForm.css';
 
 const enum FORM_ERROR {
@@ -19,12 +18,6 @@ export interface ISelectResponse {
 }
 
 const CARD_TYPES = Object.values(CARD_TYPE);
-
-const PEOPLE = [...data];
-PEOPLE.map((folk: any) => {
-  folk.value = folk.name;
-});
-
 interface IState {
   type: CARD_TYPE;
   name: string | undefined;

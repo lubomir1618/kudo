@@ -55,6 +55,12 @@ export default class NameList extends Component<IEventListProps, IEventListState
         <h4>
           Name list
         </h4>
+        <div className="namelist_basicInfo">
+            <p>This is name list of people users can choose to give "card", which appears in each of yours events. 
+                Updates to this name list applies to all your past, active and future events. - one namelist to rule them all :D </p>
+            <p> Each Name you provide needs to be separated by a comma character <span className="namelist_highlight">,</span>Make sure this list is not empty.</p>
+            <p>Example: <span className="namelist_highlight">Herkules, Janko Hraško, Líška Eliška, Pinnochio</span></p>
+        </div>
           {
               loading ? this.loading() : (<div style={{margin: '0 auto', width: '80%'}}>
                   <form className="pane_form" id="form-namelist-form" onSubmit={this.bind.onClickHandler}>
@@ -89,7 +95,7 @@ export default class NameList extends Component<IEventListProps, IEventListState
     private onClickHandler(e:  React.FormEvent): void {
         e.preventDefault();
         const info = document.getElementById('form-namelist-info') as HTMLDivElement;
-        const data = {names: this.state.namesData.trim(), userId: this.state.userId}
+        const data = {names: this.state.namesData.trim().replace(/,$/, ""), userId: this.state.userId}
         const count = data.names.split(',').length;
         
         if (data.names.length === 0) {
