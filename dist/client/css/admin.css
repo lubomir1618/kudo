@@ -26,6 +26,7 @@ html {
   --c-green-4: #8cb82b;
   --c-green-5: #689324;
   --c-green-6: #144414;
+  --c-green-7: #acdc8194;
   font-size: 62.5%; /* 62.5% of 16px = 10px */
 }
 
@@ -85,7 +86,7 @@ h4 span.button {
   margin-top: -3px;
 }
 .active {
-  background: var(--c-green-3) !important;
+  background: var(--c-green-7) !important;
 }
 .admin_buttons {
   position: absolute;
@@ -284,6 +285,19 @@ form.pane_form .react-date-picker__button__icon {
   stroke: var(--c-blue-5);
 }
 
+#form-namelist-info {
+  font-family: 'Ubuntu_Medium';
+  background-color: var(--c-blue-5);
+  color: var(--c-white);
+  padding: 10px;
+  font-size: 14px;
+}
+button.disabled_true, button.disabled_true:hover {
+  border: none;
+  box-shadow: none;
+  background: var(--c-gray-5);
+}
+
 .gen_button {
   box-shadow: inset 0px 1px 0px 0px var(--c-green-1);
   background: linear-gradient(var(--c-green-2) 5%, var(--c-green-4) 100%);
@@ -396,4 +410,17 @@ form.pane_form .react-date-picker__button__icon {
   text-align: center;
   line-height: 2rem;
   font-size: 1.3rem;
+}
+.namelist_highlight {
+  color: var(--c-black);
+  background: var(--c-blue-3);
+  display: inline-block;
+  padding: 4px;
+  margin: 0 5px;
+  border-radius: 4px;
+}
+.namelist_basicInfo {
+  margin: 10px;
+  font-size: 13px;
+  padding: 10px;
 }

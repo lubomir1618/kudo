@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import * as E from '../common/constants';
 import * as I from '../common/interfaces';
 
-export const COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 180000;
+export const COOKIE_MAX_AGE = Number(process.env.COOKIE_MAX_AGE) || 600000;
 
 export function serverLog(text: string, req: Request) {
   console.log(

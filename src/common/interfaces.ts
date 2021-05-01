@@ -6,11 +6,20 @@ export interface Table {
   created?: number;
 }
 
+export interface People {
+  name: string,
+  value: string
+}
 export interface Event extends Table {
   dateFrom: number;
   dateTo: number;
   name: string;
   state: T.EVENT_STATE;
+  userId: string;
+}
+
+export interface NameList extends Table {
+  names: string;
   userId: string;
 }
 

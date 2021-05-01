@@ -15,6 +15,7 @@ const cards_1 = require("./server/controllers/cards");
 const events_1 = require("./server/controllers/events");
 const like_1 = require("./server/controllers/like");
 const users_1 = require("./server/controllers/users");
+const namelist_1 = require("./server/controllers/namelist");
 const app = express_1.default();
 const port = process.env.PORT || 8080;
 app.use(cors_1.default());
@@ -48,6 +49,7 @@ restful_router_1.default({ app, controller: auth_1.cAuth, name: 'api/auth' });
 restful_router_1.default({ app, controller: users_1.cUsers, name: 'api/users' });
 restful_router_1.default({ app, controller: cards_1.cCards, name: 'api/cards' });
 restful_router_1.default({ app, controller: events_1.cEvents, name: 'api/events' });
+restful_router_1.default({ app, controller: namelist_1.cUserNameList, name: 'api/namelist' });
 /* Handle ALL OTHER, non-api,  requests / routes as the index.html (main application) - we use React Router fot this */
 app.get('*', (_req, res) => {
     res.set('Content-Type', 'text/html');
