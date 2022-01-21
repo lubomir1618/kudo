@@ -120,13 +120,15 @@ export default class Card extends Component<Props, State> {
 
   private yourChoice(eventID: string, cardID: string): boolean {
     const savedVote = localStorage.getItem(`kudosVote-${eventID}`);
-
+    const ownVOTE = localStorage.getItem('kudoVote-ownCards')
+    const ownCards =  ownVOTE ? JSON.parse(ownVOTE) : [];
     if (savedVote) {
       const data = JSON.parse(savedVote);
       if (data.cardID.includes(cardID)) {
         return true;
       }
     }
+    if (ownCards.includes(cardID)) { return true; }
 
     return false;
   }

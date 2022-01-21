@@ -127,6 +127,16 @@
 .kudoEvent .newCard .card .card__likes {
   display: none;
 }
+.kudoEvent .kudo-info-points {
+  background: #ffdc63;
+    right: 0;
+    z-index: 2;
+    padding: 0 10px;
+    border-radius: 10px;
+    position: absolute;
+    box-shadow: 0px 2px 5px #c8d9d5;
+    cursor: help;
+}
 
 @media only screen and (max-width: 800px) {
   .kudoEvent {

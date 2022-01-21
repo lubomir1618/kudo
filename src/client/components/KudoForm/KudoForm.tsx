@@ -167,7 +167,11 @@ export default class KudoForm extends React.Component<IProps, IState> {
         };
 
         insert<I.Card>('/api/cards', new_card as I.Card)
-          .then(() => {
+          .then((data) => {
+            const ownVOTE = localStorage.getItem('kudoVote-ownCards');
+            const ownCards = ownVOTE ? JSON.parse(ownVOTE) : []
+            ownCards.push(data._id);
+            localStorage.setItem('kudoVote-ownCards', JSON.stringify(ownCards))
             this.clearForm();
             document.dispatchEvent(new CustomEvent('kudoz::cardListRefresh'));
           })

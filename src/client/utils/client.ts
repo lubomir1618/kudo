@@ -10,11 +10,15 @@ interface IkudoObj {
 }
 
 export function getKudoNumberList(cards: I.Card[]): IkudoNum[] {
+  /* Count (points system) is awarded as 1 card = 1 point, 1 like = 1 point. so Kudo knight with
+  ** one card and 3 likes is more than somebody with 3 cards and no likes
+  */
   const list = cards.reduce((acc: IkudoObj, val: I.Card) => {
     if (acc[val.awardedTo]) {
       acc[val.awardedTo].count += 1;
+      acc[val.awardedTo].count += val.likes;
     } else {
-      acc[val.awardedTo] = { count: 1, name: val.awardedTo };
+      acc[val.awardedTo] = { count: 1 + val.likes, name: val.awardedTo };
     }
     return acc;
   }, {});

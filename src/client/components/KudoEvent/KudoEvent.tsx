@@ -214,9 +214,9 @@ export default class KudoEvent extends React.Component<{}, IState> {
   private getKnight(): JSX.Element {
     // TODO get most frequent name from array
     const list = getKudoNumberList(this.state.cards);
-
     return (
-      <div title={list.map((person) => `${person.name}:${person.count}`).join(', ')}>
+      <div style={{position: 'relative'}}>
+        <div className="kudo-info-points" title={list.map((person) => `${person.name}:${person.count}`).join(', ')}>i</div>
         <Knight {...{ mostKudos: getKudoKnight(list) }} />
       </div>
     );

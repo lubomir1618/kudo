@@ -265,12 +265,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const node_rsa_1 = __importDefault(__webpack_require__(35));
 function getKudoNumberList(cards) {
+    /* Count (points system) is awarded as 1 card = 1 point, 1 like = 1 point. so Kudo knight with
+    ** one card and 3 likes is more than somebody with 3 cards and no likes
+    */
     const list = cards.reduce((acc, val) => {
         if (acc[val.awardedTo]) {
             acc[val.awardedTo].count += 1;
+            acc[val.awardedTo].count += val.likes;
         }
         else {
-            acc[val.awardedTo] = { count: 1, name: val.awardedTo };
+            acc[val.awardedTo] = { count: 1 + val.likes, name: val.awardedTo };
         }
         return acc;
     }, {});
